@@ -2,17 +2,18 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/vue-element-admin/user/login',
+    // url: '/vue-element-admin/user/login',
+    url: '/youlai-auth/oauth/token',
     method: 'post',
-    data
+    params: data
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/vue-element-admin/user/info',
-    method: 'get',
-    params: { token }
+    // url: '/vue-element-admin/user/info',
+    url: '/youlai-admin/users/current',
+    method: 'get'
   })
 }
 
@@ -22,3 +23,4 @@ export function logout() {
     method: 'post'
   })
 }
+
