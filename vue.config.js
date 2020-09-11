@@ -37,9 +37,7 @@ module.exports = {
       warnings: false,
       errors: true
     },
-<<<<<<< HEAD
-    before: require('./mock/mock-server.js')
-=======
+
     // before: require('./mock/mock-server.js')
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
@@ -50,7 +48,6 @@ module.exports = {
         }
       }
     }
->>>>>>> i18n
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

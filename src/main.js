@@ -30,11 +30,8 @@ import Pagination from '@/components/Pagination'
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
-<<<<<<< HEAD
-if (process.env.NODE_ENV === 'production') {
-=======
+
 /* if (process.env.NODE_ENV === 'production') {
->>>>>>> i18n
   const { mockXHR } = require('../mock')
   mockXHR()
 }*/
@@ -44,11 +41,7 @@ Vue.component('Pagination', Pagination)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
-<<<<<<< HEAD
-  locale: enLang // 如果使用中文，无需设置，请删除
-=======
   i18n: (key, value) => i18n.t(key, value)
->>>>>>> i18n
 })
 
 // register global utility filters

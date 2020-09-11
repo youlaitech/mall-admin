@@ -137,7 +137,6 @@ export const asyncRoutes = [
           title: '角色管理',
           roles: ['admin']
         }
-<<<<<<< HEAD
       }
     ]
   },
@@ -259,8 +258,6 @@ export const asyncRoutes = [
         component: () => import('@/views/excel/export-excel'),
         name: 'ExportExcel',
         meta: { title: 'Export Excel' }
-=======
->>>>>>> i18n
       },
       {
         path: 'menu',

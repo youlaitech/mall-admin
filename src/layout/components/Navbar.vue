@@ -45,11 +45,7 @@
             <el-dropdown-item>Docs</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
-<<<<<<< HEAD
-            <span style="display:block;">Log Out</span>
-=======
             <span style="display:block;">{{ $t('navbar.logOut') }}</span>
->>>>>>> i18n
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
