@@ -43,30 +43,27 @@
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column prop="name" label="部门名称" width="400" />
+      <el-table-column prop="name" label="部门名称"/>
       <el-table-column prop="sort" label="显示排序" width="200" />
       <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100" />
       <el-table-column prop="leader" label="负责人" width="200" />
       <el-table-column prop="mobile" label="联系电话" width="200" />
       <el-table-column prop="email" label="邮箱" width="200" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center"  width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-            size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改
           </el-button>
           <el-button
-            size="mini"
             type="text"
             icon="el-icon-plus"
             @click="handleAdd(scope.row)"
           >新增
           </el-button>
           <el-button
-            size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
@@ -215,7 +212,6 @@ export default {
     statusFormat(row) {
       return row.status === 1 ? '正常' : '禁用'
     },
-
     async handleAdd(row) {
       this.resetForm()
       this.dialog = {

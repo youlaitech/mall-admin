@@ -83,8 +83,8 @@
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
-                :active-value="0"
-                :inactive-value="1"
+                :active-value="1"
+                :inactive-value="0"
                 @change="handleStatusChange(scope.row)"
               />
             </template>
@@ -97,7 +97,6 @@
           >
             <template slot-scope="scope">
               <el-button
-                size="mini"
                 type="text"
                 icon="el-icon-edit"
                 @click="handleUpdate(scope.row)"
@@ -105,14 +104,12 @@
               </el-button>
               <el-button
                 v-if="scope.row.id !=1"
-                size="mini"
                 type="text"
                 icon="el-icon-delete"
                 @click="handleDelete(scope.row)"
               >删除
               </el-button>
               <el-button
-                size="mini"
                 type="text"
                 icon="el-icon-key"
                 @click="handleResetPassword(scope.row)"
@@ -251,11 +248,9 @@ export default {
       // 表单校验
       rules: {
         username: [
-          { required: true, message: '用户名称不能为空', trigger: 'blur' }
+          { required: true, message: '用户名不能为空', trigger: 'blur' }
         ],
-        nickName: [
-          { required: true, message: '用户昵称不能为空', trigger: 'blur' }
-        ],
+
         deptId: [
           { required: true, message: '归属部门不能为空', trigger: 'blur' }
         ],
@@ -324,7 +319,7 @@ export default {
     },
     // 用户状态修改
     handleStatusChange(row) {
-      const text = row.status === 0 ? '启用' : '停用'
+      const text = row.status === 1 ? '启用' : '停用'
       this.$confirm('确认要"' + text + '""' + row.username + '"用户吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -443,7 +438,7 @@ export default {
         mobile: undefined,
         email: undefined,
         gender: undefined,
-        status: 0,
+        status: 1,
         remark: undefined,
         roleIds: []
       }
