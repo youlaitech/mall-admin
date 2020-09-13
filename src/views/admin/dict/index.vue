@@ -1,4 +1,3 @@
-<!--
 <template>
   <div class="app-container">
     <el-row :gutter="20">
@@ -7,23 +6,23 @@
           <div slot="header" class="clearfix">
             <span>字典类型</span>
           </div>
-          <el-form :model="queryParams_dictType" ref="queryForm_dictType" :inline="true" size="mini">
-            <el-form-item label="字典名称" prop="typeName">
+          <el-form :model="queryParamsForType" ref="queryFormForType" :inline="true" size="mini">
+            <el-form-item label="字典名称" prop="name">
               <el-input
-                v-model="queryParams_dictType.typeName"
+                v-model="queryParamsForType.name"
                 placeholder="请输入字典名称"
                 clearable
                 style="width: 240px"
-                @keyup.enter.native="handleQuery_dictType"/>
+                @keyup.enter.native="handleQueryForType"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" @click="handleQuery_dictType">搜索</el-button>
-              <el-button icon="el-icon-refresh" @click="resetSearch_dictType">重置</el-button>
+              <el-button type="primary" icon="el-icon-search" @click="handleQueryForType">搜索</el-button>
+              <el-button icon="el-icon-refresh" @click="handleResetQueryForType">重置</el-button>
             </el-form-item>
           </el-form>
           <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
-              <el-button type="primary" size="mini" icon="el-icon-plus" @click="handleAdd_dictType">新增</el-button>
+              <el-button type="primary" size="mini" icon="el-icon-plus" @click="handAddForType">新增</el-button>
             </el-col>
             <el-col :span="1.5">
               <el-button type="success" size="mini" icon="el-icon-edit" :disabled="single_dictType"
@@ -46,21 +45,21 @@
                 <el-radio v-model="selectedDictTypeIndex" :label="scope.$index">&nbsp;</el-radio>
               </template>
             </el-table-column>
-            <el-table-column label="字典名称" prop="typeName" width="180"/>
+            <el-table-column label="字典名称" prop="name" width="180"/>
             <el-table-column label="字典编码" prop="typeCode" :show-overflow-tooltip="true" width="180"/>
             <el-table-column label="状态" prop="perms" :formatter="statusFormat" width="120"/>
           </el-table>
           <pagination
             v-show="total_dictType>0"
             :total="total_dictType"
-            :page.sync="queryParams_dictType.pageNum"
-            :limit.sync="queryParams_dictType.pageSize"
-            @pagination="handleQuery_dictType"/>
+            :page.sync="queryParamsForType.pageNum"
+            :limit.sync="queryParamsForType.pageSize"
+            @pagination="handleQueryForType"/>
 
           <el-dialog :title="title_dictType" :visible.sync="visible_dictType" width="500px">
             <el-form ref="form_dictType" :model="form_dictType" :rules="rules_dictType" label-width="80px">
-              <el-form-item label="字典名称" prop="typeName">
-                <el-input v-model="form_dictType.typeName" placeholder="请输入字典名称"/>
+              <el-form-item label="字典名称" prop="name">
+                <el-input v-model="form_dictType.name" placeholder="请输入字典名称"/>
               </el-form-item>
               <el-form-item label="字典编码" prop="typeCode">
                 <el-input v-model="form_dictType.typeCode" placeholder="请输入字典编码"/>
@@ -86,7 +85,7 @@
         </el-card>
       </el-col>
 
-      &lt;!&ndash; 字典数据 &ndash;&gt;
+      <!-- 字典数据 -->
       <el-col :span="15" :xs="24">
         <el-card>
           <div slot="header" class="clearfix">
@@ -95,7 +94,7 @@
           <el-form :model="queryParams_dictData" ref="queryForm_dictData" :inline="true" size="mini">
             <el-form-item label="字典名称" prop="dictName">
               <el-input
-                v-model="queryParams_dictData.typeName"
+                v-model="queryParams_dictData.name"
                 placeholder="字典名称"
                 clearable
                 :readonly="true"/>
@@ -212,10 +211,10 @@
     data() {
       return {
         // 字典类型
-        queryParams_dictType: {
+        queryParamsForType: {
           pageNum: 1,
           pageSize: 10,
-          typeName: undefined
+          name: undefined
         },
         loading_dictType: false,
         single_dictType: true,
@@ -223,7 +222,7 @@
         total_dictType: 0,
         ids_dictType: [],
         rules_dictType: {
-          typeName: [{
+          name: [{
             required: true, message: '请输入字典名称', trigger: 'blur'
           }],
           typeCode: [{
@@ -241,7 +240,7 @@
           pageSize: 10,
           dictLabel: undefined,
           typeCode: undefined,
-          typeName: undefined
+          name: undefined
         },
         loading_dictData: false,
         single_dictData: true,
@@ -267,9 +266,9 @@
       }
     },
     methods: {
-      handleQuery_dictType() {
+      handleQueryForType() {
         this.loading_dictType = true;
-        dictTypePage(this.queryParams_dictType).then(res => {
+        dictTypePage(this.queryParamsForType).then(res => {
           const data = res.data
           this.tableData_dictType = data.records
           this.total_dictType = data.total
@@ -280,9 +279,9 @@
           }
         })
       },
-      resetSearch_dictType() {
-        this.resetForm("queryForm_dictType")
-        this.handleQuery_dictType()
+      handleResetQueryForType() {
+        this.resetForm("queryFormForType")
+        this.handleQueryForType()
       },
       statusFormat(row) {
         return this.selectDictLabel(this.statusOptions, row.status);
@@ -292,7 +291,7 @@
         this.queryParams_dictData.typeCode = row.typeCode
         this.handleQuery_dictData()
       },
-      handleAdd_dictType() {
+      handAddForType() {
         this.reset_dictType()
         this.visible_dictType = true
         this.title_dictType = "添加字典类型"
@@ -316,7 +315,7 @@
           return deleteDictType(id);
         }).then(() => {
           this.msgSuccess("删除成功");
-          this.handleQuery_dictType()
+          this.handleQueryForType()
         })
       },
       submitForm_dictType: function () {
@@ -327,13 +326,13 @@
               updateDictType(id, this.form_dictType).then(() => {
                 this.msgSuccess("修改成功");
                 this.visible_dictType = false;
-                this.handleQuery_dictType();
+                this.handleQueryForType();
               });
             } else {
               addDictType(this.form_dictType).then(() => {
                 this.msgSuccess("新增成功");
                 this.visible_dictType = false;
-                this.handleQuery_dictType();
+                this.handleQueryForType();
               })
             }
           }
@@ -346,7 +345,7 @@
       reset_dictType() {
         this.form_dictType = {
           id: undefined,
-          typeName: undefined,
+          name: undefined,
           typeCode: undefined,
           remark: undefined
         }
@@ -356,7 +355,7 @@
       handleQuery_dictData() {
         this.loading_dictData = true;
         this.queryParams_dictData.typeCode = this.tableData_dictType[this.selectedDictTypeIndex].typeCode
-        this.queryParams_dictData.typeName = this.tableData_dictType[this.selectedDictTypeIndex].typeName
+        this.queryParams_dictData.name = this.tableData_dictType[this.selectedDictTypeIndex].name
         dictDataPage(this.queryParams_dictData).then(res => {
           const data = res.data
           this.tableData_dictData = data.records
@@ -394,7 +393,7 @@
           return deleteDictData(id);
         }).then(() => {
           this.msgSuccess("删除成功");
-          this.handleQuery_dictType()
+          this.handleQueryForType()
         })
       },
       submitForm_dictData: function () {
@@ -450,7 +449,7 @@
     },
     mounted() {
       this.$store.dispatch("getDictDatas", ["sys_normal_disable"])
-      this.handleQuery_dictType()
+      this.handleQueryForType()
     }
   }
 </script>
@@ -458,4 +457,3 @@
 <style scoped>
 
 </style>
--->
