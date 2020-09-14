@@ -1,4 +1,5 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import {asyncRoutes, constantRoutes} from '@/router'
+import {list as getRouters} from '@/api/admin/menu'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -22,7 +23,7 @@ export function filterAsyncRoutes(routes, roles) {
   const res = []
 
   routes.forEach(route => {
-    const tmp = { ...route }
+    const tmp = {...route}
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
         tmp.children = filterAsyncRoutes(tmp.children, roles)
@@ -47,8 +48,12 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
-    return new Promise(resolve => {
+  generateRoutes({commit}, roles) {
+    getRouters({mode: 3}).then(response => {
+      console.log('获取菜单路由',response.data)
+    })
+
+    /*return new Promise(resolve => {
       let accessedRoutes
       if (roles.includes('admin')) {
         accessedRoutes = asyncRoutes || []
@@ -57,7 +62,7 @@ const actions = {
       }
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
-    })
+    })*/
   }
 }
 
