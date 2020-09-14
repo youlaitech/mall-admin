@@ -2,18 +2,18 @@
   <div class="app-container">
     <el-form ref="queryForm" size="small" :inline="true" :model="queryParams">
       <el-form-item>
-        <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
+        <el-button icon="el-icon-plus" type="success" @click="handleAdd">新增</el-button>
       </el-form-item>
 
-      <el-form-item label="部门名称">
+      <el-form-item>
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入部门名称"
+          placeholder="部门名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="状态">
+      <el-form-item >
         <el-select
           v-model="queryParams.status"
           placeholder="部门状态"
@@ -31,7 +31,6 @@
           @click="handleQuery"
         >搜索
         </el-button>
-
         <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -43,13 +42,13 @@
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column prop="name" label="部门名称"/>
+      <el-table-column prop="name" label="部门名称" />
       <el-table-column prop="sort" label="显示排序" width="200" />
       <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100" />
       <el-table-column prop="leader" label="负责人" width="200" />
       <el-table-column prop="mobile" label="联系电话" width="200" />
       <el-table-column prop="email" label="邮箱" width="200" />
-      <el-table-column label="操作" align="center"  width="200" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             type="text"
@@ -210,7 +209,7 @@ export default {
       this.handleQuery()
     },
     statusFormat(row) {
-      return row.status === 1 ? '正常' : '禁用'
+      return row.status === 1 ? '正常' : '停用'
     },
     async handleAdd(row) {
       this.resetForm()

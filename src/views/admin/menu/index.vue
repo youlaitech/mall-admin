@@ -14,8 +14,8 @@
       </el-form-item>
       <el-form-item label="状态">
         <el-select v-model="queryParams.visible" placeholder="菜单状态" clearable>
-          <el-option label="正常" value="1"/>
-          <el-option label="停用" value="0"/>
+          <el-option label="正常" value="1" />
+          <el-option label="停用" value="0" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -31,16 +31,16 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border
     >
-      <el-table-column prop="name" label="菜单名称" :show-overflow-tooltip="true" min-width="11%"/>
+      <el-table-column prop="name" label="菜单名称" :show-overflow-tooltip="true" min-width="11%" />
       <el-table-column prop="icon" label="图标" align="center" min-width="11%">
         <template slot-scope="scope">
-          <svg-icon :icon-class="scope.row.icon"/>
+          <svg-icon :icon-class="scope.row.icon" />
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" min-width="11%"/>
-      <el-table-column prop="perms" label="权限标识" min-width="11%" :show-overflow-tooltip="true"/>
-      <el-table-column prop="component" label="组件路径" min-width="11%" :show-overflow-tooltip="true"/>
-      <el-table-column prop="visible" label="可见" :formatter="visibleFormat" min-width="11%"/>
+      <el-table-column prop="sort" label="排序" min-width="11%" />
+      <el-table-column prop="perms" label="权限标识" min-width="11%" :show-overflow-tooltip="true" />
+      <el-table-column prop="component" label="组件路径" min-width="11%" :show-overflow-tooltip="true" />
+      <el-table-column prop="visible" label="可见" :formatter="visibleFormat" min-width="11%" />
       <el-table-column label="操作" align="center" min-width="20%" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -98,7 +98,7 @@
                 trigger="click"
                 @show="$refs['iconSelect'].reset()"
               >
-                <IconSelect ref="iconSelect" @seleted="handleIconSelected"/>
+                <IconSelect ref="iconSelect" @seleted="handleIconSelected" />
                 <el-input slot="reference" v-model="form.icon" placeholder="点击选择图标" readonly>
                   <svg-icon
                     v-if="form.icon"
@@ -107,34 +107,34 @@
                     class="el-input__icon"
                     style="height: 40px;width: 16px; "
                   />
-                  <i v-else slot="prefix" class="el-icon-search el-input__icon"/>
+                  <i v-else slot="prefix" class="el-icon-search el-input__icon" />
                 </el-input>
               </el-popover>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="菜单名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入菜单名称"/>
+              <el-input v-model="form.name" placeholder="请输入菜单名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="显示排序" prop="sort">
-              <el-input-number v-model="form.sort" controls-position="right" :min="0"/>
+              <el-input-number v-model="form.sort" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item v-if="form.type != 2" label="路由地址" prop="path">
-              <el-input v-model="form.path" placeholder="请输入路由地址"/>
+              <el-input v-model="form.path" placeholder="请输入路由地址" />
             </el-form-item>
           </el-col>
           <el-col v-if="form.type == 1" :span="12">
             <el-form-item label="组件路径" prop="component">
-              <el-input v-model="form.component" placeholder="请输入组件路径"/>
+              <el-input v-model="form.component" placeholder="请输入组件路径" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item v-if="form.type != 0" label="权限标识">
-              <el-input v-model="form.perms" placeholder="请权限标识" maxlength="50"/>
+              <el-input v-model="form.perms" placeholder="请权限标识" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -156,165 +156,165 @@
 </template>
 <script>
 
-  import {list, detail, update, add, del} from '@/api/admin/menu'
-  import TreeSelect from '@riophae/vue-treeselect'
-  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-  import IconSelect from '@/components/IconSelect'
+import { list, detail, update, add, del } from '@/api/admin/menu'
+import TreeSelect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import IconSelect from '@/components/IconSelect'
 
-  export default {
-    components: {TreeSelect, IconSelect},
-    data() {
-      return {
-        loading: true,
-        pageList: [],
-        menuOptions: [],
-        queryParams: {
-          name: undefined
-        },
-        dialog: {
-          title: undefined,
-          visible: false
-        },
-        form: {
-          id: undefined,
-          name: undefined,
-          parentId: undefined,
-          path: undefined,
-          components: undefined,
-          perms: undefined,
-          type: undefined,
-          icon: undefined,
-          sort: undefined,
-          visible: undefined,
-          status: undefined
-        },
-        rules: {
-          name: [
-            {required: true, message: '菜单名称不能为空', trigger: 'blur'}
-          ],
-          sort: [
-            {required: true, message: '菜单顺序不能为空', trigger: 'blur'}
-          ]
-        }
+export default {
+  components: { TreeSelect, IconSelect },
+  data() {
+    return {
+      loading: true,
+      pageList: [],
+      menuOptions: [],
+      queryParams: {
+        name: undefined
+      },
+      dialog: {
+        title: undefined,
+        visible: false
+      },
+      form: {
+        id: undefined,
+        name: undefined,
+        parentId: undefined,
+        path: undefined,
+        components: undefined,
+        perms: undefined,
+        type: undefined,
+        icon: undefined,
+        sort: undefined,
+        visible: undefined,
+        status: undefined
+      },
+      rules: {
+        name: [
+          { required: true, message: '菜单名称不能为空', trigger: 'blur' }
+        ],
+        sort: [
+          { required: true, message: '菜单顺序不能为空', trigger: 'blur' }
+        ]
       }
+    }
+  },
+  created() {
+    this.handleQuery()
+  },
+  methods: {
+    handleQuery() {
+      this.queryParams.mode = 1
+      list(this.queryParams).then(response => {
+        this.pageList = response.data
+        this.loading = false
+      })
     },
-    created() {
+    handleResetQuery() {
+      this.queryParams = {
+        name: undefined,
+        status: undefined
+      }
       this.handleQuery()
     },
-    methods: {
-      handleQuery() {
-        this.queryParams.mode = 1
-        list(this.queryParams).then(response => {
-          this.pageList = response.data
-          this.loading = false
-        })
-      },
-      handleResetQuery() {
-        this.queryParams = {
-          name: undefined,
-          status: undefined
-        }
-        this.handleQuery()
-      },
-      visibleFormat(row) {
-        if (row.type == 2) {
-          return ''
-        }
-        if (row.visible == 1) {
-          return '显示'
-        } else if (row.visible == 0) {
-          return '隐藏'
-        } else {
-          return ''
-        }
-      },
-      handleIconSelected(name) {
-        this.form.icon = name
-      },
-      async handleAdd(row) {
-        this.resetForm()
-        this.dialog = {
-          title: '新增菜单',
-          visible: true
-        }
-        await this.loadMenuOptions()
-        if (row) {
-          this.form.parentId = row.id
-        }
-      },
-      async handleUpdate(row) {
-        this.resetForm()
-        this.dialog = {
-          title: '修改菜单',
-          visible: true
-        }
-        await this.loadMenuOptions()
-        detail(row.id).then(response => {
-          this.form = response.data
-        })
-      },
-      handleSubmit: function () {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            const id = this.form.id
-            if (id != undefined) {
-              update(id, this.form).then(() => {
-                this.$message.success('修改成功')
-                this.dialog.visible = false
-                this.handleQuery()
-              })
-            } else {
-              add(this.form).then(() => {
-                this.$message.success('新增成功')
-                this.dialog.visible = false
-                this.handleQuery()
-              })
-            }
-          }
-        })
-      },
-      handleDelete(row) {
-        const ids = row.id || this.ids
-        this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          del(ids).then(() => {
-            this.$message.success('删除成功')
-            this.handleQuery()
-          })
-        }).catch(() =>
-          this.$message.info('已取消删除')
-        )
-      },
-      resetForm() {
-        this.form = {
-          id: undefined,
-          name: undefined,
-          parentId: undefined,
-          path: undefined,
-          components: undefined,
-          perms: undefined,
-          type: undefined,
-          icon: undefined,
-          sort: undefined,
-          visible: undefined,
-          status: undefined
-        }
-        if (this.$refs['form']) {
-          this.$refs['form'].resetFields()
-        }
-      },
-      loadMenuOptions() {
-        this.queryParams.mode = 2
-        this.deptOptions = []
-        list(this.queryParams).then(response => {
-          const menuOption = { id: 0, label: '主类目', children: response.data }
-          this.menuOptions.push(menuOption)
-        })
+    visibleFormat(row) {
+      if (row.type == 2) {
+        return ''
       }
-
+      if (row.visible == 1) {
+        return '显示'
+      } else if (row.visible == 0) {
+        return '隐藏'
+      } else {
+        return ''
+      }
+    },
+    handleIconSelected(name) {
+      this.form.icon = name
+    },
+    async handleAdd(row) {
+      this.resetForm()
+      this.dialog = {
+        title: '新增菜单',
+        visible: true
+      }
+      await this.loadMenuOptions()
+      if (row) {
+        this.form.parentId = row.id
+      }
+    },
+    async handleUpdate(row) {
+      this.resetForm()
+      this.dialog = {
+        title: '修改菜单',
+        visible: true
+      }
+      await this.loadMenuOptions()
+      detail(row.id).then(response => {
+        this.form = response.data
+      })
+    },
+    handleSubmit: function() {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          const id = this.form.id
+          if (id != undefined) {
+            update(id, this.form).then(() => {
+              this.$message.success('修改成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          } else {
+            add(this.form).then(() => {
+              this.$message.success('新增成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          }
+        }
+      })
+    },
+    handleDelete(row) {
+      const ids = row.id || this.ids
+      this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del(ids).then(() => {
+          this.$message.success('删除成功')
+          this.handleQuery()
+        })
+      }).catch(() =>
+        this.$message.info('已取消删除')
+      )
+    },
+    resetForm() {
+      this.form = {
+        id: undefined,
+        name: undefined,
+        parentId: undefined,
+        path: undefined,
+        components: undefined,
+        perms: undefined,
+        type: undefined,
+        icon: undefined,
+        sort: undefined,
+        visible: undefined,
+        status: undefined
+      }
+      if (this.$refs['form']) {
+        this.$refs['form'].resetFields()
+      }
+    },
+    loadMenuOptions() {
+      this.queryParams.mode = 2
+      this.deptOptions = []
+      list(this.queryParams).then(response => {
+        const menuOption = { id: 0, label: '主类目', children: response.data }
+        this.menuOptions.push(menuOption)
+      })
     }
+
   }
+}
 </script>
