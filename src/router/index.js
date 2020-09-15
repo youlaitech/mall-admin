@@ -125,35 +125,7 @@ export const asyncRoutes = [
         name: 'Dept',
         meta: {
           title: '部门管理',
-          roles: ['admin']
-        }
-      },
-
-      {
-        path: 'role',
-        component: () => import('@/views/admin/role'),
-        name: 'Role',
-        meta: {
-          title: '角色管理',
-          roles: [1,2]
-        }
-      },
-      {
-        path: 'menu',
-        component: () => import('@/views/admin/menu'),
-        name: 'Menu',
-        meta: {
-          title: '菜单管理',
-          roles: [1,2]
-        }
-      },
-      {
-        path: 'dict',
-        component: () => import('@/views/admin/dict'),
-        name: 'Dict',
-        meta: {
-          title: '字典管理',
-          roles: [1,2]
+          roles: [1]
         }
       }
     ]
