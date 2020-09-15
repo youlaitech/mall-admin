@@ -15,14 +15,6 @@ function hasPermission(roles, route) {
   }
 }
 
-export const loadView = (view) => { // 路由懒加载
-  return () => import('@/views/' + view)
-}
-
-export const loadView2 = (view) => {
-  return (resolve) => require([`@/views/${view}`], resolve)
-}
-
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
@@ -30,18 +22,15 @@ export const loadView2 = (view) => {
  */
 export function filterAsyncRoutes(routes, roles) {
   const res = []
-
   routes.forEach(route => {
     const tmp = {...route}
     if (hasPermission(roles, tmp)) {
       const component = tmp.component
-
       if (route.component) {
         if (component == 'Layout') {
           tmp.component = Layout
         } else {
-          // tmp.component = resolve => require(['@/view'+ component], resolve)\
-          tmp.component = loadView(component)
+          tmp.component = (resolve) => require([`@/views/${component}`], resolve)
         }
         if (tmp.children) {
           tmp.children = filterAsyncRoutes(tmp.children, roles)
@@ -50,7 +39,6 @@ export function filterAsyncRoutes(routes, roles) {
       res.push(tmp)
     }
   })
-  console.log("11233", res)
   return res
 }
 
@@ -70,13 +58,11 @@ const actions = {
   generateRoutes({commit}, roles) {
     return new Promise(resolve => {
       getRoutes({mode: 3}).then(response => {
-        console.log('获取菜单路由', response.data)
         let accessedRoutes = filterAsyncRoutes(response.data, roles)
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)
       })
     })
-
 
     /*return new Promise(resolve => {
       let accessedRoutes

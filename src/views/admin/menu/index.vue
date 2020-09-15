@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form ref="queryForm" size="small" :model="queryParams" :inline="true">
       <el-form-item>
-        <el-button type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
+        <el-button type="success" icon="el-icon-plus" @click="handleAdd">新增</el-button>
       </el-form-item>
       <el-form-item label="菜单名称">
         <el-input
@@ -41,7 +41,7 @@
       <el-table-column prop="perms" label="权限标识" min-width="11%" :show-overflow-tooltip="true" />
       <el-table-column prop="component" label="组件路径" min-width="11%" :show-overflow-tooltip="true" />
       <el-table-column prop="visible" label="可见" :formatter="visibleFormat" min-width="11%" />
-      <el-table-column label="操作" align="center" min-width="20%" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" min-width="12%" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             type="text"
@@ -98,7 +98,7 @@
                 trigger="click"
                 @show="$refs['iconSelect'].reset()"
               >
-                <IconSelect ref="iconSelect" @seleted="handleIconSelected" />
+                <IconSelect ref="iconSelect" @selected="selected" />
                 <el-input slot="reference" v-model="form.icon" placeholder="点击选择图标" readonly>
                   <svg-icon
                     v-if="form.icon"
@@ -134,7 +134,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item v-if="form.type != 0" label="权限标识">
-              <el-input v-model="form.perms" placeholder="请权限标识" maxlength="50" />
+              <el-input v-model="form.perms" placeholder="请输入权限标识" maxlength="50" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.type == 0" label="跳转路径">
+              <el-input v-model="form.redirect" placeholder="请输入跳转路径" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -182,11 +187,11 @@ export default {
         path: undefined,
         components: undefined,
         perms: undefined,
-        type: undefined,
+        type: 1, // 默认菜单
         icon: undefined,
         sort: undefined,
-        visible: undefined,
-        status: undefined
+        visible: 1, // 默认可见
+        status: 1 // 默认可用
       },
       rules: {
         name: [
@@ -228,7 +233,7 @@ export default {
         return ''
       }
     },
-    handleIconSelected(name) {
+    selected(name) {
       this.form.icon = name
     },
     async handleAdd(row) {
@@ -296,11 +301,11 @@ export default {
         path: undefined,
         components: undefined,
         perms: undefined,
-        type: undefined,
+        type: 1, // 默认菜单
         icon: undefined,
         sort: undefined,
-        visible: undefined,
-        status: undefined
+        visible: 1, // 默认可见
+        status: 1 // 默认可用
       }
       if (this.$refs['form']) {
         this.$refs['form'].resetFields()
@@ -308,7 +313,7 @@ export default {
     },
     loadMenuOptions() {
       this.queryParams.mode = 2
-      this.deptOptions = []
+      this.menuOptions = []
       list(this.queryParams).then(response => {
         const menuOption = { id: 0, label: '主类目', children: response.data }
         this.menuOptions.push(menuOption)

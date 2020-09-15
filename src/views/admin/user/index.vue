@@ -6,7 +6,7 @@
         <div class="head-container">
           <el-input
             v-model="deptName"
-            placeholder="请输入部门名称"
+            placeholder="部门名称"
             clearable
             size="small"
             prefix-icon="el-icon-search"
@@ -48,7 +48,7 @@
           <el-form-item label="手机号码" prop="mobile">
             <el-input
               v-model="queryParams.mobile"
-              placeholder="请输入手机号码"
+              placeholder="手机号码"
               clearable
               size="small"
               style="width: 240px"
