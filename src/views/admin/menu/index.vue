@@ -38,7 +38,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="11%" />
-      <el-table-column prop="perms" label="权限标识" min-width="11%" :show-overflow-tooltip="true" />
+      <el-table-column prop="path" label="路由名称" min-width="11%" :show-overflow-tooltip="true" />
       <el-table-column prop="component" label="组件路径" min-width="11%" :show-overflow-tooltip="true" />
       <el-table-column prop="visible" label="可见" :formatter="visibleFormat" min-width="11%" />
       <el-table-column label="操作" align="center" min-width="12%" class-name="small-padding fixed-width">
@@ -123,18 +123,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.type != 2" label="路由地址" prop="path">
-              <el-input v-model="form.path" placeholder="请输入路由地址" />
+            <el-form-item v-if="form.type != 2" label="路由名称" prop="path">
+              <el-input v-model="form.path" placeholder="请输入路由名称" />
             </el-form-item>
           </el-col>
           <el-col v-if="form.type == 1" :span="12">
             <el-form-item label="组件路径" prop="component">
               <el-input v-model="form.component" placeholder="请输入组件路径" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item v-if="form.type != 0" label="权限标识">
-              <el-input v-model="form.perms" placeholder="请输入权限标识" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="12">

@@ -35,8 +35,8 @@
                           :label="(scope.$index+1)"></el-radio>
               </template>
             </el-table-column>
-            <el-table-column label="字典名称" prop="name" width="120"/>
-            <el-table-column label="字典编码" prop="code" :show-overflow-tooltip="true" width="160"/>
+            <el-table-column label="类型名称" prop="name" width="120"/>
+            <el-table-column label="类型编码" prop="code"  :show-overflow-tooltip="true" width="160"/>
             <el-table-column label="状态" align="center" width="80">
               <template slot-scope="scope">
                 <el-switch

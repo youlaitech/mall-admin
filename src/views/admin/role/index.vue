@@ -276,11 +276,11 @@ export default {
     },
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
-      // 目前被选中的菜单节点
-      const checkedKeys = this.$refs.menu.getHalfCheckedKeys()
       // 半选中的菜单节点
-      const halfCheckedKeys = this.$refs.menu.getCheckedKeys()
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
+      //const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys()
+      // 全选中菜单节点
+      const checkedKeys = this.$refs.menu.getCheckedKeys()
+      //checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
       return checkedKeys
     }
   }
