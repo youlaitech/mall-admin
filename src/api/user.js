@@ -19,8 +19,8 @@ export function getInfo() {
 
 export function logout() {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    url: '/youlai-auth/oauth/logout',
+    method: 'delete'
   })
 }
 

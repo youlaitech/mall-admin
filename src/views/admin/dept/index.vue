@@ -13,14 +13,14 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item >
+      <el-form-item>
         <el-select
           v-model="queryParams.status"
           placeholder="部门状态"
           clearable
         >
-          <el-option label="正常" value="1" />
-          <el-option label="禁用" value="0" />
+          <el-option label="正常" value="1"/>
+          <el-option label="禁用" value="0"/>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -42,12 +42,12 @@
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column prop="name" label="部门名称" />
-      <el-table-column prop="sort" label="显示排序" width="200" />
-      <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100" />
-      <el-table-column prop="leader" label="负责人" width="200" />
-      <el-table-column prop="mobile" label="联系电话" width="200" />
-      <el-table-column prop="email" label="邮箱" width="200" />
+      <el-table-column prop="name" label="部门名称"/>
+      <el-table-column prop="sort" label="显示排序" width="200"/>
+      <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100"/>
+      <el-table-column prop="leader" label="负责人" width="200"/>
+      <el-table-column prop="mobile" label="联系电话" width="200"/>
+      <el-table-column prop="email" label="邮箱" width="200"/>
       <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -96,27 +96,27 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="部门名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入部门名称" />
+              <el-input v-model="form.name" placeholder="请输入部门名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="显示排序" prop="sort">
-              <el-input-number v-model="form.sort" controls-position="right" :min="0" />
+              <el-input-number v-model="form.sort" controls-position="right" :min="0"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="负责人" prop="leader">
-              <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20" />
+              <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="联系电话" prop="mobile">
-              <el-input v-model="form.mobile" placeholder="请输入联系电话" maxlength="11" />
+              <el-input v-model="form.mobile" placeholder="请输入联系电话" maxlength="11"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
+              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -138,159 +138,162 @@
 </template>
 
 <script>
-import { list, detail, update, add, del } from '@/api/admin/dept'
-import TreeSelect from '@riophae/vue-treeselect'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+  import {list, detail, update, add, del} from '@/api/admin/dept'
+  import TreeSelect from '@riophae/vue-treeselect'
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
-export default {
-  components: { TreeSelect },
-  data() {
-    return {
-      loading: true,
-      pageList: [],
-      deptOptions: [],
-      queryParams: {
-        name: undefined,
-        status: undefined
-      },
-      dialog: {
-        title: undefined,
-        visible: false
-      },
-      form: {
-        parentId: undefined,
-        name: undefined,
-        sort: 1,
-        leader: undefined,
-        mobile: undefined,
-        email: undefined,
-        status: 1
-      },
-      rules: {
-        parentId: [
-          { required: true, message: '上级部门不能为空', trigger: 'blur' }
-        ],
-        name: [
-          { required: true, message: '部门名称不能为空', trigger: 'blur' }
-        ],
-        mobile: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: '请输入正确的手机号码',
-            trigger: 'blur'
-          }
-        ],
-        email: [
-          {
-            type: 'email',
-            message: "'请输入正确的邮箱地址",
-            trigger: ['blur', 'change']
-          }
-        ]
+  export default {
+    components: {TreeSelect},
+    data() {
+      return {
+        loading: true,
+        pageList: [],
+        deptOptions: [],
+        queryParams: {
+          name: undefined,
+          status: undefined
+        },
+        dialog: {
+          title: undefined,
+          visible: false
+        },
+        form: {
+          parentId: undefined,
+          name: undefined,
+          sort: 1,
+          leader: undefined,
+          mobile: undefined,
+          email: undefined,
+          status: 1
+        },
+        rules: {
+          parentId: [
+            {required: true, message: '上级部门不能为空', trigger: 'blur'}
+          ],
+          name: [
+            {required: true, message: '部门名称不能为空', trigger: 'blur'}
+          ],
+          mobile: [
+            {
+              pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+              message: '请输入正确的手机号码',
+              trigger: 'blur'
+            }
+          ],
+          email: [
+            {
+              type: 'email',
+              message: "'请输入正确的邮箱地址",
+              trigger: ['blur', 'change']
+            }
+          ]
+        }
       }
-    }
-  },
-  created() {
-    this.handleQuery()
-  },
-  methods: {
-    handleQuery() {
-      this.queryParams.mode = 1
-      list(this.queryParams).then(response => {
-        this.pageList = response.data
-        this.loading = false
-      })
     },
-    handleResetQuery() {
-      this.queryParams = {
-        name: undefined,
-        status: undefined
-      }
+    created() {
       this.handleQuery()
     },
-    statusFormat(row) {
-      return row.status === 1 ? '正常' : '停用'
-    },
-    async handleAdd(row) {
-      this.resetForm()
-      this.dialog = {
-        title: '新增部门',
-        visible: true
-      }
-      await this.loadDeptOptions()
-      if (row) {
-        this.form.parentId = row.id
-      }
-    },
-    async handleUpdate(row) {
-      this.resetForm()
-      this.dialog = {
-        title: '修改部门',
-        visible: true
-      }
-      // 部门下拉数据
-      await this.loadDeptOptions()
-      detail(row.id).then(response => {
-        this.form = response.data
-      })
-    },
-    handleSubmit: function() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          const id = this.form.id
-          if (id != undefined) {
-            update(id, this.form).then(() => {
-              this.$message.success('修改成功')
-              this.dialog.visible = false
-              this.handleQuery()
-            })
-          } else {
-            add(this.form).then(() => {
-              this.$message.success('新增成功')
-              this.dialog.visible = false
-              this.handleQuery()
-            })
-          }
-        }
-      })
-    },
-    handleDelete(row) {
-      const ids = row.id || this.ids
-      this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        del(ids).then(() => {
-          this.$message.success('删除成功')
-          this.handleQuery()
+    methods: {
+      handleQuery() {
+        this.queryParams.mode = 1
+        list(this.queryParams).then(response => {
+          this.pageList = response.data
+          this.loading = false
         })
-      }).catch(() =>
-        this.$message.info('已取消删除')
-      )
-    },
-    resetForm() {
-      this.form = {
-        parentId: undefined,
-        name: undefined,
-        sort: 1,
-        leader: undefined,
-        mobile: undefined,
-        email: undefined,
-        status: 1
+      },
+      handleResetQuery() {
+        this.queryParams = {
+          name: undefined,
+          status: undefined
+        }
+        this.handleQuery()
+      },
+      statusFormat(row) {
+        return row.status === 1 ? '正常' : '停用'
+      },
+      async handleAdd(row) {
+        this.resetForm()
+        this.dialog = {
+          title: '新增部门',
+          visible: true
+        }
+        await this.loadDeptOptions()
+        if (row) {
+          this.form.parentId = row.id
+        }
+      },
+      async handleUpdate(row) {
+        this.resetForm()
+        this.dialog = {
+          title: '修改部门',
+          visible: true
+        }
+        // 部门下拉数据
+        await this.loadDeptOptions()
+        detail(row.id).then(response => {
+          this.form = response.data
+        })
+      },
+      handleSubmit: function () {
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            const id = this.form.id
+            if (id != undefined) {
+              update(id, this.form).then(() => {
+                this.$message.success('修改成功')
+                this.dialog.visible = false
+                this.handleQuery()
+              })
+            } else {
+              add(this.form).then(() => {
+                this.$message.success('新增成功')
+                this.dialog.visible = false
+                this.handleQuery()
+              })
+            }
+          }
+        })
+      },
+      handleDelete(row) {
+        const ids = row.id || this.ids
+        this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          del(ids).then(() => {
+            this.$message.success('删除成功')
+            this.handleQuery()
+          })
+        }).catch(() =>
+          this.$message.info('已取消删除')
+        )
+      },
+      resetForm() {
+        this.form = {
+          parentId: undefined,
+          name: undefined,
+          sort: 1,
+          leader: undefined,
+          mobile: undefined,
+          email: undefined,
+          status: 1
+        }
+        if (this.$refs['form']) {
+          this.$refs['form'].resetFields()
+        }
+      },
+      loadDeptOptions() {
+        this.queryParams.mode = 2
+        this.deptOptions = []
+        list(this.queryParams).then(response => {
+          const deptOption = {id: 0, label: '有来科技'}
+          if (response.data) {
+            deptOption.children = response.data
+          }
+          this.deptOptions.push(deptOption)
+        })
       }
-      if (this.$refs['form']) {
-        this.$refs['form'].resetFields()
-      }
-    },
-    loadDeptOptions() {
-      this.queryParams.mode = 2
-      this.deptOptions = []
-      list(this.queryParams).then(response => {
-        const deptOption = { id: 0, label: '有来商城', children: response.data }
-        this.deptOptions.push(deptOption)
-      })
     }
   }
-}
 </script>
