@@ -37,7 +37,7 @@ const actions = {
         username: username.trim(),
         password: password,
         grant_type: 'password',
-        client_id: 'client',
+        client_id: 'youlai-mall-admin',
         client_secret: '123456'
       }).then(response => {
         const {data} = response
