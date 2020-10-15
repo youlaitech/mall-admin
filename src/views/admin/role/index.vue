@@ -134,230 +134,242 @@
 </template>
 
 <script>
-import {list, detail, update, add, del, patch} from '@/api/admin/role'
-import {list as menuList} from '@/api/admin/menu'
-import {list as resourceList} from '@/api/admin/resource'
+  import {list, detail, update, add, del, patch} from '@/api/admin/role'
+  import {list as menuList} from '@/api/admin/menu'
+  import {list as resourceList} from '@/api/admin/resource'
 
-export default {
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      queryParams: {
-        name: undefined
-      },
-      pagination: {
-        page: 1,
-        limit: 10,
-        total: 0
-      },
-      pageList: [],
-      dialog: {
-        title: undefined,
-        visible: false
-      },
-      // 菜单列表
-      menuOptions: [],
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        name: [
-          {required: true, message: '角色名称不能为空', trigger: 'blur'}
-        ],
-        perms: [
-          {required: true, message: '权限字符不能为空', trigger: 'blur'}
-        ]
-      },
-      resourceDialog: {
-        visible: false
-      },
-      resourceForm: {
-        id: undefined,
-        name: undefined,
-        resourceIds: []
-      },
-      resourceRule: {},
-      resourceOptions: []
-    }
-  },
-  created() {
-    this.handleQuery()
-  },
-  methods: {
-    handleQuery() {
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
-      list(this.queryParams).then(response => {
-        this.pageList = response.data
-        this.pagination.total = response.total
-        this.loading = false
-      })
+  export default {
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        queryParams: {
+          name: undefined
+        },
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: 0
+        },
+        pageList: [],
+        dialog: {
+          title: undefined,
+          visible: false
+        },
+        // 菜单列表
+        menuOptions: [],
+        // 表单参数
+        form: {},
+        // 表单校验
+        rules: {
+          name: [
+            {required: true, message: '角色名称不能为空', trigger: 'blur'}
+          ],
+          perms: [
+            {required: true, message: '权限字符不能为空', trigger: 'blur'}
+          ]
+        },
+        resourceDialog: {
+          visible: false
+        },
+        resourceForm: {
+          id: undefined,
+          name: undefined,
+          resourceIds: []
+        },
+        resourceRule: {},
+        resourceOptions: []
+      }
     },
-    handleResetQuery() {
-      this.pagination = {
-        page: 1,
-        limit: 10,
-        total: 0
-      }
-      this.queryParams = {
-        name: undefined
-      }
+    created() {
       this.handleQuery()
     },
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length != 1
-      this.multiple = !selection.length
-    },
-    handleStatusChange(row) {
-      const text = row.status === 1 ? '启用' : '停用'
-      this.$confirm('确认要"' + text + '""' + row.name + '"数据项吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function () {
-        return patch(row.id, {status: row.status})
-      }).then(() => {
-        this.$message.success(text + '成功')
-      }).catch(function () {
-        row.status = row.status === 1 ? 0 : 1
-      })
-    },
-    handleAdd() {
-      this.resetForm()
-      this.dialog = {
-        title: '新增角色',
-        visible: true
-      }
-      this.loadMenuOptions()
-    },
-    async handleUpdate(row) {
-      this.resetForm()
-      this.dialog = {
-        title: '修改角色',
-        visible: true
-      }
-      const id = row.id || this.ids
-      await this.loadRoleMenuOptions(id)
-      detail(id).then(response => {
-        this.form = response.data
-      })
-    },
-    handleDelete(row) {
-      const ids = row.id || this.ids
-      this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        del(ids).then(() => {
-          this.$message.success('删除成功')
-          this.handleQuery()
+    methods: {
+      handleQuery() {
+        this.queryParams.page = this.pagination.page
+        this.queryParams.limit = this.pagination.limit
+        list(this.queryParams).then(response => {
+          this.pageList = response.data
+          this.pagination.total = response.total
+          this.loading = false
         })
-      }).catch(() =>
-        this.$message.info('已取消删除')
-      )
-    },
-    handleSubmit: function () {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          const id = this.form.id
-          this.form.menuIds = this.getMenuAllCheckedKeys()
-          if (id != undefined) {
-            update(this.form.id, this.form).then(() => {
-              this.$message.success('修改成功')
-              this.dialog.visible = false
-              this.handleQuery()
-            })
-          } else {
+      },
+      handleResetQuery() {
+        this.pagination = {
+          page: 1,
+          limit: 10,
+          total: 0
+        }
+        this.queryParams = {
+          name: undefined
+        }
+        this.handleQuery()
+      },
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id)
+        this.single = selection.length != 1
+        this.multiple = !selection.length
+      },
+      handleStatusChange(row) {
+        const text = row.status === 1 ? '启用' : '停用'
+        this.$confirm('确认要"' + text + '""' + row.name + '"数据项吗?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function () {
+          return patch(row.id, 1, {status: row.status})
+        }).then(() => {
+          this.$message.success(text + '成功')
+        }).catch(function () {
+          row.status = row.status === 1 ? 0 : 1
+        })
+      },
+      handleAdd() {
+        this.resetForm()
+        this.dialog = {
+          title: '新增角色',
+          visible: true
+        }
+        this.loadMenuOptions()
+      },
+      async handleUpdate(row) {
+        this.resetForm()
+        this.dialog = {
+          title: '修改角色',
+          visible: true
+        }
+        const id = row.id || this.ids
+        await this.loadRoleMenuOptions(id)
+        detail(id).then(response => {
+          this.form = response.data
+        })
+      },
+      handleDelete(row) {
+        const ids = row.id || this.ids
+        this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          del(ids).then(() => {
+            this.$message.success('删除成功')
+            this.handleQuery()
+          })
+        }).catch(() =>
+          this.$message.info('已取消删除')
+        )
+      },
+      handleSubmit: function () {
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            const id = this.form.id
             this.form.menuIds = this.getMenuAllCheckedKeys()
-            add(this.form).then(() => {
-              this.$message.success('新增成功')
-              this.dialog.visible = false
-              this.handleQuery()
-            })
+            if (id != undefined) {
+              update(this.form.id, this.form).then(() => {
+                this.$message.success('修改成功')
+                this.dialog.visible = false
+                this.handleQuery()
+              })
+            } else {
+              this.form.menuIds = this.getMenuAllCheckedKeys()
+              add(this.form).then(() => {
+                this.$message.success('新增成功')
+                this.dialog.visible = false
+                this.handleQuery()
+              })
+            }
           }
+        })
+      },
+      resetForm() {
+        if (this.$refs.menu != undefined) {
+          this.$refs.menu.setCheckedKeys([])
         }
-      })
-    },
-    resetForm() {
-      if (this.$refs.menu != undefined) {
-        this.$refs.menu.setCheckedKeys([])
-      }
-      this.form = {
-        id: undefined,
-        name: undefined,
-        perms: undefined,
-        sort: 0,
-        status: 0,
-        menuIds: [],
-        remark: undefined
-      }
-      if (this.$refs['form']) {
-        this.$refs['form'].resetFields()
-      }
-    },
-    loadMenuOptions() {
-      menuList({mode: 2}).then(response => {
-        this.menuOptions = response.data
-      })
-    },
-    loadRoleMenuOptions(roleId) {
-      menuList({mode: 2, roleId: roleId}).then(response => {
-        this.menuOptions = response.data.menus
-        this.$refs.menu.setCheckedKeys(response.data.checkedKeys)
-      })
-    },
-    // 所有菜单节点数据
-    getMenuAllCheckedKeys() {
-      // 半选中的菜单节点
-      //const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys()
-      // 全选中菜单节点
-      const checkedKeys = this.$refs.menu.getCheckedKeys()
-      //checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
-      return checkedKeys
-    },
-    // 分配资源
-    async handleAllocateResource(row) {
-      this.resetResourceForm()
-      this.resourceDialog.visible = true
-      const roleId = row.id
-      this.resourceForm.id = roleId
-      this.resourceForm.name = row.name
-      await this.loadRoleResourceOptions(roleId)
-    },
-    handleAllocateResourceSubmit: function () {
-      this.$refs['resourceForm'].validate(valid => {
-        if (valid) {
+        this.form = {
+          id: undefined,
+          name: undefined,
+          perms: undefined,
+          sort: 0,
+          status: 0,
+          menuIds: [],
+          remark: undefined
         }
-      })
-    },
-    resetResourceForm: function () {
-      if (this.$refs.resource != undefined) {
-        this.$refs.resource.setCheckedKeys([])
-      }
-      this.resourceForm = {
-        id: undefined,
-        name: undefined,
-        resourceIds: []
-      }
-      if (this.$refs['resourceForm']) {
-        this.$refs['resourceForm'].resetFields()
-      }
-    },
-    loadRoleResourceOptions(roleId) {
-      resourceList({mode: 2, roleId: roleId}).then(response => {
-        this.resourceOptions = response.data.resources
-        this.$refs.menu.setCheckedKeys(response.data.checkedKeys)
-      })
+        if (this.$refs['form']) {
+          this.$refs['form'].resetFields()
+        }
+      },
+      loadMenuOptions() {
+        menuList({mode: 2}).then(response => {
+          this.menuOptions = response.data
+        })
+      },
+      loadRoleMenuOptions(roleId) {
+        menuList({mode: 2, roleId: roleId}).then(response => {
+          this.menuOptions = response.data.menus
+          this.$refs.menu.setCheckedKeys(response.data.checkedKeys)
+        })
+      },
+      // 所有菜单节点数据
+      getMenuAllCheckedKeys() {
+        // 半选中的菜单节点
+        //const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys()
+        // 全选中菜单节点
+        const checkedKeys = this.$refs.menu.getCheckedKeys()
+        //checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
+        return checkedKeys
+      },
+      // 分配资源
+      async handleAllocateResource(row) {
+        this.resetResourceForm()
+        this.resourceDialog.visible = true
+        const roleId = row.id
+        this.resourceForm.id = roleId
+        this.resourceForm.name = row.name
+        await this.loadRoleResourceOptions(roleId)
+      },
+      // 分配资源提交
+      handleAllocateResourceSubmit: function () {
+        this.$refs['resourceForm'].validate(valid => {
+          if (valid) {
+            const roleId = this.resourceForm.id
+            const resourceIds = this.getResourceAllCheckedKeys()
+             patch(roleId, 2, {resourceIds: resourceIds}).then(()=>{
+               this.$message.success('分配成功')
+               this.resourceDialog.visible = false
+               this.handleQuery()
+             })
+          }
+        })
+      },
+      resetResourceForm: function () {
+        if (this.$refs.resource != undefined) {
+          this.$refs.resource.setCheckedKeys([])
+        }
+        this.resourceForm = {
+          id: undefined,
+          name: undefined,
+          resourceIds: []
+        }
+        if (this.$refs['resourceForm']) {
+          this.$refs['resourceForm'].resetFields()
+        }
+      },
+      loadRoleResourceOptions(roleId) {
+        resourceList({mode: 2, roleId: roleId}).then(response => {
+          this.resourceOptions = response.data.resources
+          this.$refs.resource.setCheckedKeys(response.data.checkedKeys)
+        })
+      },
+      // 所有菜单节点数据
+      getResourceAllCheckedKeys() {
+        return this.$refs.resource.getCheckedKeys()
+      },
     }
   }
-}
 </script>

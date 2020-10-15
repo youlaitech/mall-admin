@@ -35,14 +35,15 @@ export function del(ids) {
   return request({
     url: '/youlai-admin/roles',
     method: 'delete',
-    params: { ids: ids }
+    params: {ids: ids}
   })
 }
 
-export function patch(id, data) {
+export function patch(id, mode, data) {
   return request({
     url: '/youlai-admin/roles/' + id,
     method: 'patch',
+    params: {mode: mode},
     data: data
   })
 }
