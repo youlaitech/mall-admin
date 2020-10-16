@@ -72,26 +72,41 @@
     />
 
     <!-- 角色弹窗 -->
-    <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="800px">
+    <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="600px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入角色名称"/>
-        </el-form-item>
-        <el-form-item label="权限字符" prop="perms">
-          <el-input v-model="form.perms" placeholder="请输入权限字符"/>
-        </el-form-item>
-        <el-form-item label="角色顺序" prop="sort">
-          <el-input-number v-model="form.sort" controls-position="right" :min="0"/>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-radio-group v-model="form.status">
-            <el-radio :label="1">正常</el-radio>
-            <el-radio :label="0">停用</el-radio>
-          </el-radio-group>
-        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="角色名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入角色名称"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="权限字符" prop="perms">
+              <el-input v-model="form.perms" placeholder="请输入权限字符"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sort">
+              <el-input-number v-model="form.sort" controls-position="right" :min="0" style="width: 100px"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态">
+              <el-radio-group v-model="form.status">
+                <el-radio :label="1">正常</el-radio>
+                <el-radio :label="0">停用</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item label="菜单权限">
           <el-tree
             ref="menu"
+            :check-strictly="true"
             :data="menuOptions"
             show-checkbox
             node-key="id"
@@ -110,14 +125,15 @@
 
 
     <!-- 分配资源弹窗 -->
-    <el-dialog title="分配资源" :visible.sync="resourceDialog.visible" width="800px">
+    <el-dialog title="分配资源" :visible.sync="resourceDialog.visible" width="600px">
       <el-form ref="resourceForm" :model="resourceForm" :rules="resourceRule" label-width="80px">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="resourceForm.name" :readonly="true"/>
         </el-form-item>
-        <el-form-item label="资源">
+        <el-form-item label="资源权限">
           <el-tree
             ref="resource"
+            :check-strictly="true"
             :data="resourceOptions"
             show-checkbox
             node-key="id"

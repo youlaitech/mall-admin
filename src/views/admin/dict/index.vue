@@ -25,6 +25,7 @@
               <el-button icon="el-icon-refresh" @click="handleResetQueryForType">重置</el-button>
             </el-form-item>
           </el-form>
+
           <el-table
             v-loading="loadingForType"
             :data="pageListForType"
@@ -74,27 +75,27 @@
             :limit.sync="paginationForType.limit"
             @pagination="handleQueryForType"
           />
-          <el-dialog :title="dialogForType.title" :visible.sync="dialogForType.visible" width="500px">
-            <el-form ref="formForType" :model="formForType" :rules="rulesForType" label-width="80px">
+          <el-dialog :title="typeDialog.title" :visible.sync="typeDialog.visible" width="500px">
+            <el-form ref="typeForm" :model="typeForm" :rules="rulesForType" label-width="80px">
               <el-form-item label="字典名称" prop="name">
-                <el-input v-model="formForType.name" placeholder="请输入字典名称"/>
+                <el-input v-model="typeForm.name" placeholder="请输入字典名称"/>
               </el-form-item>
               <el-form-item label="字典编码" prop="code">
-                <el-input v-model="formForType.code" placeholder="请输入字典编码"/>
+                <el-input v-model="typeForm.code" placeholder="请输入字典编码"/>
               </el-form-item>
               <el-form-item label="状态" prop="status">
-                <el-radio-group v-model="formForType.status">
+                <el-radio-group v-model="typeForm.status">
                   <el-radio :label="1">正常</el-radio>
                   <el-radio :label="0">停用</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="备注" prop="remark">
-                <el-input v-model="formForType.remark" type="textarea" placeholder="请输入内容"></el-input>
+                <el-input v-model="typeForm.remark" type="textarea" placeholder="请输入内容"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="handleSubmitForType">确 定</el-button>
-              <el-button @click="dialogForType.visible=false">取 消</el-button>
+              <el-button @click="typeDialog.visible=false">取 消</el-button>
             </div>
           </el-dialog>
         </el-card>
@@ -115,13 +116,12 @@
               <el-input
                 v-model="queryParams.name"
                 placeholder="字典名称"
-                clearable
-                :readonly="true"/>
+                clearable/>
             </el-form-item>
             <el-form-item prop="value">
               <el-input
-                v-model="queryParams.value"
-                placeholder="字典值"
+                v-model="queryParams.typeCode"
+                placeholder="类型编码"
                 clearable
                 @keyup.enter.native="handleQuery"/>
             </el-form-item>
@@ -138,8 +138,8 @@
             @row-click="handleRowClick">
             <el-table-column type="selection" min-width="5%"></el-table-column>
             <el-table-column label="字典名称" prop="name" width="130"/>
-            <el-table-column label="字典值" prop="value" :show-overflow-tooltip="true" width="130"/>
-            <el-table-column label="字典编码" prop="typeCode" width="150"/>
+            <el-table-column label="字典值" prop="value"  width="130"/>
+            <el-table-column label="字典类型" prop="typeCode"  width="130"/>
             <el-table-column label="状态" align="center" width="80">
               <template slot-scope="scope">
                 <el-switch
@@ -190,8 +190,8 @@
               <el-form-item label="字典值" prop="value">
                 <el-input v-model="form.value" placeholder="请输入字典值"/>
               </el-form-item>
-              <el-form-item label="显示排序" prop="sort">
-                <el-input-number v-model="form.sort" controls-position="right" :min="0"/>
+              <el-form-item label="排序" prop="sort">
+                <el-input-number v-model="form.sort" style="width: 80px;" controls-position="right" :min="0"/>
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <el-radio-group v-model="form.status">
@@ -229,7 +229,7 @@
     name: "index",
     data() {
       return {
-        idsForType: [],
+        typeIds: [],
         queryParamsForType: {
           name: undefined
         },
@@ -242,7 +242,7 @@
           limit: 10,
           total: 0
         },
-        dialogForType: {
+        typeDialog: {
           title: undefined,
           visible: false
         },
@@ -254,7 +254,7 @@
             required: true, message: '请输入字典编码', trigger: 'blur'
           }]
         },
-        formForType: {
+        typeForm: {
           id: undefined,
           name: undefined,
           code: undefined,
@@ -333,6 +333,7 @@
       handleDictTypeChange(val) {
         this.selectedIndexForType = val ? val : 1
         this.queryParams.typeCode = this.pageListForType[this.selectedIndexForType - 1].code
+
         this.handleQuery()
       },
       handleStatusChangeForType(row) {
@@ -350,25 +351,25 @@
         })
       },
       handAddForType() {
-        this.resetFormForType()
-        this.dialogForType = {
+        this.resetTypeForm()
+        this.typeDialog = {
           title: '新增字典类型',
           visible: true
         }
       },
       handleUpdateForType(row) {
-        this.resetFormForType()
-        this.dialogForType = {
+        this.resetTypeForm()
+        this.typeDialog = {
           title: '修改字典类型',
           visible: true
         }
-        const id = row.id || this.idsForType
+        const id = row.id || this.typeIds
         detailForType(id).then(response => {
-          this.formForType = response.data
+          this.typeForm = response.data
         })
       },
       handleDeleteForType(row) {
-        const ids = row.id || this.idsForType
+        const ids = row.id || this.typeIds
         this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -376,42 +377,42 @@
         }).then(() => {
           delForType(ids).then(() => {
             this.$message.success('删除成功')
-            this.handleQuery()
+            this.handleQueryForType()
           })
         }).catch(() =>
           this.$message.info('已取消删除')
         )
       },
       handleSubmitForType: function () {
-        this.$refs['formForType'].validate(valid => {
+        this.$refs['typeForm'].validate(valid => {
           if (valid) {
-            const id = this.formForType.id
+            const id = this.typeForm.id
             if (id != undefined) {
-              updateForType(this.formForType.id, this.formForType).then(() => {
+              updateForType(this.typeForm.id, this.typeForm).then(() => {
                 this.$message.success('修改成功')
-                this.dialogForType.visible = false
+                this.typeDialog.visible = false
                 this.handleQueryForType()
               })
             } else {
-              addForType(this.formForType).then(() => {
+              addForType(this.typeForm).then(() => {
                 this.$message.success('新增成功')
-                this.dialogForType.visible = false
+                this.typeDialog.visible = false
                 this.handleQueryForType()
               })
             }
           }
         })
       },
-      resetFormForType() {
-        this.formForType = {
+      resetTypeForm() {
+        this.typeForm = {
           id: undefined,
           name: undefined,
           code: undefined,
           status: 1,
           remark: undefined
         }
-        if (this.$refs['formForType']) {
-          this.$refs['formForType'].resetFields()
+        if (this.$refs['typeForm']) {
+          this.$refs['typeForm'].resetFields()
         }
       },
       // -------------------- 字典数据 -------------------- //
@@ -441,7 +442,7 @@
           title: '新增字典数据',
           visible: true
         }
-        this.form.typeCode = this.pageListForType[this.selectedIndexForType].code
+        this.form.typeCode = this.pageListForType[this.selectedIndexForType-1].code
       },
       handleUpdate(row) {
         this.resetForm()
@@ -510,7 +511,7 @@
           value: undefined,
           name: undefined,
           remark: undefined,
-          sort: undefined,
+          sort: 1,
           status: 1
         }
         if (this.$refs['form']) {

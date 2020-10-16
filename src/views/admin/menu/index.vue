@@ -118,7 +118,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="显示排序" prop="sort">
+            <el-form-item label="排序" prop="sort">
               <el-input-number v-model="form.sort" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>

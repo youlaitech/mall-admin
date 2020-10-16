@@ -72,7 +72,7 @@
         </el-form>
 
         <el-table v-loading="loading" :data="pageList" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="40" align="center" />
+          <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="用户编号" prop="id" width="180" />
           <el-table-column label="用户名" prop="username" />
           <el-table-column label="用户昵称" prop="nickName" />
