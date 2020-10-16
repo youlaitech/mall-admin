@@ -90,13 +90,11 @@
           </el-col>
         </el-row>
 
-
         <el-form-item label="授权方式" prop="authorizedGrantTypes">
           <el-checkbox-group v-model="form.authorizedGrantTypes">
-            <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+            <el-checkbox v-for="item in authorizedGrantTypesOptions" :label="item.value">{{item.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-
 
         <el-form-item label="资源路径" prop="url">
           <el-input v-model="form.url" placeholder="请输入资源路径"/>
@@ -112,6 +110,7 @@
 
 <script>
   import {list, detail, update, add, del} from '@/api/admin/client'
+  import {list as dictList} from '@/api/admin/dict'
 
   export default {
     data() {
@@ -139,9 +138,13 @@
         },
         // 菜单列表
         menuOptions: [],
+        // 授权方式
+        authorizedGrantTypesOptions: [],
         // 表单参数
         form: {
-          authorizedGrantTypes:[]
+          authorizedGrantTypes: [],
+          clientSecret: undefined,
+          clientId: undefined
         },
         // 表单校验
         rules: {
@@ -158,6 +161,11 @@
       this.handleQuery()
     },
     methods: {
+      loadAuthorizedGrantTypesOptions() {
+        dictList({typeCode: 'grant_type'}).then(response => {
+          this.authorizedGrantTypesOptions = response.data
+        })
+      },
       handleQuery() {
         this.queryParams.page = this.pagination.page
         this.queryParams.limit = this.pagination.limit
@@ -199,6 +207,7 @@
       },
       handleAdd() {
         this.resetForm()
+        this.loadAuthorizedGrantTypesOptions()
         this.dialog = {
           title: '新增资源',
           visible: true
@@ -206,6 +215,7 @@
       },
       handleUpdate(row) {
         this.resetForm()
+        this.loadAuthorizedGrantTypesOptions()
         this.dialog = {
           title: '修改资源',
           visible: true
