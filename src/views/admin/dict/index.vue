@@ -137,9 +137,9 @@
             @selection-change="handleSelectionChange"
             @row-click="handleRowClick">
             <el-table-column type="selection" min-width="5%"></el-table-column>
-            <el-table-column label="字典名称" prop="name" width="130"/>
-            <el-table-column label="字典值" prop="value"  width="130"/>
-            <el-table-column label="字典类型" prop="typeCode"  width="130"/>
+            <el-table-column label="字典名称" prop="name" width="100"/>
+            <el-table-column label="字典值" prop="value"  width="200"/>
+            <el-table-column label="字典类型" prop="typeCode"  width="100"/>
             <el-table-column label="状态" align="center" width="80">
               <template slot-scope="scope">
                 <el-switch

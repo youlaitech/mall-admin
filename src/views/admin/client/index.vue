@@ -24,13 +24,13 @@
     <el-table v-loading="loading" :data="pageList" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="序号" type="index" width="55" align="center"/>
-      <el-table-column label="客户端ID" prop="clientId" width="100"/>
-      <el-table-column label="客户端密钥" prop="clientSecret" width="250"/>
-      <el-table-column label="域" prop="scope"/>
-      <el-table-column label="自动放行" prop="autoapprove"/>
-      <el-table-column label="授权方式" prop="authorizedGrantTypes"/>
-      <el-table-column label="认证令牌时效(单位：秒)" prop="accessTokenValidity"/>
-      <el-table-column label="刷新令牌时效(单位：秒)" prop="refreshTokenValidity"/>
+      <el-table-column label="客户端ID" prop="clientId" width="200"/>
+      <el-table-column label="客户端密钥" prop="clientSecret" width="100"/>
+      <el-table-column label="域" width="100" prop="scope"/>
+      <el-table-column label="自动放行" prop="autoapprove" :formatter="autoapproveFormat" width="100"/>
+      <el-table-column label="授权方式" prop="authorizedGrantTypes" :formatter="authorizedGrantTypesFormat"/>
+      <el-table-column label="认证令牌时效(单位：秒)" width="200" prop="accessTokenValidity"/>
+      <el-table-column label="刷新令牌时效(单位：秒)" width="200" prop="refreshTokenValidity"/>
       <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -76,15 +76,15 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="域" prop="clientId">
-              <el-input v-model="form.clientId" placeholder="请输入客户端ID"/>
+            <el-form-item label="域" prop="scope">
+              <el-input v-model="form.scope" placeholder="请输入域"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="自动放行" prop="scope">
-              <el-radio-group v-model="form.scope">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
+            <el-form-item label="自动放行" prop="autoapprove">
+              <el-radio-group v-model="form.autoapprove">
+                <el-radio label="true">是</el-radio>
+                <el-radio label="false">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -92,12 +92,38 @@
 
         <el-form-item label="授权方式" prop="authorizedGrantTypes">
           <el-checkbox-group v-model="form.authorizedGrantTypes">
-            <el-checkbox v-for="item in authorizedGrantTypesOptions" :label="item.value">{{item.name}}</el-checkbox>
+            <el-checkbox v-for="item in authorizedGrantTypesOptions" :label="item.value">{{ item.name }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
 
-        <el-form-item label="资源路径" prop="url">
-          <el-input v-model="form.url" placeholder="请输入资源路径"/>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="认证令牌时效" prop="accessTokenValidity">
+              <el-input v-model="form.accessTokenValidity" placeholder="请输入认证令牌时效"/>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="刷新令牌时效" prop="refreshTokenValidity">
+              <el-input v-model="form.refreshTokenValidity" placeholder="请输入刷新令牌时效"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="回调地址" prop="webServerRedirectUri">
+              <el-input v-model="form.webServerRedirectUri" placeholder="请输入回调地址"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="权限" prop="authorities">
+              <el-input v-model="form.authorities" placeholder="请输入权限"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="扩展信息" prop="additionalInformation">
+          <el-input v-model="form.additionalInformation" type="textarea" placeholder="JSON格式"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -109,167 +135,195 @@
 </template>
 
 <script>
-  import {list, detail, update, add, del} from '@/api/admin/client'
-  import {list as dictList} from '@/api/admin/dict'
+import {list, detail, update, add, del} from '@/api/admin/client'
+import {list as dictList} from '@/api/admin/dict'
 
-  export default {
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        queryParams: {
-          name: undefined
-        },
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        pageList: [],
-        dialog: {
-          title: undefined,
-          visible: false
-        },
-        // 菜单列表
-        menuOptions: [],
-        // 授权方式
-        authorizedGrantTypesOptions: [],
-        // 表单参数
-        form: {
-          authorizedGrantTypes: [],
-          clientSecret: undefined,
-          clientId: undefined
-        },
-        // 表单校验
-        rules: {
-          name: [
-            {required: true, message: '资源名称不能为空', trigger: 'blur'}
-          ],
-          url: [
-            {required: true, message: '资源路径不能为空', trigger: 'blur'}
-          ]
-        }
-      }
-    },
-    created() {
-      this.handleQuery()
-    },
-    methods: {
-      loadAuthorizedGrantTypesOptions() {
-        dictList({typeCode: 'grant_type'}).then(response => {
-          this.authorizedGrantTypesOptions = response.data
-        })
+export default {
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      queryParams: {
+        name: undefined
       },
-      handleQuery() {
-        this.queryParams.page = this.pagination.page
-        this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
-          this.pageList = response.data
-          this.pagination.total = response.total
-          this.loading = false
-        })
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
       },
-      handleResetQuery() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams = {
-          name: undefined
-        }
-        this.handleQuery()
+      pageList: [],
+      dialog: {
+        title: undefined,
+        visible: false
       },
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
+      // 菜单列表
+      menuOptions: [],
+      // 授权方式
+      authorizedGrantTypesOptions: [],
+      // 表单参数
+      form: {
+        authorizedGrantTypes: [],
+        clientSecret: undefined,
+        clientId: undefined,
+        accessTokenValidity: undefined,
+        refreshTokenValidity: undefined,
+        webServerRedirectUri: undefined,
+        authorities: undefined,
+        additionalInformation: undefined,
+        autoapprove:'false'
       },
-      handleStatusChange(row) {
-        const text = row.status === 1 ? '启用' : '停用'
-        this.$confirm('确认要"' + text + '""' + row.name + '"数据项吗?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function () {
-          return patch(row.id, {status: row.status})
-        }).then(() => {
-          this.$message.success(text + '成功')
-        }).catch(function () {
-          row.status = row.status === 1 ? 0 : 1
-        })
-      },
-      handleAdd() {
-        this.resetForm()
-        this.loadAuthorizedGrantTypesOptions()
-        this.dialog = {
-          title: '新增资源',
-          visible: true
-        }
-      },
-      handleUpdate(row) {
-        this.resetForm()
-        this.loadAuthorizedGrantTypesOptions()
-        this.dialog = {
-          title: '修改资源',
-          visible: true
-        }
-        const id = row.id || this.ids
-        detail(id).then(response => {
-          this.form = response.data
-        })
-      },
-      handleDelete(row) {
-        const ids = row.id || this.ids
-        this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          del(ids).then(() => {
-            this.$message.success('删除成功')
-            this.handleQuery()
-          })
-        }).catch(() =>
-          this.$message.info('已取消删除')
-        )
-      },
-      handleSubmit: function () {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            const id = this.form.id
-            if (id != undefined) {
-              update(this.form.id, this.form).then(() => {
-                this.$message.success('修改成功')
-                this.dialog.visible = false
-                this.handleQuery()
-              })
-            } else {
-              add(this.form).then(() => {
-                this.$message.success('新增成功')
-                this.dialog.visible = false
-                this.handleQuery()
-              })
-            }
-          }
-        })
-      },
-      resetForm() {
-        this.form = {
-          id: undefined,
-          name: undefined,
-          url: undefined
-        }
-        if (this.$refs['form']) {
-          this.$refs['form'].resetFields()
-        }
+      // 表单校验
+      rules: {
+        clientId: [
+          {required: true, message: '客户端ID不能为空', trigger: 'blur'}
+        ],
+        clientSecret: [
+          {required: true, message: '客户端密钥不能为空', trigger: 'blur'}
+        ],
+        scope: [
+          {required: true, message: '域不能为空', trigger: 'blur'}
+        ],
+        authorizedGrantTypes: [
+          {required: true, message: '请选择授权方式', trigger: 'blur'}
+        ]
       }
     }
+  },
+  async created() {
+    await this.loadAuthorizedGrantTypesOptions()
+    this.handleQuery()
+  },
+  methods: {
+    loadAuthorizedGrantTypesOptions() {
+      dictList({typeCode: 'grant_type'}).then(response => {
+        this.authorizedGrantTypesOptions = response.data
+      })
+    },
+    handleQuery() {
+      this.queryParams.page = this.pagination.page
+      this.queryParams.limit = this.pagination.limit
+      list(this.queryParams).then(response => {
+        this.pageList = response.data
+        this.pagination.total = response.total
+        this.loading = false
+      })
+    },
+    handleResetQuery() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
+      }
+      this.queryParams = {
+        clientId: undefined
+      }
+      this.handleQuery()
+    },
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.clientId)
+      this.single = selection.length != 1
+      this.multiple = !selection.length
+    },
+    handleAdd() {
+      this.resetForm()
+      this.loadAuthorizedGrantTypesOptions()
+      this.dialog = {
+        title: '新增资源',
+        visible: true
+      }
+    },
+    handleUpdate(row) {
+      this.resetForm()
+      this.loadAuthorizedGrantTypesOptions()
+      this.dialog = {
+        title: '修改资源',
+        visible: true
+      }
+      const id = row.clientId || this.ids
+      detail(id).then(response => {
+        const {data} = response
+        this.form = data
+        if (data.authorizedGrantTypes) {
+          this.form.authorizedGrantTypes = data.authorizedGrantTypes.split(',')
+        }
+      })
+    },
+    handleDelete(row) {
+      const ids = row.clientId || this.ids
+      this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del(ids).then(() => {
+          this.$message.success('删除成功')
+          this.handleQuery()
+        })
+      }).catch(() =>
+        this.$message.info('已取消删除')
+      )
+    },
+    handleSubmit: function () {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          const id = this.form.clientId
+          this.form.authorizedGrantTypes = this.form.authorizedGrantTypes.join(',')
+          console.log('选中的授权方式', this.form.authorizedGrantTypes)
+
+          if (id != undefined) {
+            update(this.form.clientId, this.form).then(() => {
+              this.$message.success('修改成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          } else {
+            add(this.form).then(() => {
+              this.$message.success('新增成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          }
+        }
+      })
+    },
+    resetForm() {
+      this.form = {
+        authorizedGrantTypes: [],
+        clientSecret: undefined,
+        clientId: undefined,
+        accessTokenValidity: undefined,
+        refreshTokenValidity: undefined,
+        webServerRedirectUri: undefined,
+        authorities: undefined,
+        additionalInformation: undefined,
+        autoapprove:'false'
+      }
+      if (this.$refs['form']) {
+        this.$refs['form'].resetFields()
+      }
+    },
+    // 自动放行字典翻译
+    autoapproveFormat(row) {
+      return row.autoapprove == 'true' ? '是' : '否'
+    },
+    // 授权方式字典翻译
+    authorizedGrantTypesFormat(row) {
+      const grantTypes = row.authorizedGrantTypes
+      if (!grantTypes) return
+
+      let temp = []
+      grantTypes.split(',').forEach(type => {
+        temp.push(this.authorizedGrantTypesOptions.filter(item => item.value == type)[0].name)
+      })
+
+      return temp.join(' | ')
+    }
   }
+}
 </script>
