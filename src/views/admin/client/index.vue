@@ -150,7 +150,7 @@ export default {
       // 非多个禁用
       multiple: true,
       queryParams: {
-        name: undefined
+        clientId: undefined
       },
       pagination: {
         page: 1,
