@@ -33,7 +33,7 @@
 
     <el-table v-loading="loading" :data="pageList" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" width="100" />
+      <el-table-column label="序号" type="index" width="100" />
       <el-table-column label="资源名称" prop="name" :show-overflow-tooltip="true" width="250" />
       <el-table-column label="资源路径" prop="url" :show-overflow-tooltip="true" />
       <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
@@ -153,7 +153,7 @@
       },
       handleStatusChange(row) {
         const text = row.status === 1 ? '启用' : '停用'
-        this.$confirm('确认要"' + text + '""' + row.name + '"数据项吗?', '警告', {
+        this.$confirm('确认要"' + text +row.name + '"数据项吗?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -185,7 +185,7 @@
       },
       handleDelete(row) {
         const ids = row.id || this.ids
-        this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
+        this.$confirm('是否确认删除勾选的数据项?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

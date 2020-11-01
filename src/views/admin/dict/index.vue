@@ -222,7 +222,7 @@
     add as addForType,
     del as delForType,
     patch as patchForType
-  } from '@/api/admin/dict/type'
+  } from '@/api/admin/dictType'
   import {list, detail, update, add, del, patch} from '@/api/admin/dict'
 
   export default {
@@ -338,7 +338,7 @@
       },
       handleStatusChangeForType(row) {
         const text = row.status === 1 ? '启用' : '停用'
-        this.$confirm('确认要"' + text + '""' + row.name + '"数据项吗?', '警告', {
+        this.$confirm('确认要"' + text +row.name + '"数据项吗?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -370,7 +370,7 @@
       },
       handleDeleteForType(row) {
         const ids = row.id || this.typeIds
-        this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
+        this.$confirm('确认删除已勾选的数据项?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -457,7 +457,7 @@
       },
       handleDelete() {
         const ids = row.id || this.ids
-        this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
+        this.$confirm('确认删除已勾选的数据项?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
