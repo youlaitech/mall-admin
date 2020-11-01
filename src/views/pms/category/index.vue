@@ -8,7 +8,7 @@
         <el-input v-model="queryParams.name" placeholder="分类名称"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="handleQuery">查询</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -63,7 +63,12 @@
       >
       </el-table-column>
 
-      <el-table-column label="操作" align="center" min-width="20%" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        min-width="20%"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -90,9 +95,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 数据表格::end-->
 
-    <!-- 表单弹窗::start -->
     <el-dialog
       :title="dialog.title"
       :visible.sync="dialog.visible"
@@ -103,9 +106,10 @@
                label-width="150px"
                :model="form"
                :rules="rules"
-               ref="form">
-        <el-form-item label="上级分类" prop="parent_id">
-          <el-select v-model="form.parent_id">
+               ref="form"
+      >
+        <el-form-item label="上级分类" prop="parentId">
+          <el-select v-model="form.parentId">
             <el-option :label="item.name" :value="item.id" v-for="item in categoryOptions"></el-option>
           </el-select>
         </el-form-item>
@@ -114,12 +118,6 @@
         </el-form-item>
         <el-form-item label="分类图标" prop="icon">
           <single-upload v-model="form.icon"></single-upload>
-        </el-form-item>
-        <el-form-item label="分类图片" prop="pic_url">
-          <single-upload v-model="form.pic_url"></single-upload>
-        </el-form-item>
-        <el-form-item label="分类描述" prop="description">
-          <el-input v-model="form.description"/>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="form.sort"/>
@@ -140,21 +138,15 @@
 </template>
 
 <script>
-import {
-  categoryList,
-  categoryAdd,
-  categoryDetail,
-  categoryUpdate,
-  categoryDelete,
-  categoryFirstLevelList,
-  categoryIsShowUpdate
-} from '@/api/pms/category'
-import SingleUpload from '@/components/Upload/singleUpload'
+import {list, detail, update, add, del, patch} from '@/api/pms/category'
+import SingleUpload from '@/components/Upload/SingleUpload'
 
 export default {
   components: {SingleUpload},
   data() {
     return {
+      // 遮罩层
+      loading: true,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -167,7 +159,7 @@ export default {
       list: [],
       categoryOptions: [],
       dialog: {
-        title: '',
+        title: undefined,
         visible: false
       },
       form: {
@@ -182,7 +174,7 @@ export default {
   },
   methods: {
     handleQuery() {
-      categoryList(this.queryParams).then(response => {
+      list(this.queryParams).then(response => {
         this.list = response.data
       })
     },
@@ -208,10 +200,10 @@ export default {
       }
       this.loadFirstLevelCategoryList()
       if (row) {
-        this.form.parent_id = row.id
+        this.form.parentId = row.id
         this.form.level = 2
       } else {
-        this.form.parent_id = "0"
+        this.form.parentId = "0"
         this.form.level = 1
       }
     },
