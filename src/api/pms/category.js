@@ -1,10 +1,9 @@
 import request from '@/utils/request'
 
-export function list(queryParams) {
+export function list() {
   return request({
     url: '/mall-pms/categories',
-    method: 'get',
-    params: queryParams
+    method: 'get'
   })
 }
 

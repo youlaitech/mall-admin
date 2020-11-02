@@ -1,4 +1,4 @@
-<template> 
+<template>
   <div>
     <el-upload
       class="mini-card-uploader"

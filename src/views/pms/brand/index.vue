@@ -178,7 +178,7 @@ export default {
         name: [{
           required: true, message: '请输入品牌名称', trigger: 'blur'
         }]
-      },
+      }
     }
   },
   created() {
