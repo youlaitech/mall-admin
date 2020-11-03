@@ -25,7 +25,7 @@ import {getToken} from '@/utils/auth'
 import {del} from '@/api/admin/file'
 
 export default {
-  name: 'singleUpload',
+  name: 'SingleUpload',
   props: {
     value: String
   },

@@ -22,22 +22,22 @@
 </template>
 <script>
   import {getToken} from '@/utils/auth'
-  import  {fileDelete} from '@/api/fms'
+  import {del} from '@/api/admin/file'
 
   export default {
-    name: 'multiUpload',
+    name: 'MultiUpload',
     props: {
       //图片属性数组
       value: Array,
       //最大上传图片数量
       maxCount: {
         type: Number,
-        default: 5
+        default:1
       }
     },
     data() {
       return {
-        headers: {authorization: getToken()},
+        headers: {authorization: 'Bearer '+ getToken()},
         uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/files',
         dialogVisible: false,
         dialogImageUrl: null,
@@ -46,8 +46,10 @@
     computed: {
       fileList() {
         let fileList = [];
-        for (let i = 0; i < this.value.length; i++) {
-          fileList.push({url: this.value[i]});
+        if(this.value){
+          for (let i = 0; i < this.value.length; i++) {
+            fileList.push({url: this.value[i]});
+          }
         }
         return fileList;
       }
@@ -61,7 +63,7 @@
         this.$emit('input', value)
       },
       handleRemove(file, fileList) {
-        fileDelete(file.url)
+        del(file.url)
         this.emitInput(fileList);
       },
       handlePreview(file) {
