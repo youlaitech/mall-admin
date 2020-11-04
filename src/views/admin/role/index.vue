@@ -268,7 +268,7 @@
       },
       handleDelete(row) {
         const ids = row.id || this.ids
-        this.$confirm('确认删除已勾选的数据项？', '警告', {
+        this.$confirm('确认删除已选中的数据项？', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

@@ -4,8 +4,11 @@
       <div class="custom-tree-container">
         <div class="block">
           <el-tree
+            v-loading="loading"
+            ref="category"
             :data="list"
             :props="{ label: 'name', children: 'children' }"
+            node-key="id"
             :expand-on-click-node="false"
             default-expand-all>
             <span slot-scope="{ node, data }" class="custom-tree-node">
@@ -57,7 +60,7 @@
       width="500px">
       <el-form id="form" label-width="120px" :model="form" :rules="rules" ref="form">
         <el-form-item label="上级类目">
-          <el-input v-model="parentName" style="width: 220px" readonly/>
+          <el-input v-model="parent.name" style="width: 220px" readonly/>
         </el-form-item>
         <el-form-item label="类目名称" prop="name">
           <el-input v-model="form.name" style="width: 220px"/>
@@ -84,132 +87,155 @@
 </template>
 
 <script>
-import {list, detail, update, add, del, patch} from '@/api/pms/category'
-import AvatarUpload from '@/components/Upload/AvatarUpload'
+  import {list, detail, update, add, del, patch} from '@/api/pms/category'
+  import AvatarUpload from '@/components/Upload/AvatarUpload'
 
-export default {
-  components: {AvatarUpload},
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      list: [],
-      dialog: {
-        title: undefined,
-        visible: false,
+  export default {
+    components: {AvatarUpload},
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
+        list: [],
+        dialog: {
+          title: undefined,
+          visible: false,
+        },
+        form: {
+          id: undefined,
+          name: undefined,
+          parentId: undefined,
+          level: undefined,
+          icon: undefined,
+          status: 1,
+          sort: undefined
+        },
+        current: {}, // 记录当前行
+        parent: {}, // 记录上级行
+        rules: {
+          name: [{
+            required: true, message: '请输入类目名称', trigger: 'blur'
+          }]
+        }
+      }
+    },
+    created() {
+      this.handleQuery()
+    },
+    methods: {
+      handleQuery() {
+        list().then(response => {
+          this.list = [{
+            name: '全部类目',
+            id: 0,
+            children: response.data
+          }]
+          this.loading = false
+        })
       },
-      form: {
-        id: undefined,
-        name: undefined,
-        parentId: undefined,
-        level: undefined,
-        icon: undefined,
-        status: 1,
-        sort: undefined
+      resetForm() {
+        this.form = {
+          id: undefined,
+          name: undefined,
+          parentId: undefined,
+          level: undefined,
+          icon: undefined,
+          status: 1,
+          sort: undefined
+        }
       },
-      parentName: undefined,
-      rules: {
-        name: [{
-          required: true, message: '请输入类目名称', trigger: 'blur'
-        }]
+      handleAdd(row) {
+        this.parent = row
+        this.form.parentId = row.id
+        if (this.form.parentId == 0) {
+          this.form.level = 0
+        } else {
+          this.form.level = row.level + 1
+        }
+        this.dialog = {
+          title: "新增类目",
+          visible: true
+        }
       },
-    }
-  },
-  created() {
-    this.handleQuery()
-  },
-  methods: {
-    handleQuery() {
-      list().then(response => {
-        this.list = [{
-          name: '全部类目',
-          id: 0,
-          children: response.data
-        }]
-      })
-    },
-
-    resetForm() {
-      this.parentName=undefined
-      this.form = {
-        id: undefined,
-        name: undefined,
-        parentId: undefined,
-        level: undefined,
-        icon: '',
-        status: 1,
-        sort: undefined
-      }
-    },
-    handleAdd(row) {
-      this.parentName = row.name
-      this.form.parentId = row.id
-      if (this.form.parentId == 0) {
-        this.form.level = 0
-      } else {
-        this.form.level = row.level++
-      }
-      this.dialog = {
-        title: "新增类目",
-        visible: true
-      }
-    },
-    handleUpdate(row) {
-      this.dialog = {
-        title: "修改类目",
-        visible: true
-      }
-      const id = row.id || this.ids
-      detail(id).then(response => {
-        this.form = response.data
-      })
-    },
-    handleDelete(row) {
-
-    },
-    handleSubmit() {
-      this.$refs["form"].validate((valid) => {
-        if (valid) {
-          const id = this.form.id
-          if (id != undefined) {
-            update(id, this.form).then(() => {
-              this.$message.success("修改成功")
-              this.dialog.visible = false
-              this.handleQuery()
-            })
-          } else {
-            add(this.form).then(() => {
-              this.$message.success("新增成功")
-              this.dialog.visible = false
-              this.handleQuery()
+      handleUpdate(row) {
+        const parentNode = this.$refs.category.getNode(row.parentId)
+        this.parent = {
+          id: parentNode.key,
+          name: parentNode.label
+        }
+        this.current = row
+        this.dialog = {
+          title: "修改类目",
+          visible: true
+        }
+        const id = row.id || this.ids
+        detail(id).then(response => {
+          this.form = response.data
+        })
+      },
+      handleDelete(node, row) {
+        this.$confirm('确认删除已选中的数据项？', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+            del(row.id).then(() => {
+              this.$message.success("删除成功")
+              const parent = node.parent;
+              const children = parent.data.children || parent.data;
+              const index = children.findIndex(d => d.id === row.id);
+              children.splice(index, 1);
+              this.$forceUpdate()
             })
           }
+        )
+      },
+      handleSubmit() {
+        console.log("1", this.current)
+        this.$refs["form"].validate((valid) => {
+          if (valid) {
+            const id = this.form.id
+            if (id != undefined) {
+              update(id, this.form).then(response => {
+                const {name, icon} = response.data
+                this.current.icon = icon
+                this.current.name = name
+                this.$message.success("修改成功")
+                this.dialog.visible = false
+              })
+            } else {
+              add(this.form).then(response => {
+                this.parent.children.push(response.data)
+                this.$message.success("新增成功")
+                this.dialog.visible = false
+              })
+            }
+          }
+        })
+      },
+      cancel() {
+        this.resetForm()
+        this.dialog = {
+          title: undefined,
+          visible: false
         }
-      })
-    },
-    cancel() {
-      this.resetForm()
-      this.dialog = {
-        title: undefined,
-        visible: false
       }
     }
   }
-}
 </script>
 
 <style>
-.custom-tree-node {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
-  padding-right: 8px;
-}
+  .custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-right: 8px;
+  }
 
-.el-tree-node__content {
-  height: 40px;
-}
+  .el-tree-node__content {
+    height: 40px;
+  }
 
 </style>

@@ -16,6 +16,7 @@
     </el-form>
 
     <el-table
+      v-loading="loading"
       id="dataTable"
       ref="multipleTable"
       :data="pageList"
@@ -107,7 +108,6 @@
       :title="dialog.title"
       :visible.sync="dialog.visible"
       @close="cancel"
-      center
       top="5vh"
       width="40%">
       <el-form id="dataForm" label-width="120px" :model="form" :rules="rules" ref="form">
@@ -118,10 +118,10 @@
           <el-input v-model="form.firstLetter" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="LOGO" prop="logo" label-width="120px">
-          <single-upload v-model="form.logo"></single-upload>
+          <avatar-upload v-model="form.logo"></avatar-upload>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="form.sort" auto-complete="off"></el-input>
+          <el-input v-model="form.sort" auto-complete="off" style="width: 180px"></el-input>
         </el-form-item>
         <el-form-item label="是否显示" prop="status">
           <el-radio-group v-model="form.status">
@@ -139,167 +139,168 @@
 </template>
 
 <script>
-import {list, detail, update, add, del, patch} from '@/api/pms/brand'
-import SingleUpload from '@/components/Upload/SingleUpload'
+  import {list, detail, update, add, del, patch} from '@/api/pms/brand'
+  import AvatarUpload from '@/components/Upload/AvatarUpload'
 
-export default {
-  components: {SingleUpload},
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      pagination: {
-        page: 1,
-        limit: 10,
-        total: 0
-      },
-      queryParams: {
-        name: undefined
-      },
-      pageList: [],
-      dialog: {
-        title: undefined,
-        visible: false,
-      },
-      form: {
-        name: undefined,
-        firstLetter: undefined,
-        logo: undefined,
-        status: 1,
-        sort: undefined
-      },
-      rules: {
-        name: [{
-          required: true, message: '请输入品牌名称', trigger: 'blur'
-        }]
+  export default {
+    components: {AvatarUpload},
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: 0
+        },
+        queryParams: {
+          name: undefined
+        },
+        pageList: [],
+        dialog: {
+          title: undefined,
+          visible: false,
+        },
+        form: {
+          name: undefined,
+          firstLetter: undefined,
+          logo: undefined,
+          status: 1,
+          sort: undefined
+        },
+        rules: {
+          name: [{
+            required: true, message: '请输入品牌名称', trigger: 'blur'
+          }]
+        }
       }
-    }
-  },
-  created() {
-    this.handleQuery()
-  },
-  methods: {
-    handleQuery() {
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
-      list(this.queryParams).then(response => {
-        const {data, total} = response
-        this.pageList = data
-        this.total = total
-      });
     },
-    handleResetQuery() {
-      this.pagination = {
-        page: 1,
-        limit: 10,
-        total: 0
-      }
-      this.queryParams = {
-        name: undefined
-      };
+    created() {
       this.handleQuery()
     },
-    handleRowClick(row) {
-      this.$refs.multipleTable.toggleRowSelection(row);
-    },
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
-      this.single = selection.length != 1
-      this.multiple = !selection.length
-    },
-    resetForm() {
-      this.form = {
-        name: undefined,
-        firstLetter: undefined,
-        logo: undefined,
-        status: 1,
-        sort: undefined
-      }
-      if (this.$refs['form']) {
-        this.$refs['form'].resetFields()
-      }
-    },
-    handleAdd() {
-      this.dialog = {
-        title: "新增品牌",
-        visible: true
-      }
-    },
-    handleUpdate(row) {
-      this.dialog = {
-        title: "修改品牌",
-        visible: true
-      }
-      const id = row.id || this.ids
-      detail(id).then(response => {
-        this.form = response.data
-      })
-    },
-    handleDelete(row) {
-      const ids = row.id || this.ids;
-      this.$confirm('确认删除已勾选的数据项？', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-          del(ids).then(() => {
-            this.$message.success("删除成功")
-            this.handleQuery()
-          })
+    methods: {
+      handleQuery() {
+        this.queryParams.page = this.pagination.page
+        this.queryParams.limit = this.pagination.limit
+        list(this.queryParams).then(response => {
+          this.loading = false
+          const {data, total} = response
+          this.pageList = data
+          this.total = total
+        });
+      },
+      handleResetQuery() {
+        this.pagination = {
+          page: 1,
+          limit: 10,
+          total: 0
         }
-      ).catch(() =>
-        this.$message.info("已取消删除")
-      )
-    },
-    handleSubmit() {
-      this.$refs["form"].validate((valid) => {
-        if (valid) {
-          const id = this.form.id
-          if (id != undefined) {
-            update(id, this.form).then(() => {
-              this.$message.success("修改成功")
-              this.dialog.visible = false
-              this.handleQuery()
-            })
-          } else {
-            add(this.form).then(() => {
-              this.$message.success("新增成功")
-              this.dialog.visible = false
+        this.queryParams = {
+          name: undefined
+        };
+        this.handleQuery()
+      },
+      handleRowClick(row) {
+        this.$refs.multipleTable.toggleRowSelection(row);
+      },
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id);
+        this.single = selection.length != 1
+        this.multiple = !selection.length
+      },
+      resetForm() {
+        this.form = {
+          name: undefined,
+          firstLetter: undefined,
+          logo: undefined,
+          status: 1,
+          sort: undefined
+        }
+        if (this.$refs['form']) {
+          this.$refs['form'].resetFields()
+        }
+      },
+      handleAdd() {
+        this.dialog = {
+          title: "新增品牌",
+          visible: true
+        }
+      },
+      handleUpdate(row) {
+        this.dialog = {
+          title: "修改品牌",
+          visible: true
+        }
+        const id = row.id || this.ids
+        detail(id).then(response => {
+          this.form = response.data
+        })
+      },
+      handleDelete(row) {
+        const ids = row.id || this.ids;
+        this.$confirm('确认删除已选中的数据项？', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+            del(ids).then(() => {
+              this.$message.success("删除成功")
               this.handleQuery()
             })
           }
+        ).catch(() =>
+          this.$message.info("已取消删除")
+        )
+      },
+      handleSubmit() {
+        this.$refs["form"].validate((valid) => {
+          if (valid) {
+            const id = this.form.id
+            if (id != undefined) {
+              update(id, this.form).then(() => {
+                this.$message.success("修改成功")
+                this.dialog.visible = false
+                this.handleQuery()
+              })
+            } else {
+              add(this.form).then(() => {
+                this.$message.success("新增成功")
+                this.dialog.visible = false
+                this.handleQuery()
+              })
+            }
+          }
+        })
+      },
+      cancel() {
+        this.resetForm()
+        this.dialog = {
+          title: undefined,
+          visible: false
         }
-      })
-    },
-    cancel() {
-      this.resetForm()
-      this.dialog = {
-        title: undefined,
-        visible: false
+      },
+      handleStatusChange(row) {
+        const text = row.status === 1 ? '开启' : '关闭'
+        this.$confirm('确认"' + text + row.name + '"数据项吗?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function () {
+          return patch(row.id, 1, {status: row.status})
+        }).then(() => {
+          this.$message.success(text + '成功')
+        }).catch(function () {
+          row.status = row.status === 1 ? 0 : 1
+        })
       }
-    },
-    handleStatusChange(row) {
-      const text = row.status === 1 ? '开启' : '关闭'
-      this.$confirm('确认"' + text + row.name + '"数据项吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function () {
-        return patch(row.id, 1, {status: row.status})
-      }).then(() => {
-        this.$message.success(text + '成功')
-      }).catch(function () {
-        row.status = row.status === 1 ? 0 : 1
-      })
     }
   }
-}
 </script>
 
 <style scoped>
