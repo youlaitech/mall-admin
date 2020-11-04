@@ -109,116 +109,116 @@
 </template>
 
 <script>
-  import {list, del, add, update} from '@/api/pms/spu'
-  import {list as categoryList} from '@/api/pms/category'
+import {list, del, add, update} from '@/api/pms/spu'
+import {list as categoryList} from '@/api/pms/category'
 
-  export default {
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        queryParams: {
-          name: undefined,
-          categoryId: undefined
-        },
-        list: [],
-        categoryOptions: [],
-        spuDetail: undefined,
-        detailDialogVisible: false
-      }
+export default {
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
+      },
+      queryParams: {
+        name: undefined,
+        categoryId: undefined
+      },
+      list: [],
+      categoryOptions: [],
+      spuDetail: undefined,
+      detailDialogVisible: false
+    }
+  },
+  created() {
+    this.loadCategoryOptions()
+    this.handleQuery()
+  },
+  methods: {
+    loadCategoryOptions() {
+      categoryList({_qm: 2}).then(response => {
+        console.log(response.data)
+      })
     },
-    created() {
-      this.loadCategoryOptions()
+    handleQuery() {
+      list(this.pagination.page, this.pagination.limit, this.queryParams).then(response => {
+        this.pageList = response.data.records
+        this.pagination.total = response.data.total
+      })
+    },
+    handleResetQuery() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
+      }
+      this.queryParams = {
+        name: undefined,
+        goods_sn: undefined,
+        is_new: undefined
+      }
+      this.resetForm("queryForm")
       this.handleQuery()
     },
-    methods: {
-      loadCategoryOptions() {
-        categoryList().then(response=>{
-          console.log(response.data)
-        })
-      },
-      handleQuery() {
-        list(this.pagination.page, this.pagination.limit, this.queryParams).then(response => {
-          this.pageList = response.data.records
-          this.pagination.total = response.data.total
-        })
-      },
-      handleResetQuery() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams = {
-          name: undefined,
-          goods_sn: undefined,
-          is_new: undefined
-        }
-        this.resetForm("queryForm")
+    showDetail(detail) {
+      this.spuDetail = detail
+      this.detailDialogVisible = true
+    },
+    handleAdd() {
+      this.$router.push({name: 'spuAdd'})
+    },
+    handleEdit(row) {
+      this.$router.push({name: 'spuEdit', params: {id: row.id}})
+    },
+    handleDelete(row) {
+      const ids = row.id || this.ids
+      this.$confirm('是否确认删除选中的数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function () {
+        return del(ids)
+      }).then(() => {
+        this.$message.success("删除成功")
         this.handleQuery()
-      },
-      showDetail(detail) {
-        this.spuDetail = detail
-        this.detailDialogVisible = true
-      },
-      handleAdd() {
-        this.$router.push({name: 'spuAdd'})
-      },
-      handleEdit(row) {
-        this.$router.push({name: 'spuEdit', params: {id: row.id}})
-      },
-      handleDelete(row) {
-        const ids = row.id || this.ids
-        this.$confirm('是否确认删除选中的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function () {
-          return del(ids)
-        }).then(() => {
-          this.$message.success("删除成功")
-          this.handleQuery()
-        }).catch(() =>
-          this.$message.info("已取消删除")
-        )
-      },
-      handleRowClick(row) {
-        this.$refs.multipleTable.toggleRowSelection(row);
-      },
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
-      },
-      // 显示隐藏
-      handleStatusChange(row) {
-        let operation = row.status === 0 ? '下架' : '上架'
-        let that = this
-        this.$confirm('确认要' + operation + row.name + '商品?', "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function () {
-          patch(row.id, {status: row.status}).then(response => {
-            that.$message.success(response.msg)
-          })
-        }).catch(function () {
-          row.status = row.status === 0 ? 1 : 0;
+      }).catch(() =>
+        this.$message.info("已取消删除")
+      )
+    },
+    handleRowClick(row) {
+      this.$refs.multipleTable.toggleRowSelection(row);
+    },
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length != 1
+      this.multiple = !selection.length
+    },
+    // 显示隐藏
+    handleStatusChange(row) {
+      let operation = row.status === 0 ? '下架' : '上架'
+      let that = this
+      this.$confirm('确认要' + operation + row.name + '商品?', "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function () {
+        patch(row.id, {status: row.status}).then(response => {
+          that.$message.success(response.msg)
         })
-      }
+      }).catch(function () {
+        row.status = row.status === 0 ? 1 : 0;
+      })
     }
   }
+}
 </script>
 
 <style scoped>

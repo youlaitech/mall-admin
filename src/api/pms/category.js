@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function list() {
+export function list(queryParams) {
   return request({
     url: '/mall-pms/categories',
-    method: 'get'
+    method: 'get',
+    params: queryParams
   })
 }
 
@@ -34,7 +35,7 @@ export function del(ids) {
   return request({
     url: '/mall-pms/categories',
     method: 'delete',
-    params: { ids: ids }
+    params: {ids: ids}
   })
 }
 
