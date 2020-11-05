@@ -7,16 +7,12 @@
         <el-button type="danger" @click="handleDelete" :disabled="multiple">删除</el-button>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="queryParams.name" placeholder="商品名称"></el-input>
+        <el-input v-model="queryParams.name" placeholder="商品名称" clearable></el-input>
       </el-form-item>
-
       <el-form-item>
-        <el-cascader v-model="queryParams.categoryId" :options="categoryOptions"
-                     expand-trigger="hover"
-                     clearable
-                     @change="handleCategoryChange"/>
+        <el-cascader v-model="queryParams.categoryId" placeholder="商品类目" :options="categoryOptions"
+                     expand-trigger="hover" clearable/>
       </el-form-item>
-
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">查询</el-button>
         <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
@@ -24,6 +20,7 @@
     </el-form>
 
     <el-table
+      v-loading="loading"
       id="dataTable"
       ref="multipleTable"
       :data="pageList"
@@ -34,11 +31,37 @@
         type="selection"
         min-width="5%">
       </el-table-column>
+
       <el-table-column
         prop="id"
         label="商品ID"
         min-width="50">
       </el-table-column>
+
+
+      <el-table-column type="expand" label="sku信息">
+        <template slot-scope="props">
+          <el-table
+            :data="props.row.skuList"
+            size="small"
+            border
+          >
+            <el-table-column align="center" label="商品条码" prop="barCode"/>
+            <el-table-column align="center" label="商品规格" prop="specification"/>
+            <el-table-column align="center" label="商品库存" prop="stock"/>
+            <el-table-column align="center" label="原价" prop="originalPrice">
+              <template slot-scope="scope">{{ scope.row.originalPrice /100 }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="现价" prop="price">
+              <template slot-scope="scope">{{ scope.row.price /100 }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="VIP价格" prop="vipPrice">
+              <template slot-scope="scope">{{ scope.row.vipPrice /100 }}</template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+
 
       <el-table-column min-width="100" label="名称" prop="name"/>
 
@@ -109,116 +132,118 @@
 </template>
 
 <script>
-import {list, del, add, update} from '@/api/pms/spu'
-import {list as categoryList} from '@/api/pms/category'
+  import {list, del, add, update} from '@/api/pms/spu'
+  import {list as categoryList} from '@/api/pms/category'
 
-export default {
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      pagination: {
-        page: 1,
-        limit: 10,
-        total: 0
-      },
-      queryParams: {
-        name: undefined,
-        categoryId: undefined
-      },
-      list: [],
-      categoryOptions: [],
-      spuDetail: undefined,
-      detailDialogVisible: false
-    }
-  },
-  created() {
-    this.loadCategoryOptions()
-    this.handleQuery()
-  },
-  methods: {
-    loadCategoryOptions() {
-      categoryList({_qm: 2}).then(response => {
-        console.log(response.data)
-      })
-    },
-    handleQuery() {
-      list(this.pagination.page, this.pagination.limit, this.queryParams).then(response => {
-        this.pageList = response.data.records
-        this.pagination.total = response.data.total
-      })
-    },
-    handleResetQuery() {
-      this.pagination = {
-        page: 1,
-        limit: 10,
-        total: 0
+  export default {
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: 0
+        },
+        queryParams: {
+          name: undefined,
+          categoryId: undefined
+        },
+        list: [],
+        categoryOptions: [],
+        spuDetail: undefined,
+        detailDialogVisible: false
       }
-      this.queryParams = {
-        name: undefined,
-        goods_sn: undefined,
-        is_new: undefined
-      }
-      this.resetForm("queryForm")
+    },
+    created() {
+      this.loadCategoryOptions()
       this.handleQuery()
     },
-    showDetail(detail) {
-      this.spuDetail = detail
-      this.detailDialogVisible = true
-    },
-    handleAdd() {
-      this.$router.push({name: 'spuAdd'})
-    },
-    handleEdit(row) {
-      this.$router.push({name: 'spuEdit', params: {id: row.id}})
-    },
-    handleDelete(row) {
-      const ids = row.id || this.ids
-      this.$confirm('是否确认删除选中的数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(function () {
-        return del(ids)
-      }).then(() => {
-        this.$message.success("删除成功")
-        this.handleQuery()
-      }).catch(() =>
-        this.$message.info("已取消删除")
-      )
-    },
-    handleRowClick(row) {
-      this.$refs.multipleTable.toggleRowSelection(row);
-    },
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length != 1
-      this.multiple = !selection.length
-    },
-    // 显示隐藏
-    handleStatusChange(row) {
-      let operation = row.status === 0 ? '下架' : '上架'
-      let that = this
-      this.$confirm('确认要' + operation + row.name + '商品?', "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(function () {
-        patch(row.id, {status: row.status}).then(response => {
-          that.$message.success(response.msg)
+    methods: {
+      loadCategoryOptions() {
+        categoryList({queryMode: 2}).then(response => {
+          this.categoryOptions = response.data
         })
-      }).catch(function () {
-        row.status = row.status === 0 ? 1 : 0;
-      })
+      },
+      handleQuery() {
+        this.queryParams.page = this.pagination.page
+        this.queryParams.limit = this.pagination.limit
+        list(this.queryParams).then(response => {
+          const {data, total} = response
+          this.pageList = data
+          this.pagination.total = total
+          this.loading = false
+        })
+      },
+      handleResetQuery() {
+        this.pagination = {
+          page: 1,
+          limit: 10,
+          total: 0
+        }
+        this.queryParams = {
+          name: undefined,
+          categoryId: undefined
+        }
+        this.handleQuery()
+      },
+      showDetail(detail) {
+        this.spuDetail = detail
+        this.detailDialogVisible = true
+      },
+      handleAdd() {
+        this.$router.push({name: 'spuAdd'})
+      },
+      handleEdit(row) {
+        this.$router.push({name: 'spuEdit', params: {id: row.id}})
+      },
+      handleDelete(row) {
+        const ids = row.id || this.ids
+        this.$confirm('是否确认删除选中的数据项?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function () {
+          return del(ids)
+        }).then(() => {
+          this.$message.success("删除成功")
+          this.handleQuery()
+        }).catch(() =>
+          this.$message.info("已取消删除")
+        )
+      },
+      handleRowClick(row) {
+        this.$refs.multipleTable.toggleRowSelection(row);
+      },
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id)
+        this.single = selection.length != 1
+        this.multiple = !selection.length
+      },
+      // 显示隐藏
+      handleStatusChange(row) {
+        let operation = row.status === 0 ? '下架' : '上架'
+        let that = this
+        this.$confirm('确认要' + operation + row.name + '商品?', "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function () {
+          patch(row.id, {status: row.status}).then(response => {
+            that.$message.success(response.msg)
+          })
+        }).catch(function () {
+          row.status = row.status === 0 ? 1 : 0;
+        })
+      }
     }
   }
-}
 </script>
 
 <style scoped>

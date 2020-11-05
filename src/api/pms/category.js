@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 export function list(queryParams) {
+  console.log('查询参数', queryParams)
   return request({
     url: '/mall-pms/categories',
     method: 'get',
