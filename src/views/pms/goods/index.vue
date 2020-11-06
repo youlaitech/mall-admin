@@ -27,73 +27,45 @@
       @selection-change="handleSelectionChange"
       @row-click="handleRowClick"
       border>
-      <el-table-column
-        type="selection"
-        min-width="5%">
-      </el-table-column>
-
-      <el-table-column
-        prop="id"
-        label="商品ID"
-        min-width="50">
-      </el-table-column>
-
-
-      <el-table-column type="expand" label="sku信息">
+      <el-table-column type="selection" min-width="5%" center/>
+      <el-table-column type="expand" width="100" label="库存信息">
         <template slot-scope="props">
           <el-table
             :data="props.row.skuList"
             size="small"
-            border
-          >
+            border>
             <el-table-column align="center" label="商品条码" prop="barCode"/>
             <el-table-column align="center" label="商品规格" prop="specification"/>
             <el-table-column align="center" label="商品库存" prop="stock"/>
             <el-table-column align="center" label="原价" prop="originalPrice">
-              <template slot-scope="scope">{{ scope.row.originalPrice /100 }}</template>
+              <template slot-scope="scope">{{ scope.row.originPrice | centToYuan }}</template>
             </el-table-column>
             <el-table-column align="center" label="现价" prop="price">
-              <template slot-scope="scope">{{ scope.row.price /100 }}</template>
-            </el-table-column>
-            <el-table-column align="center" label="VIP价格" prop="vipPrice">
-              <template slot-scope="scope">{{ scope.row.vipPrice /100 }}</template>
+              <template slot-scope="scope">{{ scope.row.price | centToYuan}}</template>
             </el-table-column>
           </el-table>
         </template>
       </el-table-column>
-
-
-      <el-table-column min-width="100" label="名称" prop="name"/>
-
-      <el-table-column property="pic_url" label="图片">
+      <el-table-column label="商品ID" prop="id" min-width="50"/>
+      <el-table-column label="商品名称" prop="name" min-width="100"/>
+      <el-table-column label="图片" prop="pic">
         <template slot-scope="scope">
-          <img :src="scope.row.pic_url" width="40">
+          <img :src="scope.row.pic" width="40">
         </template>
       </el-table-column>
-
+      <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
+      <el-table-column label="商品品牌" prop="brandName" min-width="100"/>
+      <el-table-column label="销量" prop="sale" min-width="100"/>
+      <el-table-column label="单位" prop="unit" min-width="100"/>
       <el-table-column label="详情" prop="detail">
         <template slot-scope="scope">
-          <el-dialog :visible.sync="detailDialogVisible" title="商品详情">
-            <div class="goods-detail-box" v-html="spuDetail"/>
+          <el-dialog :visible.sync="dialogVisible" title="商品详情">
+            <div class="goods-detail-box" v-html="goodDetail"/>
           </el-dialog>
-          <el-button type="primary" size="mini" @click="showDetail(scope.row.detail)">查看</el-button>
+          <el-button type="primary" size="mini" @click="handleShowDetail(scope.row.detail)">查看</el-button>
         </template>
       </el-table-column>
-
-      <el-table-column label="当前价格" prop="price"/>
-
-      <el-table-column label="是否新品" prop="is_new">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.is_new ? 'success' : 'error' ">{{ scope.row.is_new ? '新品' : '非新品' }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="是否热品" prop="is_hot">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.is_hot ? 'success' : 'error' ">{{ scope.row.is_hot ? '热品' : '非热品' }}</el-tag>
-        </template>
-      </el-table-column>
-
+      <el-table-column min-width="100" label="描述" prop="description"/>
       <el-table-column
         prop="status"
         label="上架/下架">
@@ -120,8 +92,8 @@
           </el-button>
         </template>
       </el-table-column>
-    </el-table>
 
+    </el-table>
     <pagination
       v-show="pagination.total>0"
       :total="pagination.total"
@@ -132,7 +104,7 @@
 </template>
 
 <script>
-  import {list, del, add, update} from '@/api/pms/spu'
+  import {list, del, add, update, patch} from '@/api/pms/goods'
   import {list as categoryList} from '@/api/pms/category'
 
   export default {
@@ -155,10 +127,10 @@
           name: undefined,
           categoryId: undefined
         },
-        list: [],
+        pageList: [],
         categoryOptions: [],
-        spuDetail: undefined,
-        detailDialogVisible: false
+        goodDetail: undefined,
+        dialogVisible: false
       }
     },
     created() {
@@ -193,15 +165,15 @@
         }
         this.handleQuery()
       },
-      showDetail(detail) {
-        this.spuDetail = detail
-        this.detailDialogVisible = true
+      handleShowDetail(detail) {
+        this.goodDetail = detail
+        this.dialogVisible = true
       },
       handleAdd() {
-        this.$router.push({name: 'spuAdd'})
+        this.$router.push({name: 'GoodsDetail'})
       },
       handleEdit(row) {
-        this.$router.push({name: 'spuEdit', params: {id: row.id}})
+        this.$router.push({path: 'goodsDetail', query: {id: row.id}})
       },
       handleDelete(row) {
         const ids = row.id || this.ids
@@ -226,17 +198,16 @@
         this.single = selection.length != 1
         this.multiple = !selection.length
       },
-      // 显示隐藏
+      // 上架/下架
       handleStatusChange(row) {
         let operation = row.status === 0 ? '下架' : '上架'
-        let that = this
-        this.$confirm('确认要' + operation + row.name + '商品?', "提示", {
+        this.$confirm('确认要' + operation + row.name + '？', "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function () {
           patch(row.id, {status: row.status}).then(response => {
-            that.$message.success(response.msg)
+            this.$message.success(operation + '成功')
           })
         }).catch(function () {
           row.status = row.status === 0 ? 1 : 0;

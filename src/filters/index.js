@@ -1,5 +1,7 @@
 // import parseTime, formatTime and set to filter
-export { parseTime, formatTime } from '@/utils'
+import Vue from "vue";
+
+export {parseTime, formatTime} from '@/utils'
 
 /**
  * Show plural label if time is plural number
@@ -36,12 +38,12 @@ export function timeAgo(time) {
  */
 export function numberFormatter(num, digits) {
   const si = [
-    { value: 1E18, symbol: 'E' },
-    { value: 1E15, symbol: 'P' },
-    { value: 1E12, symbol: 'T' },
-    { value: 1E9, symbol: 'G' },
-    { value: 1E6, symbol: 'M' },
-    { value: 1E3, symbol: 'k' }
+    {value: 1E18, symbol: 'E'},
+    {value: 1E15, symbol: 'P'},
+    {value: 1E12, symbol: 'T'},
+    {value: 1E9, symbol: 'G'},
+    {value: 1E6, symbol: 'M'},
+    {value: 1E3, symbol: 'k'}
   ]
   for (let i = 0; i < si.length; i++) {
     if (num >= si[i].value) {
@@ -65,4 +67,14 @@ export function toThousandFilter(num) {
  */
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+
+/**
+ * 金额转换（分->元）
+ * 100 => 1
+ * @param {number} num
+ */
+export function centToYuan(num) {
+  return isNaN(num) ? 0.00 : parseFloat((num / 100).toFixed(2));
 }

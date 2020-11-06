@@ -29,18 +29,18 @@
       :data="pageList"
       row-key="id"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      border
-    >
-      <el-table-column prop="name" label="菜单名称" :show-overflow-tooltip="true" min-width="11%" />
+      border>
+      <el-table-column prop="title" label="菜单名称" :show-overflow-tooltip="true" min-width="11%" />
       <el-table-column prop="icon" label="图标" align="center" min-width="11%">
         <template slot-scope="scope">
           <svg-icon :icon-class="scope.row.icon" />
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="11%" />
-      <el-table-column prop="path" label="路由名称" min-width="11%" :show-overflow-tooltip="true" />
-      <el-table-column prop="component" label="组件路径" min-width="11%" :show-overflow-tooltip="true" />
-      <el-table-column prop="visible" label="可见" :formatter="visibleFormat" min-width="11%" />
+      <el-table-column prop="name" label="路由名称" min-width="11%"  />
+      <el-table-column prop="path" label="路由路径" min-width="11%"  />
+      <el-table-column prop="component" label="组件路径" min-width="11%" />
+      <el-table-column prop="visible" label="是否显示" :formatter="visibleFormat" min-width="11%" />
       <el-table-column label="操作" align="center" min-width="12%" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -82,22 +82,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="菜单类型" prop="type">
-              <el-radio-group v-model="form.type">
-                <el-radio :label="0">目录</el-radio>
-                <el-radio :label="1">菜单</el-radio>
-                <el-radio :label="2">按钮</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item v-if=" form.type != 2 " label="菜单图标">
+            <el-form-item label="菜单图标">
               <el-popover
                 placement="bottom-start"
                 width="460"
                 trigger="click"
-                @show="$refs['iconSelect'].reset()"
-              >
+                @show="$refs['iconSelect'].reset()" >
                 <IconSelect ref="iconSelect" @selected="selected" />
                 <el-input slot="reference" v-model="form.icon" placeholder="点击选择图标" readonly>
                   <svg-icon
@@ -105,8 +95,7 @@
                     slot="prefix"
                     :icon-class="form.icon"
                     class="el-input__icon"
-                    style="height: 40px;width: 16px; "
-                  />
+                    style="height: 40px;width: 16px; "/>
                   <i v-else slot="prefix" class="el-icon-search el-input__icon" />
                 </el-input>
               </el-popover>
@@ -114,7 +103,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="菜单名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入菜单名称" />
+              <el-input v-model="form.title" placeholder="请输入菜单名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -123,22 +112,27 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.type != 2" label="路由名称" prop="path">
-              <el-input v-model="form.path" placeholder="请输入路由名称" />
+            <el-form-item  label="路由名称" prop="path">
+              <el-input v-model="form.name" placeholder="请输入路由名称" />
             </el-form-item>
           </el-col>
-          <el-col v-if="form.type == 1" :span="12">
+          <el-col :span="12">
+            <el-form-item  label="路由路径" prop="path">
+              <el-input v-model="form.path" placeholder="请输入路由路径" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="组件路径" prop="component">
               <el-input v-model="form.component" placeholder="请输入组件路径" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.type == 0" label="跳转路径">
+            <el-form-item label="跳转路径">
               <el-input v-model="form.redirect" placeholder="请输入跳转路径" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item v-if="form.type != 2" label="菜单状态">
+            <el-form-item  label="菜单状态">
               <el-radio-group v-model="form.visible">
                 <el-radio :label="1">显示</el-radio>
                 <el-radio :label="0">隐藏</el-radio>
@@ -177,12 +171,12 @@ export default {
       },
       form: {
         id: undefined,
+        title:undefined,
+        parentId:undefined,
         name: undefined,
-        parentId: undefined,
         path: undefined,
         components: undefined,
-        perms: undefined,
-        type: 1, // 默认菜单
+        redirect:undefined,
         icon: undefined,
         sort: undefined,
         visible: 1, // 默认可见
@@ -203,7 +197,7 @@ export default {
   },
   methods: {
     handleQuery() {
-      this.queryParams.mode = 1
+      this.queryParams.queryMode = 1
       list(this.queryParams).then(response => {
         this.pageList = response.data
         this.loading = false

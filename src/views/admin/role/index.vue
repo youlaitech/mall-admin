@@ -321,7 +321,7 @@
         }
       },
       loadMenuOptions() {
-        menuList({mode: 2}).then(response => {
+        menuList({queryMode: 2}).then(response => {
           this.menuOptions = response.data
         })
       },
