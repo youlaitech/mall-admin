@@ -3,20 +3,20 @@
     <el-upload
       :headers="headers"
       :action="uploadAction"
-      list-type="picture"
-      :multiple="false"
-      :show-file-list="showFileList"
-      :file-list="fileList"
+      class="avatar-uploader"
       :before-upload="beforeUpload"
       :on-remove="handleRemove"
       :on-success="handleUploadSuccess"
       :on-preview="handlePreview"
-      :auto-upload="true">
-      <el-button size="small" type="primary">点击上传</el-button>
-      <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10MB</div>-->
+      :on-exceed="handleExceed"
+      :auto-upload="true"
+      :show-file-list="false"
+    >
+      <img v-if="image" :src="image" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="fileList[0].url" alt="">
+      <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
   </div>
 </template>
@@ -25,62 +25,86 @@ import {getToken} from '@/utils/auth'
 import {del} from '@/api/admin/file'
 
 export default {
-  name: 'SingleUpload',
+  name: 'MultiUpload',
   props: {
     value: String
   },
-  computed: {
-    imageUrl() {
-      return this.value;
-    },
-    showFileList: {
-      get: function () {
-        return this.value !== null && this.value !== '' && this.value !== undefined;
-      },
-      set: function (newValue) {
-      }
-    },
-    fileList() {
-      return [
-        {
-          url: this.imageUrl
-        }
-      ]
-    }
-  },
   data() {
     return {
-      headers: {Authorization: 'Bearer ' + getToken()},
+      headers: {authorization: 'Bearer ' + getToken()},
       uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/files',
       dialogVisible: false,
+      dialogImageUrl: null,
+      image: ''
+    };
+  },
+  computed: {
+    imageUrl: {
+      get() {
+        return this.value
+      },
+      set(val) {
+        this.image = val
+      }
     }
   },
   methods: {
-    emitInput(val) {
-      this.$emit('input', val)
+    emitInput(imageUrl) {
+      this.$emit('input', imageUrl)
     },
     handleRemove(file, fileList) {
       del(file.url)
-      this.emitInput('');
+      this.emitInput(fileList);
     },
     handlePreview(file) {
       this.dialogVisible = true;
+      this.dialogImageUrl = file.url;
     },
     beforeUpload(file) {
 
     },
     handleUploadSuccess(response, file) {
-      this.showFileList = true;
-      this.fileList.pop();
-      const url = response.data
-      this.fileList.push({url: url})
-      this.emitInput(this.fileList[0].url);
-    }
+      let url = response.data
+      this.image = url
+      this.emitInput(this.image)
+    },
+    handleExceed(files, fileList) {
+      this.$message({
+        message: '最多只能上传' + this.maxCount + '张图片',
+        type: 'warning',
+        duration: 1000
+      });
+    },
   }
 }
 </script>
 <style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 148px;
+  height: 148px;
+  line-height: 146px;
+  text-align: center;
+}
+
+.avatar {
+  width: 148px;
+  height: 148px;
+  display: block;
+}
 </style>
 
 

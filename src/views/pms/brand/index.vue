@@ -118,7 +118,7 @@
           <el-input v-model="form.firstLetter" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="LOGO" prop="logo" label-width="120px">
-          <avatar-upload v-model="form.logo"></avatar-upload>
+          <single-upload v-model="form.logo"></single-upload>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="form.sort" auto-complete="off" style="width: 180px"></el-input>
@@ -140,10 +140,10 @@
 
 <script>
   import {list, detail, update, add, del, patch} from '@/api/pms/brand'
-  import AvatarUpload from '@/components/Upload/AvatarUpload'
+  import SingleUpload from '@/components/Upload/SingleUpload'
 
   export default {
-    components: {AvatarUpload},
+    components: {SingleUpload},
     data() {
       return {
         // 遮罩层

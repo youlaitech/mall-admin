@@ -21,7 +21,7 @@
 </template>
 <script>
   import {getToken} from '@/utils/auth'
-  import {fileDelete} from '@/api/fms'
+  import {del} from '@/api/admin/file'
 
   export default {
     name: 'singleUpload',
@@ -49,7 +49,7 @@
     },
     data() {
       return {
-        headers: {authorization: getToken()},
+        headers: {authorization:'Bearer '+ getToken()},
         uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/files',
         dialogVisible: false,
       }
@@ -60,7 +60,7 @@
       },
       handleRemove(url) {
         if (url) {
-          fileDelete(url)
+          del(url)
         }
         this.emitInput('');
       },

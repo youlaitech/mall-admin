@@ -28,7 +28,7 @@
       @row-click="handleRowClick"
       border>
       <el-table-column type="selection" min-width="5%" center/>
-      <el-table-column type="expand" width="100" label="库存信息">
+      <el-table-column type="expand" width="140" label="商品库存信息">
         <template slot-scope="props">
           <el-table
             :data="props.row.skuList"
@@ -68,7 +68,7 @@
       <el-table-column min-width="100" label="描述" prop="description"/>
       <el-table-column
         prop="status"
-        label="上架/下架">
+        label="是否在售">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.status"
@@ -79,7 +79,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" min-width="100">
+      <el-table-column label="操作" min-width="120">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-  import {list, del, add, update, patch} from '@/api/pms/goods'
+  import {list, del,  patch} from '@/api/pms/goods'
   import {list as categoryList} from '@/api/pms/category'
 
   export default {
@@ -201,13 +201,14 @@
       // 上架/下架
       handleStatusChange(row) {
         let operation = row.status === 0 ? '下架' : '上架'
+        const that=this
         this.$confirm('确认要' + operation + row.name + '？', "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function () {
           patch(row.id, {status: row.status}).then(response => {
-            this.$message.success(operation + '成功')
+            that.$message.success(operation + '成功')
           })
         }).catch(function () {
           row.status = row.status === 0 ? 1 : 0;

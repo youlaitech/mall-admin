@@ -69,7 +69,7 @@
           <el-input v-model="form.sort" style="width: 220px"></el-input>
         </el-form-item>
         <el-form-item label="类目图标" prop="icon">
-          <avatar-upload v-model="form.icon"></avatar-upload>
+          <single-upload v-model="form.icon"></single-upload>
         </el-form-item>
         <el-form-item label="是否显示" prop="status">
           <el-radio-group v-model="form.status">
@@ -88,10 +88,10 @@
 
 <script>
   import {list, detail, update, add, del, patch} from '@/api/pms/category'
-  import AvatarUpload from '@/components/Upload/AvatarUpload'
+  import SingleUpload from '@/components/Upload/SingleUpload'
 
   export default {
-    components: {AvatarUpload},
+    components: {SingleUpload},
     data() {
       return {
         // 遮罩层

@@ -161,8 +161,8 @@ const asyncRoutes = [
         meta: { title: 'SplitPane' }
       },
       {
-        path: 'avatar-upload',
-        component: 'views/components-demo/avatar-upload',
+        path: 'single-upload',
+        component: 'views/components-demo/single-upload',
         name: 'AvatarUploadDemo',
         meta: { title: 'Avatar Upload' }
       },
