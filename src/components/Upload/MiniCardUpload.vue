@@ -24,7 +24,7 @@
   import {del} from '@/api/admin/file'
 
   export default {
-    name: 'singleUpload',
+    name: 'MiniCardUpload',
     props: {
       value: String
     },

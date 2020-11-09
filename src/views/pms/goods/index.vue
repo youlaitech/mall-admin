@@ -28,7 +28,7 @@
       @row-click="handleRowClick"
       border>
       <el-table-column type="selection" min-width="5%" center/>
-      <el-table-column type="expand" width="140" label="商品库存信息">
+      <el-table-column type="expand" width="140" label="库存信息">
         <template slot-scope="props">
           <el-table
             :data="props.row.skuList"
