@@ -121,12 +121,12 @@
           border>
           <el-table-column label="规格名称">
             <template slot-scope="scope">
-              {{scope.row.name}}
+              {{ scope.row.name }}
             </template>
           </el-table-column>
           <el-table-column label="规格值">
             <template slot-scope="scope">
-              {{scope.row.value}}
+              {{ scope.row.value }}
             </template>
           </el-table-column>
           <el-table-column label="操作" width="150">
@@ -152,6 +152,7 @@
                ref="skuForm"
                :model="form"
                :inline="true">
+
         <el-table
           :data="form.skuList"
           :span-method="skuSpanMethod"
@@ -159,9 +160,9 @@
           border>
 
           <el-table-column
-            v-for="name in specificationNames"
-            :label="name"
-            :prop="'specification_' + name">
+            v-for="title in specifications"
+            :label="title"
+            :prop="'specification_' + title">
           </el-table-column>
 
           <el-table-column
@@ -188,7 +189,9 @@
             label="库存"
             prop="stock">
             <template slot-scope="scope">
-              <el-input-number v-model="scope.row.stock" :precision="0" :max="2147483647" :min="0" size="small"/>
+              <el-form-item :prop="'specifications[' + scope.$index + '].stock'">
+                <el-input-number v-model="scope.row.stock" :precision="0" :max="2147483647" :min="0" size="small"/>
+              </el-form-item>
             </template>
           </el-table-column>
 
@@ -204,9 +207,11 @@
             prop="barCode"
             label="商品条码">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.barCode" maxlength="200">
-                <el-button slot="append" @click="handleGenerateBarCode(scope.row)">随机</el-button>
-              </el-input>
+              <el-form-item :prop="'specifications[' + scope.$index + '].barCode'">
+                <el-input v-model="scope.row.barCode" maxlength="200">
+                  <el-button slot="append" @click="handleGenerateBarCode(scope.row)">随机</el-button>
+                </el-input>
+              </el-form-item>
             </template>
           </el-table-column>
 
@@ -246,231 +251,251 @@
 
 <script>
 
-  import {add, update} from '@/api/pms/goods'
-  import {list as categoryList} from '@/api/pms/category'
-  import {list as brandList} from '@/api/pms/brand'
+import {add, update} from '@/api/pms/goods'
+import {list as categoryList} from '@/api/pms/category'
+import {list as brandList} from '@/api/pms/brand'
 
 
-  import SingleUpload from '@/components/Upload/SingleUpload'
-  import MultiUpload from '@/components/Upload/MultiUpload'
-  import MiniCardUpload from '@/components/Upload/MiniCardUpload'
-  import Tinymce from '@/components/Tinymce'
+import SingleUpload from '@/components/Upload/SingleUpload'
+import MultiUpload from '@/components/Upload/MultiUpload'
+import MiniCardUpload from '@/components/Upload/MiniCardUpload'
+import Tinymce from '@/components/Tinymce'
 
-  export default {
-    name: "GoodsDetail",
-    components: {SingleUpload, MultiUpload, MiniCardUpload, Tinymce},
-    data() {
-      return {
-        categoryOptions: [],
-        brandOptions: [],
-        form: {
-          goods: {
-            id: undefined,
-            name: undefined,
-            categoryId: undefined,
-            brandId: undefined,
-            originPrice: undefined,
-            price: undefined,
-            pic: undefined,
-            album: [],
-            unit: undefined,
-            description: undefined,
-            detail: undefined,
-            status: 1
-          },
-          skuList: [],
-          attributes: [],
-          specifications: []
-        },
-        rules: {
-          goods: {
-            name: [{required: true, message: '请填写商品名称', trigger: 'blur'}],
-            originPrice: [{required: true, message: '请填写商品原始价格', trigger: 'blur'}],
-            price: [{required: true, message: '请填写商品当前价格', trigger: 'blur'}],
-          },
-          attribute: {
-            name: [{required: true, message: '请填写参数名称', trigger: 'blur'}],
-            value: [{required: true, message: '请填写参数值', trigger: 'blur'}]
-          },
-          specification: {
-            name: [{required: true, message: '请填写规格名称', trigger: 'blur'}],
-            value: [{required: true, message: '请填写规格值', trigger: 'blur'}]
-          }
-        },
-        specificationDialog: {
-          title: undefined,
-          visible: false,
-          type: undefined
-        },
-        specificationForm: {
+export default {
+  name: "GoodsDetail",
+  components: {SingleUpload, MultiUpload, MiniCardUpload, Tinymce},
+  data() {
+    return {
+      categoryOptions: [],
+      brandOptions: [],
+      form: {
+        goods: {
+          id: undefined,
           name: undefined,
-          value: undefined,
-
-          // 辅助属性
-          index: undefined,
-          values: []
+          categoryId: undefined,
+          brandId: undefined,
+          originPrice: undefined,
+          price: undefined,
+          pic: undefined,
+          album: [],
+          unit: undefined,
+          description: undefined,
+          detail: undefined,
+          status: 1
         },
-        specificationRules: {
+        skuList: [],
+        attributes: [],
+        specifications: []
+      },
+      rules: {
+        goods: {
+          name: [{required: true, message: '请填写商品名称', trigger: 'blur'}],
+          originPrice: [{required: true, message: '请填写商品原始价格', trigger: 'blur'}],
+          price: [{required: true, message: '请填写商品当前价格', trigger: 'blur'}],
+        },
+        attribute: {
+          name: [{required: true, message: '请填写参数名称', trigger: 'blur'}],
+          value: [{required: true, message: '请填写参数值', trigger: 'blur'}]
+        },
+        specification: {
           name: [{required: true, message: '请填写规格名称', trigger: 'blur'}],
           value: [{required: true, message: '请填写规格值', trigger: 'blur'}]
-        },
-        cacheSkuList: [],
-        specificationNames: []
+        }
+      },
+      specificationDialog: {
+        title: undefined,
+        visible: false,
+        type: undefined
+      },
+      specificationForm: {
+        name: undefined,
+        value: undefined,
+
+        // 辅助属性
+        index: undefined,
+      },
+      specificationRules: {
+        name: [{required: true, message: '请填写规格名称', trigger: 'blur'}],
+        value: [{required: true, message: '请填写规格值', trigger: 'blur'}]
+      },
+      cacheSkuList: [],
+      specifications: []
+    }
+  },
+  created() {
+    this.loadData()
+  },
+  methods: {
+    async loadData() {
+      await this.loadCategoryOptions()
+      await this.loadBrandOptions()
+
+    },
+    loadCategoryOptions() {
+      categoryList({queryMode: 2}).then(response => {
+        this.categoryOptions = response.data
+      })
+    },
+    loadBrandOptions() {
+      brandList({queryMode: 2}).then(response => {
+        this.brandOptions = response.data
+      })
+    },
+
+    handleAddAttribute() {
+      this.form.attributes.push({})
+    },
+    handleRemoveAttribute(index) {
+      this.form.attributes.splice(index, 1)
+    },
+
+    handleAddSpecification() {
+      this.specificationDialog.title = '添加规格'
+      this.specificationDialog.visible = true
+      this.specificationDialog.type = 'add'
+    },
+    handleEditSpecification(row, index) {
+      this.specificationDialog.title = '修改规格'
+      this.specificationDialog.visible = true
+      this.specificationDialog.type = 'edit'
+      this.specificationForm = {...row, ...{index: index}}
+    },
+    handleRemoveSpecification(index) {
+      this.form.specifications.splice(index, 1)
+    },
+    handleSubmitSpecification() {
+      const type = this.specificationDialog.type
+      const {name, value, index} = this.specificationForm
+      const repeatIndex = this.form.specifications.findIndex((v, i) => {
+        if (type === 'edit') {
+          // 与选中修改行规格重复为正常情况
+          return i != index && v.name == name && v.value == value
+        }
+        return v.name == name && v.value == value
+      })
+
+      if (repeatIndex !== -1) {
+        this.$message.error('规格已存在，请勿重复添加')
+        return false
+      }
+      if (type === 'edit') {
+        this.$set(this.form.specifications, index, this.specificationForm)
+      } else {
+        this.form.specifications.push({...this.specificationForm})
+      }
+      // 生成规格列表
+      this.generateSkuList()
+      this.closeSpecificationDialog()
+    },
+    closeSpecificationDialog() {
+      this.specificationForm = {}
+      this.specificationDialog.title = undefined
+      this.specificationDialog.visible = false
+    },
+    // 规格表合并单元格
+    specificationSpanMethod({row, column, rowIndex, columnIndex}) {
+      if (columnIndex === 1110) {
+        return {
+          rowspan: rowIndex,
+          colspan: 1
+        }
       }
     },
-    created() {
-      this.loadData()
-    },
-    methods: {
-      async loadData() {
-        await this.loadCategoryOptions()
-        await this.loadBrandOptions()
-
-      },
-      loadCategoryOptions() {
-        categoryList({queryMode: 2}).then(response => {
-          this.categoryOptions = response.data
-        })
-      },
-      loadBrandOptions() {
-        brandList({queryMode: 2}).then(response => {
-          this.brandOptions = response.data
-        })
-      },
-
-      handleAddAttribute() {
-        this.form.attributes.push({})
-      },
-      handleRemoveAttribute(index) {
-        this.form.attributes.splice(index, 1)
-      },
-
-      handleAddSpecification() {
-        this.specificationDialog.title = '添加规格'
-        this.specificationDialog.visible = true
-        this.specificationDialog.type = 'add'
-      },
-      handleEditSpecification(row, index) {
-        this.specificationDialog.title = '修改规格'
-        this.specificationDialog.visible = true
-        this.specificationDialog.type = 'edit'
-        this.specificationForm = {...row, ...{index: index}}
-      },
-      handleRemoveSpecification(index) {
-        this.form.specifications.splice(index, 1)
-      },
-      handleSubmitSpecification() {
-        const type = this.specificationDialog.type
-        const {name, value, index} = this.specificationForm
-        const repeatIndex = this.form.specifications.findIndex((v, i) => {
-          if (type === 'edit') {
-            // 与选中修改行规格重复为正常情况
-            return i != index && v.name == name && v.value == value
-          }
-          return v.name == name && v.value == value
-        })
-
-        if (repeatIndex !== -1) {
-          this.$message.error('规格已存在，请勿重复添加')
-          return false
-        }
-        if (type === 'edit') {
-          this.$set(this.form.specifications, index, this.specificationForm)
+    generateSkuList() {
+      // 根据specifications创建临时规格列表
+      // [
+      //    {'name':'颜色','value':'蓝色'},
+      //    {'name':'颜色','value':'黑色'},
+      //    {'name':'颜色','value':'玫瑰金'} ,
+      //    {'name':'内存','value':'4G'},
+      //    {'name':'内存','value':'6G'},
+      //    {'name':'内存','value':'8G'},
+      //    {'name':'存储','value':'32G'},
+      //    {'name':'存储','value':'64G'},
+      //    {'name':'存储','value':'128G'}
+      // ]
+      let specifications = JSON.parse(JSON.stringify(this.form.specifications)) // 深拷贝
+      // 归并
+      // [
+      //    { 'name':'颜色','value':'蓝色,黑色,玫瑰金' },
+      //    { 'name':'存储','value':'4G+32G,6G+128G,8G+256G'},
+      // ]
+      const list = specifications.reduce((c, n) => {
+        const idx = c.t.indexOf(n.name);
+        if (idx > -1) {
+          c.v[idx].value = c.v[idx].value + ',' + n.value
         } else {
-          this.form.specifications.push({...this.specificationForm})
+          c.v.push(n);
+          c.t.push(n.name)
         }
-        // 生成规格列表
-        this.generateSkuList()
-        this.closeSpecificationDialog()
-      },
-      closeSpecificationDialog() {
-        this.specificationForm = {}
-        this.specificationDialog.title = undefined
-        this.specificationDialog.visible = false
-      },
-      // 规格表合并单元格
-      specificationSpanMethod({row, column, rowIndex, columnIndex}) {
-        if (columnIndex === 1110) {
-          return {
-            rowspan: rowIndex,
-            colspan: 1
-          }
-        }
-      },
-      generateSkuList() {
-        // 根据specifications创建临时规格列表
-        // [
-        //    {'name':'颜色','value':'蓝色'},
-        //    {'name':'颜色','value':'黑色'},
-        //    {'name':'颜色','value':'玫瑰金'} ,
-        //    {'name':'内存','value':'4G'},
-        //    {'name':'内存','value':'6G'},
-        //    {'name':'内存','value':'8G'},
-        //    {'name':'存储','value':'32G'},
-        //    {'name':'存储','value':'64G'},
-        //    {'name':'存储','value':'128G'}
-        // ]
-        let specifications = JSON.parse(JSON.stringify(this.form.specifications)) // 深拷贝
-        // 归并
-        // [
-        //    { 'name':'颜色','value':'蓝色,黑色,玫瑰金' },
-        //    { 'name':'存储','value':'4G+32G,6G+128G,8G+256G'},
-        // ]
-        const reduces = specifications.reduce((c, n) => {
-          const idx = c.t.indexOf(n.name);
-          if (idx > -1) {
-            c.v[idx].value = c.v[idx].value + ',' + n.value
-          } else {
-            c.v.push(n);
-            c.t.push(n.name)
-          }
-          return c
-        }, {v: [], t: []}).v
-        this.specificationNames = []
-        reduces.forEach(item => {
-          this.specificationNames.push(item.name)
-          item.value.split(',').forEach(v => {
-            // [['蓝色','黑色','玫瑰金'],['4G','6G','8G'],['32G','64G','128G']]
-            // 求笛卡尔集
+        return c
+      }, {v: [], t: []}).v
+      console.log('list', list)
 
-            this.form.skuList.push({})
-
-
+      const test = list.reduce((prev, curr) => {
+        console.log('prev',prev,'curr',curr)
+        current.value.split(',').forEach(c => {
+          next.value.split(',').forEach(n => {
+            return c.concat(n)
           })
         })
-      },
-      skuSpanMethod({row, column, rowIndex, columnIndex}) {
+      }, {})
 
-      },
-      handleGenerateBarCode(row) {
-        row.barCode = new Date().getTime() + ''
-        this.$forceUpdate()
-      },
-      handleSubmit() {
-        console.log("表单数据", this.form)
-      },
-      close() {
+      console.log(test)
 
-      }
+      /*
+            this.specifications = []
+            this.form.skuList = []
+
+            list.forEach(item => {
+              console.log(item.value)
+              this.specifications.push(item.name)
+              item.value.split(',').forEach(value => {
+                let sku = {}
+                sku['specification_' + item.name] = value
+                this.form.skuList.push(sku)
+              })
+            })
+      */
+
+      /*item.value.split(',').forEach(v => {
+        let obj = {}
+
+        this.form.skuList.push({})
+      })*/
+    },
+    skuSpanMethod({row, column, rowIndex, columnIndex}) {
+
+    },
+    handleGenerateBarCode(row) {
+      row.barCode = new Date().getTime() + ''
+      this.$forceUpdate()
+    },
+    handleSubmit() {
+      console.log("表单数据", this.form)
+    },
+    close() {
+
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .app-container {
-    width: 80%;
-    margin: 0 auto 50px;
+.app-container {
+  width: 80%;
+  margin: 0 auto 50px;
 
-    .footer {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-    }
-
-    .box-card {
-      margin-top: 20px;
-    }
-
+  .footer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
   }
+
+  .box-card {
+    margin-top: 20px;
+  }
+
+}
 
 </style>
