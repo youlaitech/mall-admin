@@ -289,7 +289,8 @@
         await this.loadDeptOptions()
       },
       handleQuery() {
-        this.queryParams.queryMode = 1
+        this.queryParams.page = this.pagination.page
+        this.queryParams.limit = this.pagination.limit
         list(this.queryParams).then(response => {
           const {data, total} = response
           this.pageList = data

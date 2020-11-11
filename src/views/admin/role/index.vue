@@ -326,7 +326,7 @@
         })
       },
       loadRoleMenuOptions(roleId) {
-        menuList({mode: 2, roleId: roleId}).then(response => {
+        menuList({queryMode: 2, roleId: roleId}).then(response => {
           this.menuOptions = response.data.menus
           this.$refs.menu.setCheckedKeys(response.data.checkedKeys)
         })

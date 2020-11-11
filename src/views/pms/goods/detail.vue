@@ -160,13 +160,10 @@
           border>
 
           <el-table-column
-            v-for="(item, index) in form.specifications"
-            :label="item.name">
-            <template slot-scope="scope">
-              {{scope.row.value}}
-            </template>
+            v-for="title in specificationTitles"
+            :label="title"
+            :prop="'specification_' + title">
           </el-table-column>
-
 
           <el-table-column
             prop="price"
@@ -310,13 +307,17 @@
         specificationForm: {
           name: undefined,
           value: undefined,
-          index: undefined
+
+          // 辅助属性
+          index: undefined,
+          values: []
         },
         specificationRules: {
           name: [{required: true, message: '请填写规格名称', trigger: 'blur'}],
           value: [{required: true, message: '请填写规格值', trigger: 'blur'}]
         },
-        cacheSkuList: []
+        cacheSkuList: [],
+        specificationTitles: []
       }
     },
     created() {
@@ -399,8 +400,6 @@
         }
       },
       generateSkuList() {
-        console.log("生成商品规格列表", this.form.specifications, this.form.skuList)
-        const specifications = [...this.form.specifications]
         // 根据specifications创建临时规格列表
         // [
         //    {'name':'颜色','value':'蓝色'},
@@ -413,24 +412,31 @@
         //    {'name':'存储','value':'64G'},
         //    {'name':'存储','value':'128G'}
         // ]
-        //    ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-        // [['蓝色','黑色','玫瑰金'],['4G','6G','8G'],['32G','64G','128G']]
-        // 求笛卡尔集
-
-        const l = specifications.reduce((c, n) => {
-          console.log("c.t", c.t, c.v)
+        let specifications = JSON.parse(JSON.stringify(this.form.specifications)) // 深拷贝
+        // 归并
+        // [
+        //    { 'name':'颜色','value':'蓝色,黑色,玫瑰金' },
+        //    { 'name':'存储','value':'4G+32G,6G+128G,8G+256G'},
+        // ]
+        const reduces = specifications.reduce((c, n) => {
           const idx = c.t.indexOf(n.name);
           if (idx > -1) {
-            c.v[idx].value =n.value
+            c.v[idx].value = c.v[idx].value + ',' + n.value
           } else {
             c.v.push(n);
             c.t.push(n.name)
           }
           return c
         }, {v: [], t: []}).v
-
-        console.log(l)
-
+        this.specificationTitles = []
+        reduces.forEach(item => {
+          this.specificationTitles.push(item.name)
+          item.value.split(',').forEach(v => {
+            //    ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            // [['蓝色','黑色','玫瑰金'],['4G','6G','8G'],['32G','64G','128G']]
+            // 求笛卡尔集
+          })
+        })
       },
       skuSpanMethod({row, column, rowIndex, columnIndex}) {
 
