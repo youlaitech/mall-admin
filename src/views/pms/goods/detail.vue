@@ -144,7 +144,6 @@
 
     <!-- 商品库存 -->
     <el-card class="box-card">
-
       <div slot="header" class="clearfix">
         <span>商品库存</span>
       </div>
@@ -160,9 +159,9 @@
           border>
 
           <el-table-column
-            v-for="title in specificationTitles"
-            :label="title"
-            :prop="'specification_' + title">
+            v-for="name in specificationNames"
+            :label="name"
+            :prop="'specification_' + name">
           </el-table-column>
 
           <el-table-column
@@ -242,7 +241,6 @@
         <el-button type="primary" @click="handleSubmitSpecification">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -317,7 +315,7 @@
           value: [{required: true, message: '请填写规格值', trigger: 'blur'}]
         },
         cacheSkuList: [],
-        specificationTitles: []
+        specificationNames: []
       }
     },
     created() {
@@ -428,13 +426,16 @@
           }
           return c
         }, {v: [], t: []}).v
-        this.specificationTitles = []
+        this.specificationNames = []
         reduces.forEach(item => {
-          this.specificationTitles.push(item.name)
+          this.specificationNames.push(item.name)
           item.value.split(',').forEach(v => {
-            //    ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
             // [['蓝色','黑色','玫瑰金'],['4G','6G','8G'],['32G','64G','128G']]
             // 求笛卡尔集
+
+            this.form.skuList.push({})
+
+
           })
         })
       },
