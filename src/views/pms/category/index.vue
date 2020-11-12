@@ -57,7 +57,7 @@
       :visible.sync="dialog.visible"
       @close="cancel"
       top="5vh"
-      width="500px">
+      width="600px">
       <el-form id="form" label-width="120px" :model="form" :rules="rules" ref="form">
         <el-form-item label="上级类目">
           <el-input v-model="parent.name" style="width: 220px" readonly/>
