@@ -32,12 +32,12 @@
       //最大上传图片数量
       maxCount: {
         type: Number,
-        default:1
+        default: 5
       }
     },
     data() {
       return {
-        headers: {authorization: 'Bearer '+ getToken()},
+        headers: {authorization: 'Bearer ' + getToken()},
         uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/files',
         dialogVisible: false,
         dialogImageUrl: null,
@@ -46,7 +46,7 @@
     computed: {
       fileList() {
         let fileList = [];
-        if(this.value){
+        if (this.value) {
           for (let i = 0; i < this.value.length; i++) {
             fileList.push({url: this.value[i]});
           }

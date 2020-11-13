@@ -36,13 +36,18 @@
             border>
             <el-table-column align="center" label="商品条码" prop="barCode"/>
             <el-table-column align="center" label="商品规格" prop="specification"/>
-            <el-table-column align="center" label="商品库存" prop="stock"/>
+            <el-table-column label="图片" prop="pic">
+              <template slot-scope="scope">
+                <img :src="scope.row.pic" width="40">
+              </template>
+            </el-table-column>
             <el-table-column align="center" label="原价" prop="originalPrice">
               <template slot-scope="scope">{{ scope.row.originPrice | centToYuan }}</template>
             </el-table-column>
             <el-table-column align="center" label="现价" prop="price">
               <template slot-scope="scope">{{ scope.row.price | centToYuan}}</template>
             </el-table-column>
+            <el-table-column align="center" label="库存" prop="stock"/>
           </el-table>
         </template>
       </el-table-column>
@@ -55,6 +60,12 @@
       </el-table-column>
       <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
       <el-table-column label="商品品牌" prop="brandName" min-width="100"/>
+      <el-table-column align="center" label="原价" prop="originalPrice">
+        <template slot-scope="scope">{{ scope.row.originPrice | centToYuan }}</template>
+      </el-table-column>
+      <el-table-column align="center" label="现价" prop="price">
+        <template slot-scope="scope">{{ scope.row.price | centToYuan}}</template>
+      </el-table-column>
       <el-table-column label="销量" prop="sale" min-width="100"/>
       <el-table-column label="单位" prop="unit" min-width="100"/>
       <el-table-column label="详情" prop="detail">
@@ -104,7 +115,7 @@
 </template>
 
 <script>
-  import {list, del,  patch} from '@/api/pms/goods'
+  import {list, del, patch} from '@/api/pms/goods'
   import {list as categoryList} from '@/api/pms/category'
 
   export default {
@@ -201,7 +212,7 @@
       // 上架/下架
       handleStatusChange(row) {
         let operation = row.status === 0 ? '下架' : '上架'
-        const that=this
+        const that = this
         this.$confirm('确认要' + operation + row.name + '？', "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
