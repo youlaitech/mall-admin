@@ -490,7 +490,7 @@
                           sku.specification = JSON.stringify(specification)
                           sku.price = sku.price * 100
                         })
-                        console.log(data)
+                        console.log(JSON.stringify(data))
                         add(data).then(response => {
                           this.$router.push({name: 'Goods'})
                         })
