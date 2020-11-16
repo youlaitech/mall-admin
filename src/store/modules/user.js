@@ -1,5 +1,5 @@
 import {login, logout, getInfo} from '@/api/user'
-import {getToken, setToken, removeToken} from '@/utils/auth'
+import {getToken, setToken, removeToken, setRefreshToken, removeRefreshToken} from '@/utils/auth'
 import router, {resetRouter} from '@/router'
 
 const state = {
@@ -34,22 +34,41 @@ const actions = {
     const {username, password} = userInfo
     return new Promise((resolve, reject) => {
       login({
-        username: username.trim(),
+        username: username,
         password: password,
         grant_type: 'password',
         client_id: 'youlai-mall-admin',
         client_secret: '123456'
       }).then(response => {
-        const {data} = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        const {token, refreshToken} = response.data
+        commit('SET_TOKEN', token)
+        setToken(token)
+        setRefreshToken(refreshToken)
         resolve()
       }).catch(error => {
         reject(error)
       })
     })
   },
-
+  refreshToken({commit}, refreshToken) {
+    commit('SET_TOKEN', undefined)
+    return new Promise((resolve, reject) => {
+      login({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: 'youlai-mall-admin',
+        client_secret: '123456'
+      }).then(response => {
+        const {token, refreshToken} = response.data
+        commit('SET_TOKEN', token)
+        setToken(token)
+        setRefreshToken(refreshToken)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   // get user info
   getInfo({commit, state}) {
     return new Promise((resolve, reject) => {
@@ -82,16 +101,17 @@ const actions = {
   logout({commit, state, dispatch}) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
-      commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
-      removeToken()
-      resetRouter()
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        removeToken()
+        removeRefreshToken()
+        resetRouter()
 
-      // reset visited views and cached views
-      // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-      dispatch('tagsView/delAllViews', null, {root: true})
+        // reset visited views and cached views
+        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+        dispatch('tagsView/delAllViews', null, {root: true})
 
-      resolve()
+        resolve()
       }).catch(error => {
         reject(error)
       })
@@ -104,6 +124,7 @@ const actions = {
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
       removeToken()
+      removeRefreshToken()
       resolve()
     })
   },

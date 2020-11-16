@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {MessageBox, Message} from 'element-ui'
 import store from '@/store'
-import {getToken} from '@/utils/auth'
+import {getToken, getRefreshToken} from '@/utils/auth'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
@@ -44,10 +44,9 @@ service.interceptors.response.use(
    * Here is just an example
    * You can also judge the status by HTTP Status Code
    */
-  response => {
+  async response => {
     const res = response.data
 
-    // if the custom code is not 20000, it is judged as an error.
     if (res.code !== '00000') {
       Message({
         message: res.msg || 'Error',
@@ -55,13 +54,18 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-      if (res.code === 'A0230') {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+      if (res.code === 'A0230') {  // access_token无效或已过期
+        const refreshToken = getRefreshToken()
+        if (refreshToken) {
+          console.log('刷新开始')
+          await store.dispatch('user/refreshToken', refreshToken)
+          console.log('刷新结束')
+        }
+        console.log('错误进行')
+        // 重新登录提示
+        MessageBox.confirm('你已退出，选择取消停留当前页面或者重新登录', '确认退出', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
