@@ -54,15 +54,16 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
-      if (res.code === 'A0230') {  // access_token无效或已过期
+      console.log('过期刷新')
+
+      if (res.code === 'A0230') {  // access_token 过期
         const refreshToken = getRefreshToken()
         if (refreshToken) {
-          console.log('刷新开始')
           await store.dispatch('user/refreshToken', refreshToken)
-          console.log('刷新结束')
         }
-        console.log('错误进行')
-        // 重新登录提示
+      }
+
+      if (res.code === 'A0231') { // refresh_token 过期
         MessageBox.confirm('你已退出，选择取消停留当前页面或者重新登录', '确认退出', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
@@ -73,13 +74,13 @@ service.interceptors.response.use(
           })
         })
       }
+
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {
       return res
     }
   },
   error => {
-    console.log('err' + error) // for debug
     Message({
       message: error.message,
       type: 'error',
