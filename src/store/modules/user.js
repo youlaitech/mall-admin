@@ -63,7 +63,7 @@ const actions = {
         commit('SET_TOKEN', token)
         setToken(token)
         setRefreshToken(refreshToken)
-        resolve()
+        resolve(token)
       }).catch(error => {
         reject(error)
       })
