@@ -57,7 +57,7 @@
       @pagination="handleQuery"
     />
 
-    <!-- 添加或修改资源配置对话框 -->
+    <!-- 添加或修改客户端配置对话框 -->
     <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="700px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
 
@@ -234,7 +234,7 @@ export default {
       this.resetForm()
       this.loadAuthorizedGrantTypesOptions()
       this.dialog = {
-        title: '新增资源',
+        title: '新增客户端',
         visible: true
       }
     },
@@ -242,7 +242,7 @@ export default {
       this.resetForm()
       this.loadAuthorizedGrantTypesOptions()
       this.dialog = {
-        title: '修改资源',
+        title: '修改客户端',
         visible: true
       }
       const id = row.clientId || this.ids
@@ -274,8 +274,6 @@ export default {
         if (valid) {
           const id = this.form.clientId
           this.form.authorizedGrantTypes = this.form.authorizedGrantTypes.join(',')
-          console.log('选中的授权方式', this.form.authorizedGrantTypes)
-
           if (id != undefined) {
             update(this.form.clientId, this.form).then(() => {
               this.$message.success('修改成功')
