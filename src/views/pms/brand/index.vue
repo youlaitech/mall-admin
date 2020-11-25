@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :model="queryParams" size="small" :inline="true">
+    <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item>
         <el-button type="primary" @click="handleAdd">新增</el-button>
         <el-button type="success" @click="handleUpdate" :disabled="single">修改</el-button>
         <el-button type="danger" @click="handleDelete" :disabled="multiple">删除</el-button>
       </el-form-item>
-      <el-form-item label="" prop="name">
+      <el-form-item  prop="name">
         <el-input v-model="queryParams.name" placeholder="品牌名称"></el-input>
       </el-form-item>
       <el-form-item>
