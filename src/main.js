@@ -22,6 +22,8 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 import Pagination from '@/components/Pagination'
 
+import { listByTypeCode } from "@/api/admin/dict"
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -38,6 +40,10 @@ import Pagination from '@/components/Pagination'
 
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
+
+// 全局方法挂载
+Vue.prototype.getDicts = listByTypeCode
+
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size

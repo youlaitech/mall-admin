@@ -37,7 +37,7 @@
               </template>
             </el-table-column>
             <el-table-column label="类型名称" prop="name" width="120"/>
-            <el-table-column label="类型编码" prop="code"  :show-overflow-tooltip="true" width="160"/>
+            <el-table-column label="类型编码" prop="code" :show-overflow-tooltip="true" width="160"/>
             <el-table-column label="状态" align="center" width="80">
               <template slot-scope="scope">
                 <el-switch
@@ -77,11 +77,11 @@
           />
           <el-dialog :title="typeDialog.title" :visible.sync="typeDialog.visible" width="500px">
             <el-form ref="typeForm" :model="typeForm" :rules="rulesForType" label-width="80px">
-              <el-form-item label="字典名称" prop="name">
-                <el-input v-model="typeForm.name" placeholder="请输入字典名称"/>
+              <el-form-item label="类型名称" prop="name">
+                <el-input v-model="typeForm.name" placeholder="请输入类型名称"/>
               </el-form-item>
-              <el-form-item label="字典编码" prop="code">
-                <el-input v-model="typeForm.code" placeholder="请输入字典编码"/>
+              <el-form-item label="类型编码" prop="code">
+                <el-input v-model="typeForm.code" placeholder="请输入类型编码"/>
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <el-radio-group v-model="typeForm.status">
@@ -137,21 +137,20 @@
             @selection-change="handleSelectionChange"
             @row-click="handleRowClick">
             <el-table-column type="selection" min-width="5%"></el-table-column>
-            <el-table-column label="字典名称" prop="name" width="100"/>
-            <el-table-column label="字典值" prop="value"  width="200"/>
-            <el-table-column label="字典类型" prop="typeCode"  width="100"/>
-            <el-table-column label="状态" align="center" width="80">
+            <el-table-column label="字典名称" prop="name" />
+            <el-table-column label="字典值" prop="value" />
+            <el-table-column label="字典类型" prop="typeCode" />
+            <el-table-column label="状态" align="center" >
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.status"
                   :active-value="1"
                   :inactive-value="0"
-                  @change="handleStatusChange(scope.row)"
-                />
+                  @change="handleStatusChange(scope.row)"/>
               </template>
             </el-table-column>
-            <el-table-column label="备注" prop="remark"/>
-            <el-table-column label="操作" align="center" width="150">
+           <!-- <el-table-column label="备注" prop="remark"/>-->
+            <el-table-column label="操作" align="center" >
               <template slot-scope="scope">
                 <el-button
                   type="text"
@@ -184,7 +183,7 @@
               <el-form-item label="字典类型" prop="typeCode">
                 <el-input v-model="form.typeCode" :disabled="true"/>
               </el-form-item>
-              <el-form-item label="字典名称" prop="text">
+              <el-form-item label="字典名称" prop="name">
                 <el-input v-model="form.name" placeholder="请输入字典名称"/>
               </el-form-item>
               <el-form-item label="字典值" prop="value">
@@ -338,7 +337,7 @@
       },
       handleStatusChangeForType(row) {
         const text = row.status === 1 ? '启用' : '停用'
-        this.$confirm('确认要"' + text +row.name + '"数据项吗?', '警告', {
+        this.$confirm('确认要"' + text + row.name + '"数据项吗?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -419,9 +418,11 @@
       handleQuery() {
         this.queryParams.page = this.pagination.page
         this.queryParams.limit = this.pagination.limit
+        this.queryParams.queryMode = 2
         list(this.queryParams).then(response => {
-          this.pageList = response.data
-          this.pagination.total = response.total
+          const {data, total} = response
+          this.pageList = data
+          this.pagination.total = total
           this.loading = false
         })
       },
@@ -442,7 +443,7 @@
           title: '新增字典数据',
           visible: true
         }
-        this.form.typeCode = this.pageListForType[this.selectedIndexForType-1].code
+        this.form.typeCode = this.pageListForType[this.selectedIndexForType - 1].code
       },
       handleUpdate(row) {
         this.resetForm()

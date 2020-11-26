@@ -75,6 +75,6 @@ export function uppercaseFirst(string) {
  * 100 => 1
  * @param {number} num
  */
-export function centToYuan(num) {
-  return isNaN(num) ? 0.00 : parseFloat((num / 100).toFixed(2));
+export function moneyFormatter(num) {
+  return '¥'+(isNaN(num) ? 0.00 : parseFloat((num / 100).toFixed(2)))
 }

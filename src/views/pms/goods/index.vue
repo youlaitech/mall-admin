@@ -42,10 +42,10 @@
               </template>
             </el-table-column>
             <el-table-column align="center" label="原价" prop="originalPrice">
-              <template slot-scope="scope">{{ scope.row.originPrice | centToYuan }}</template>
+              <template slot-scope="scope">{{ scope.row.originPrice | moneyFormatter }}</template>
             </el-table-column>
             <el-table-column align="center" label="现价" prop="price">
-              <template slot-scope="scope">{{ scope.row.price | centToYuan}}</template>
+              <template slot-scope="scope">{{ scope.row.price | moneyFormatter}}</template>
             </el-table-column>
             <el-table-column align="center" label="库存" prop="stock"/>
           </el-table>
@@ -61,10 +61,10 @@
       <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
       <el-table-column label="商品品牌" prop="brandName" min-width="100"/>
       <el-table-column align="center" label="原价" prop="originalPrice">
-        <template slot-scope="scope">{{ scope.row.originPrice | centToYuan }}</template>
+        <template slot-scope="scope">{{ scope.row.originPrice | moneyFormatter }}</template>
       </el-table-column>
       <el-table-column align="center" label="现价" prop="price">
-        <template slot-scope="scope">{{ scope.row.price | centToYuan}}</template>
+        <template slot-scope="scope">{{ scope.row.price | moneyFormatter}}</template>
       </el-table-column>
       <el-table-column label="销量" prop="sale" min-width="100"/>
       <el-table-column label="单位" prop="unit" min-width="100"/>
@@ -103,7 +103,6 @@
           </el-button>
         </template>
       </el-table-column>
-
     </el-table>
     <pagination
       v-show="pagination.total>0"
@@ -145,10 +144,13 @@
       }
     },
     created() {
-      this.loadCategoryOptions()
-      this.handleQuery()
+      this.loadData()
     },
     methods: {
+      loadData() {
+        this.loadCategoryOptions()
+        this.handleQuery()
+      },
       loadCategoryOptions() {
         categoryList({queryMode: 2}).then(response => {
           this.categoryOptions = response.data

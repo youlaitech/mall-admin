@@ -1,4 +1,4 @@
- import request from '@/utils/request'
+import request from '@/utils/request'
 
 export function list(queryParams) {
   return request({
@@ -7,6 +7,15 @@ export function list(queryParams) {
     params: queryParams
   })
 }
+
+export function listByTypeCode(typeCode) {
+  return request({
+    url: '/youlai-admin/dictionaries',
+    method: 'get',
+    params: {'typeCode': typeCode}
+  })
+}
+
 
 export function detail(id) {
   return request({
@@ -35,7 +44,7 @@ export function del(ids) {
   return request({
     url: '/youlai-admin/dictionaries',
     method: 'delete',
-    params: { ids: ids }
+    params: {ids: ids}
   })
 }
 

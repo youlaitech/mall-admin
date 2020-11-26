@@ -1,19 +1,22 @@
 <template>
   <div class="app-container">
-    <!-- 搜索表单::begin -->
     <el-form :inline="true" size="small" ref="queryForm" :model="queryParams">
       <el-form-item prop="orderSn">
         <el-input v-model="queryParams.orderSn" placeholder="订单号"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-date-picker v-model="queryParams.timeArray" type="datetimerange" class="filter-item" range-separator="至"
-                        start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions"/>
+        <el-date-picker
+          v-model="dateRange"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"/>
       </el-form-item>
-
       <el-form-item>
-        <el-select v-model="queryParams.statusArray" :multiple="false" style="width: 200px" class="filter-item"
-                   placeholder="请选择订单状态">
-          <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value"/>
+        <el-select v-model="queryParams.status" class="filter-item" placeholder="订单状态">
+          <el-option v-for="(key, value) in orderStatusMap" :label="key" :value="value"/>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -21,228 +24,187 @@
         <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-    <!-- 搜索表单::end -->
 
-    <!-- 数据表格::start -->
-    <el-table
-      id="dataTable"
-      ref="multipleTable"
-      :data="pageList"
-      @selection-change="handleSelectionChange"
-      @row-click="handleRowClick"
-      border>
-      <el-table-column
-        type="selection"
-        min-width="5%">
-      </el-table-column>
-      <el-table-column
-        prop="orderSn"
-        label="订单编号"
-        min-width="10"
-      />
-      <el-table-column
-        prop="member_id"
-        label="会员ID"
-        min-width="10"
-      />
-      <el-table-column label="订单来源" width="120" align="center">
-        <template slot-scope="scope">{{scope.row.source_type | formatSourceType}}</template>
-      </el-table-column>
-      <el-table-column label="订单状态" width="120" align="center">
-        <template slot-scope="scope">{{scope.row.status | formatStatus}}</template>
-      </el-table-column>
+    <el-table id="dataTable" ref="multipleTable" :data="pageList" border>
 
-      <el-table-column
-        prop="total_amount"
-        label="订单总额"
-        min-width="10"
-      />
-      <el-table-column
-        prop="pay_amount"
-        label="支付金额"
-        min-width="10"
-      />
+      <el-table-column align="center" label="订单编号" prop="orderSn"/>
 
-      <el-table-column
-        prop="pay_time"
-        label="支付时间"
-        min-width="12"
-      />
-      <el-table-column label="支付方式" width="120" align="center">
-        <template slot-scope="scope">{{scope.row.pay_type | formatPayType}}</template>
-      </el-table-column>
+      <el-table-column align="center" prop="memberId" label="会员ID"/>
 
-      <el-table-column
-        prop="logistics_number"
-        label="物流单号 "
-        min-width="10"
-      />
-
-      <el-table-column
-        prop="logistics_company"
-        label="物流公司 "
-        min-width="10"
-      />
-
-
-      <el-table-column
-        label="操作"
-        min-width="16">
+      <el-table-column align="center" label="订单来源">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleViewOrder(scope.row)"
-          >查看订单
-          </el-button>
-          <el-button
-            size="mini"
-            @click="handleCloseOrder( scope.row)"
-            v-show="scope.row.status===0">关闭订单
-          </el-button>
-          <el-button
-            size="mini"
-            @click="handleDeliverOrder( scope.row)"
-            v-show="scope.row.status===1">订单发货
-          </el-button>
-          <el-button
-            size="mini"
-            @click="handleViewLogistics(scope.row)"
-            v-show="scope.row.status===2||scope.row.status===3">订单跟踪
-          </el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDeleteOrder(scope.row)"
-            v-show="scope.row.status===4">删除订单
-          </el-button>
+          <el-tag>{{ scope.row.source | orderSourceFilter }}</el-tag>
         </template>
       </el-table-column>
 
-    </el-table>
-    <!-- 数据表格::end-->
+      <el-table-column align="center" label="订单状态">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.status | orderStatusFilter }}</el-tag>
+        </template>
+      </el-table-column>
 
-    <!-- 分页工具条::start -->
+      <el-table-column align="center" prop="orderPrice" label="订单金额">
+        <template slot-scope="scope">
+          {{ scope.row.orderPrice | moneyFormatter}}
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" prop="payPrice" label="支付金额">
+        <template slot-scope="scope">
+          {{ scope.row.orderPrice | moneyFormatter}}
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="支付方式">
+        <template slot-scope="scope">
+          <el-tag>{{scope.row.payChannel | payChannelFilter}}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="物流渠道" prop="logisticsChannel" :formatter="logisticsChannelFormatter"/>
+
+      <el-table-column align="center" prop="logisticsNo" label="物流单号"/>
+
+      <el-table-column align="center" label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleDetail(scope.row)">查看</el-button>
+          <!-- <el-button size="mini" @click="handleCloseOrder(scope.row)">关闭订单</el-button>
+           <el-button size="mini" @click="handleDeliverOrder(scope.row)">订单发货</el-button>
+           <el-button size="mini" @click="handleViewLogistics(scope.row)">订单跟踪</el-button>-->
+          <el-button size="mini" @click="handleRemoveOrder(scope.row)" type="danger">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
     <pagination
       v-show="pagination.total>0"
       :total="pagination.total"
       :page.sync="pagination.page"
       :limit.sync="pagination.limit"
       @pagination="handleQuery"/>
-    <!-- 分页工具条::end -->
 
-    <!-- 表单弹窗::start -->
-    <el-dialog
-      :title="dialog.title"
-      :visible.sync="dialog.visible"
-      @close="cancel"
-      center
-      top="5vh"
-      width="40%">
-      <el-form id="dataForm"
-               label-width="120px"
-               :model="form"
-               :rules="rules"
-               ref="form">
-        <el-form-item label="订单编号" prop="name">
-          {{form.orderSn}}
-        </el-form-item>
-        <el-form-item label="收货人" prop="receiver_name">
-          {{form.receiver_name}}
-        </el-form-item>
 
-        <el-form-item label="手机号码" prop="receiver_mobile">
-          {{ form.receiver_mobile}}
-        </el-form-item>
-        <el-form-item label="邮政编码" prop="receiver_zip">
-          {{form.receiver_zip}}
-        </el-form-item>
-        <el-form-item label="收货地址" prop="receiver_address">
-          {{form.receiver_address}}
-        </el-form-item>
-        <el-form-item label="物流公司" prop="logistics_company">
-          <el-select placeholder="请选择物流公司"
-                     v-model="form.logistics_company"
-                     size="small">
-            <el-option v-for="item in companyOptions"
-                       :label="item"
-                       :value="item">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="物流单号" prop="logistics_number">
-          <el-input v-model="form.logistics_number" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="handleSubmit">确 定</el-button>
-      </div>
+    <!-- 订单详情对话框 -->
+    <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
+      <section ref="print">
+        <el-form :data="orderDetail" label-position="left">
+          <el-form-item label="订单编号">
+            <span>{{ orderDetail.order.orderSn }}</span>
+          </el-form-item>
+          <el-form-item label="订单状态">
+            <el-tag>{{ orderDetail.order.orderStatus | orderStatusFilter }}</el-tag>
+          </el-form-item>
+          <el-form-item label="订单用户">
+            <span>{{ orderDetail.user.nickname }}</span>
+          </el-form-item>
+          <el-form-item label="用户留言">
+            <span>{{ orderDetail.order.message }}</span>
+          </el-form-item>
+          <el-form-item label="收货信息">
+            <span>（收货人）{{ orderDetail.order.consignee }}</span>
+            <span>（手机号）{{ orderDetail.order.mobile }}</span>
+            <span>（地址）{{ orderDetail.order.address }}</span>
+          </el-form-item>
+          <el-form-item label="商品信息">
+            <el-table :data="orderDetail.orderGoods" border fit highlight-current-row>
+              <el-table-column align="center" label="商品名称" prop="goodsName"/>
+              <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+              <el-table-column align="center" label="货品规格" prop="specifications"/>
+              <el-table-column align="center" label="货品价格" prop="price"/>
+              <el-table-column align="center" label="货品数量" prop="number"/>
+              <el-table-column align="center" label="货品图片" prop="picUrl">
+                <template slot-scope="scope">
+                  <img :src="scope.row.picUrl" width="40">
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form-item>
+          <el-form-item label="费用信息">
+            <span>
+              (实际费用){{ orderDetail.order.actualPrice }}元 =
+              (商品总价){{ orderDetail.order.goodsPrice }}元 +
+              (快递费用){{ orderDetail.order.freightPrice }}元 -
+              (优惠减免){{ orderDetail.order.couponPrice }}元 -
+              (积分减免){{ orderDetail.order.integralPrice }}元
+            </span>
+          </el-form-item>
+          <el-form-item label="支付信息">
+            <span>（支付渠道）微信支付</span>
+            <span>（支付时间）{{ orderDetail.order.payTime }}</span>
+          </el-form-item>
+          <el-form-item label="快递信息">
+            <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
+            <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
+            <span>（发货时间）{{ orderDetail.order.shipTime }}</span>
+          </el-form-item>
+          <el-form-item label="退款信息">
+            <span>（退款金额）{{ orderDetail.order.refundAmount }}元</span>
+            <span>（退款类型）{{ orderDetail.order.refundType }}</span>
+            <span>（退款备注）{{ orderDetail.order.refundContent }}</span>
+            <span>（退款时间）{{ orderDetail.order.refundTime }}</span>
+          </el-form-item>
+          <el-form-item label="收货信息">
+            <span>（确认收货时间）{{ orderDetail.order.confirmTime }}</span>
+          </el-form-item>
+        </el-form>
+      </section>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="orderDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="printOrder">打 印</el-button>
+      </span>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
-  import {orderPageList, orderDeliver, orderDelete} from '@/api/oms/order'
 
-  const statusMap = {
-    101: '未付款',
-    102: '用户取消',
-    103: '系统取消',
+  import {list, detail, update, add, del, patch} from '@/api/oms/order'
 
-    201: '已付款',
-    202: '申请退款',
-    203: '已退款',
-
-    301: '已发货',
-
-    401: '用户收货',
-    402: '系统收货'
+  const orderSourceMap = {
+    1: '微信小程序',
+    2: 'APP',
+    3: 'PC'
   }
 
-  const defaultLogisticsCompanies = ["顺丰快递", "圆通快递", "中通快递", "韵达快递"];
+  const orderStatusMap = {
+    11: '未付款',
+    12: '用户取消',
+    13: '系统取消',
+    21: '已付款',
+    22: '申请退款',
+    23: '已退款',
+    31: '已发货',
+    41: '用户收货',
+    42: '系统收货'
+  }
+
+
+  const payChannelMap = {
+    0: '未支付',
+    1: '支付宝',
+    2: '微信'
+  }
 
   export default {
     filters: {
-      formatPayType(value) {
-        if (value === 1) {
-          return '支付宝';
-        } else if (value === 2) {
-          return '微信';
-        } else {
-          return '未支付';
-        }
+      orderSourceFilter(source) {
+        return orderSourceMap[source]
       },
-      formatSourceType(value) {
-        if (value === 1) {
-          return 'APP订单';
-        } else if (value === 2) {
-          return '微信订单';
-        }
+      orderStatusFilter(status) {
+        return orderStatusMap[status]
       },
-      formatStatus(value) {
-        if (value === 1) {
-          return '待发货';
-        } else if (value === 2) {
-          return '已发货';
-        } else if (value === 3) {
-          return '已完成';
-        } else if (value === 4) {
-          return '已关闭';
-        } else if (value === 5) {
-          return '无效订单';
-        } else {
-          return '待付款';
-        }
-      },
+      payChannelFilter(val) {
+        return payChannelMap[val]
+      }
     },
     data() {
       return {
-        // 选中数组
+        orderSourceMap,
+        orderStatusMap,
+        payChannelMap,
         ids: [],
-        // 限制一行选中按钮开启的控制【修改按钮】默认true不开启按钮
         single: true,
-        // 限制一行或多行选中按钮就开启的控制 【删除按钮】 默认true不开启按钮
         multiple: true,
         pagination: {
           page: 1,
@@ -250,68 +212,62 @@
           total: 0
         },
         queryParams: {
-          member_id: undefined,
           orderSn: undefined
         },
-        timeArray: [],
+        dateRange: [],
         pageList: [],
         dialog: {
           title: undefined,
-          visible: false,
+          visible: false
         },
         form: {
           status: 1
         },
         rules: {
-          logistics_company: [{
-            required: true, message: '请选择物流公司', trigger: 'blur'
+          logisticsChannel: [{
+            required: true, message: '请选择物流渠道', trigger: 'blur'
           }],
-          logistics_number: [{
+          logisticsNo: [{
             required: true, message: '请输入物流单号', trigger: 'blur'
           }]
         },
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', [start, end])
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', [start, end])
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-              picker.$emit('pick', [start, end])
-            }
-          }]
+        logisticsChannelOptions: [],
+        orderDialogVisible: false,
+
+        orderDetail: {
+          order: {},
+          user: {},
+          orderGoods: []
         },
-        companyOptions: defaultLogisticsCompanies
       }
     },
+    created() {
+      this.loadData()
+    },
     methods: {
-      handleQuery() {
-        if (this.timeArray && this.timeArray.length === 2) {
-          this.queryParams.start_time = this.timeArray[0]
-          this.queryParams.end_time = this.timeArray[1]
-        } else {
-          this.queryParams.start_time = undefined
-          this.queryParams.end_time = undefined
+      async loadData() {
+        await this.getDicts("logistics_channel").then(response => {
+          this.logisticsChannelOptions = response.data
+        })
+        await this.handleQuery()
+      },
+      logisticsChannelFormatter(row) {
+        const arr = this.logisticsChannelOptions.filter(item => item.value == row.logisticsChannel)
+        if (arr.length > 0) {
+          return arr[0].name
         }
-        orderPageList(this.pagination.page, this.pagination.limit, this.queryParams).then(response => {
-          this.pageList = response.data.records;
-          this.total = response.data.total
+        return
+      },
+
+      handleQuery() {
+        if (this.dateRange.length === 2) {
+          this.queryParams.startDate = this.dateRange[0]
+          this.queryParams.endDate = this.dateRange[1]
+        }
+        list(this.queryParams).then(response => {
+          const {data, total} = response
+          this.pageList = data
+          this.total = total
         });
       },
       handleResetQuery() {
@@ -321,26 +277,23 @@
           total: 0
         }
         this.queryParams = {
-          member_id: undefined,
           orderSn: undefined
-        };
-        this.handleResetForm()
+        }
+        this.dateRange = []
+        this.resetForm()
         this.handleQuery()
       },
-      handleRowClick(row) {
-        this.$refs.multipleTable.toggleRowSelection(row);
-      },
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id);
-        this.single = selection.length != 1
-        this.multiple = !selection.length
+
+      resetForm() {
+        this.form = {}
+        if (this.$refs['form']) {
+          this.$refs['form'].resetFields()
+        }
       },
 
-      handleResetForm() {
-        this.resetForm("form")
-      },
-      handleViewOrder(row) {
-        this.$router.push({path: 'orderDetail', query: {id: row.id}})
+      handleDetail(row) {
+        this.orderDialogVisible = true
+
       },
       handleCloseOrder(row) {
       },
@@ -349,7 +302,7 @@
           title: '订单发货',
           visible: true
         }
-        this.handleResetForm()
+        this.resetForm()
         this.form = {
           id: row.id,
           orderSn: row.orderSn,
@@ -359,12 +312,9 @@
           receiver_address: row.receiver_address
         }
       },
-      handleViewLogistics() {
-
-
+      handleViewLogistics(row) {
       },
-      handleDeleteOrder(row) {
-
+      handleRemoveOrder(row) {
       },
       handleSubmit() {
         this.$refs["form"].validate((valid) => {
@@ -378,13 +328,12 @@
         })
       },
       handleDelete(row) {
-        const ids = row.id || this.ids;
         this.$confirm('是否确认删除选中的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-            orderDelete(ids).then(() => {
+            del(row.id).then(() => {
               this.$message.success("删除成功")
               this.handleQuery()
             })
@@ -393,19 +342,10 @@
           this.$message.info("已取消删除")
         )
       },
-      handleDeliver(row) {
-
-      },
-      handleRefund(row) {
-
-      },
       cancel() {
-        this.handleResetForm()
+        this.resetForm()
         this.dialog.visible = false;
       }
-    },
-    created() {
-      this.handleQuery()
     }
   }
 </script>
