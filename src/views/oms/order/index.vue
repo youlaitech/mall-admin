@@ -68,10 +68,7 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleDetail(scope.row)">查看</el-button>
-          <!-- <el-button size="mini" @click="handleCloseOrder(scope.row)">关闭订单</el-button>
-           <el-button size="mini" @click="handleDeliverOrder(scope.row)">订单发货</el-button>
-           <el-button size="mini" @click="handleViewLogistics(scope.row)">订单跟踪</el-button>-->
-          <el-button size="mini" @click="handleRemoveOrder(scope.row)" type="danger">删除</el-button>
+          <el-button size="mini" @click="handleDelete(scope.row)" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,7 +80,6 @@
       :limit.sync="pagination.limit"
       @pagination="handleQuery"/>
 
-
     <!-- 订单详情对话框 -->
     <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
       <section ref="print">
@@ -92,12 +88,12 @@
             <span>{{ orderDetail.order.orderSn }}</span>
           </el-form-item>
           <el-form-item label="订单状态">
-            <el-tag>{{ orderDetail.order.orderStatus | orderStatusFilter }}</el-tag>
+            <el-tag>{{ orderDetail.order.status | orderStatusFilter }}</el-tag>
           </el-form-item>
           <el-form-item label="订单用户">
-            <span>{{ orderDetail.user.nickname }}</span>
+            <span>{{ orderDetail.member.nickname }}</span>
           </el-form-item>
-          <el-form-item label="用户留言">
+          <el-form-item label="买家留言">
             <span>{{ orderDetail.order.message }}</span>
           </el-form-item>
           <el-form-item label="收货信息">
@@ -106,42 +102,41 @@
             <span>（地址）{{ orderDetail.order.address }}</span>
           </el-form-item>
           <el-form-item label="商品信息">
-            <el-table :data="orderDetail.orderGoods" border fit highlight-current-row>
-              <el-table-column align="center" label="商品名称" prop="goodsName"/>
-              <el-table-column align="center" label="商品编号" prop="goodsSn"/>
-              <el-table-column align="center" label="货品规格" prop="specifications"/>
-              <el-table-column align="center" label="货品价格" prop="price"/>
-              <el-table-column align="center" label="货品数量" prop="number"/>
-              <el-table-column align="center" label="货品图片" prop="picUrl">
+            <el-table :data="orderDetail.orderItems" border fit highlight-current-row>
+              <el-table-column align="center" label="商品名称" prop="spuName"/>
+              <el-table-column align="center" label="货品规格" prop="skuSpecifications"/>
+              <el-table-column align="center" label="货品价格" prop="skuPrice"/>
+              <el-table-column align="center" label="货品数量" prop="skuQuantity"/>
+              <el-table-column align="center" label="货品图片" prop="skuPic">
                 <template slot-scope="scope">
-                  <img :src="scope.row.picUrl" width="40">
+                  <img :src="scope.row.skuPic" width="40">
                 </template>
               </el-table-column>
             </el-table>
           </el-form-item>
           <el-form-item label="费用信息">
             <span>
-              (实际费用){{ orderDetail.order.actualPrice }}元 =
-              (商品总价){{ orderDetail.order.goodsPrice }}元 +
+              (订单费用){{ orderDetail.order.orderPrice }}元 =
+              (商品总价){{ orderDetail.order.skuPrice }}元 +
               (快递费用){{ orderDetail.order.freightPrice }}元 -
               (优惠减免){{ orderDetail.order.couponPrice }}元 -
               (积分减免){{ orderDetail.order.integralPrice }}元
             </span>
           </el-form-item>
           <el-form-item label="支付信息">
-            <span>（支付渠道）微信支付</span>
-            <span>（支付时间）{{ orderDetail.order.payTime }}</span>
+            <span>（支付渠道）{{ orderDetail.order.payChannel | payChannelFilter}}</span>
+            <span>（支付时间）{{ orderDetail.order.gmtPay }}</span>
           </el-form-item>
           <el-form-item label="快递信息">
-            <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
-            <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
-            <span>（发货时间）{{ orderDetail.order.shipTime }}</span>
+            <span>（物流渠道）{{ orderDetail.order.shipChannel }}</span>
+            <span>（物流单号）{{ orderDetail.order.shipSn }}</span>
+            <span>（发货时间）{{ orderDetail.order.gmtDelivery }}</span>
           </el-form-item>
           <el-form-item label="退款信息">
             <span>（退款金额）{{ orderDetail.order.refundAmount }}元</span>
             <span>（退款类型）{{ orderDetail.order.refundType }}</span>
-            <span>（退款备注）{{ orderDetail.order.refundContent }}</span>
-            <span>（退款时间）{{ orderDetail.order.refundTime }}</span>
+            <span>（退款备注）{{ orderDetail.order.refundNote }}</span>
+            <span>（退款时间）{{ orderDetail.order.gmtRefund }}</span>
           </el-form-item>
           <el-form-item label="收货信息">
             <span>（确认收货时间）{{ orderDetail.order.confirmTime }}</span>
@@ -150,7 +145,6 @@
       </section>
       <span slot="footer" class="dialog-footer">
         <el-button @click="orderDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="printOrder">打 印</el-button>
       </span>
     </el-dialog>
 
@@ -233,11 +227,10 @@
         },
         logisticsChannelOptions: [],
         orderDialogVisible: false,
-
         orderDetail: {
           order: {},
-          user: {},
-          orderGoods: []
+          member: {},
+          orderItems: []
         },
       }
     },
@@ -283,48 +276,16 @@
         this.resetForm()
         this.handleQuery()
       },
-
       resetForm() {
         this.form = {}
         if (this.$refs['form']) {
           this.$refs['form'].resetFields()
         }
       },
-
       handleDetail(row) {
         this.orderDialogVisible = true
-
-      },
-      handleCloseOrder(row) {
-      },
-      handleDeliverOrder(row) {
-        this.dialog = {
-          title: '订单发货',
-          visible: true
-        }
-        this.resetForm()
-        this.form = {
-          id: row.id,
-          orderSn: row.orderSn,
-          receiver_name: row.receiver_name,
-          receiver_mobile: row.receiver_mobile,
-          receiver_zip: row.receiver_zip,
-          receiver_address: row.receiver_address
-        }
-      },
-      handleViewLogistics(row) {
-      },
-      handleRemoveOrder(row) {
-      },
-      handleSubmit() {
-        this.$refs["form"].validate((valid) => {
-          if (valid) {
-            orderDeliver(this.form.id, this.form).then(() => {
-              this.$notify.success("发货成功")
-              this.dialog.visible = false
-              this.handleQuery()
-            })
-          }
+        detail(row.id).then(response => {
+          this.orderDetail = response.data
         })
       },
       handleDelete(row) {
@@ -344,7 +305,7 @@
       },
       cancel() {
         this.resetForm()
-        this.dialog.visible = false;
+        this.orderDialogVisible.visible = false;
       }
     }
   }
