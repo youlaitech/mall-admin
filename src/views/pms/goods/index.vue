@@ -150,6 +150,7 @@
       loadData() {
         this.loadCategoryOptions()
         this.handleQuery()
+
       },
       loadCategoryOptions() {
         categoryList({queryMode: 2}).then(response => {

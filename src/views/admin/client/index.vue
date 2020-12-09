@@ -209,6 +209,7 @@ export default {
       this.queryParams.page = this.pagination.page
       this.queryParams.limit = this.pagination.limit
       list(this.queryParams).then(response => {
+        console.log("响应列表",response)
         this.pageList = response.data
         this.pagination.total = response.total
         this.loading = false

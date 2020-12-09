@@ -71,7 +71,7 @@ service.interceptors.response.use(
         })
       }
     }
-    return {code, msg, data}
+    return  response.data
   },
   error => {
     return Promise.reject(error)

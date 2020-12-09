@@ -72,7 +72,6 @@ export default {
   },
   computed: {
     language() {
-      console.log('语言',this.$store.getters.language)
       return this.languageTypeList[this.$store.getters.language]
     },
     containerWidth() {
