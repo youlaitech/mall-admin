@@ -45,7 +45,7 @@
               <template slot-scope="scope">{{ scope.row.originPrice | moneyFormatter }}</template>
             </el-table-column>
             <el-table-column align="center" label="现价" prop="price">
-              <template slot-scope="scope">{{ scope.row.price | moneyFormatter}}</template>
+              <template slot-scope="scope">{{ scope.row.price | moneyFormatter }}</template>
             </el-table-column>
             <el-table-column align="center" label="库存" prop="stock"/>
           </el-table>
@@ -64,7 +64,7 @@
         <template slot-scope="scope">{{ scope.row.originPrice | moneyFormatter }}</template>
       </el-table-column>
       <el-table-column align="center" label="现价" prop="price">
-        <template slot-scope="scope">{{ scope.row.price | moneyFormatter}}</template>
+        <template slot-scope="scope">{{ scope.row.price | moneyFormatter }}</template>
       </el-table-column>
       <el-table-column label="销量" prop="sale" min-width="100"/>
       <el-table-column label="单位" prop="unit" min-width="100"/>
@@ -114,122 +114,122 @@
 </template>
 
 <script>
-  import {list, del, patch} from '@/api/pms/goods'
-  import {list as categoryList} from '@/api/pms/category'
+import {list, del, patch} from '@/api/pms/goods'
+import {list as categoryList} from '@/api/pms/category'
 
-  export default {
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        queryParams: {
-          name: undefined,
-          categoryId: undefined
-        },
-        pageList: [],
-        categoryOptions: [],
-        goodDetail: undefined,
-        dialogVisible: false
-      }
-    },
-    created() {
-      this.loadData()
-    },
-    methods: {
-      loadData() {
-        this.loadCategoryOptions()
-        this.handleQuery()
+export default {
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
+      },
+      queryParams: {
+        name: undefined,
+        categoryId: undefined
+      },
+      pageList: [],
+      categoryOptions: [],
+      goodDetail: undefined,
+      dialogVisible: false
+    }
+  },
+  created() {
+    this.loadData()
+  },
+  methods: {
+    loadData() {
+      this.loadCategoryOptions()
+      this.handleQuery()
 
-      },
-      loadCategoryOptions() {
-        categoryList({queryMode: 2}).then(response => {
-          this.categoryOptions = response.data
-        })
-      },
-      handleQuery() {
-        this.queryParams.page = this.pagination.page
-        this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
-          const {data, total} = response
-          this.pageList = data
-          this.pagination.total = total
-          this.loading = false
-        })
-      },
-      handleResetQuery() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams = {
-          name: undefined,
-          categoryId: undefined
-        }
-        this.handleQuery()
-      },
-      handleShowDetail(detail) {
-        this.goodDetail = detail
-        this.dialogVisible = true
-      },
-      handleAdd() {
-        this.$router.push({name: 'GoodsDetail'})
-      },
-      handleEdit(row) {
-        this.$router.push({path: 'goodsDetail', query: {id: row.id}})
-      },
-      handleDelete(row) {
-        const ids = row.id || this.ids
-        this.$confirm('是否确认删除选中的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function () {
-          return del(ids)
-        }).then(() => {
-          this.$message.success("删除成功")
-          this.handleQuery()
-        }).catch(() =>
-          this.$message.info("已取消删除")
-        )
-      },
-      handleRowClick(row) {
-        this.$refs.multipleTable.toggleRowSelection(row);
-      },
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
-      },
-      // 上架/下架
-      handleStatusChange(row) {
-        let operation = row.status === 0 ? '下架' : '上架'
-        const that = this
-        this.$confirm('确认要' + operation + row.name + '？', "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function () {
-          patch(row.id, {status: row.status}).then(response => {
-            that.$message.success(operation + '成功')
-          })
-        }).catch(function () {
-          row.status = row.status === 0 ? 1 : 0;
-        })
+    },
+    loadCategoryOptions() {
+      categoryList({queryMode: 2}).then(response => {
+        this.categoryOptions = response.data
+      })
+    },
+    handleQuery() {
+      this.queryParams.page = this.pagination.page
+      this.queryParams.limit = this.pagination.limit
+      list(this.queryParams).then(response => {
+        const {data, total} = response
+        this.pageList = data
+        this.pagination.total = total ? total : 0
+        this.loading = false
+      })
+    },
+    handleResetQuery() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
       }
+      this.queryParams = {
+        name: undefined,
+        categoryId: undefined
+      }
+      this.handleQuery()
+    },
+    handleShowDetail(detail) {
+      this.goodDetail = detail
+      this.dialogVisible = true
+    },
+    handleAdd() {
+      this.$router.push({name: 'GoodsDetail'})
+    },
+    handleEdit(row) {
+      this.$router.push({path: 'goodsDetail', query: {id: row.id}})
+    },
+    handleDelete(row) {
+      const ids = row.id || this.ids.join(',')
+      this.$confirm('是否确认删除选中的数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function () {
+        return del(ids)
+      }).then(() => {
+        this.$message.success("删除成功")
+        this.handleQuery()
+      }).catch(() =>
+        this.$message.info("已取消删除")
+      )
+    },
+    handleRowClick(row) {
+      this.$refs.multipleTable.toggleRowSelection(row);
+    },
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length != 1
+      this.multiple = !selection.length
+    },
+    // 上架/下架
+    handleStatusChange(row) {
+      let operation = row.status === 0 ? '下架' : '上架'
+      const that = this
+      this.$confirm('确认要' + operation + row.name + '？', "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function () {
+        patch(row.id, {status: row.status}).then(response => {
+          that.$message.success(operation + '成功')
+        })
+      }).catch(function () {
+        row.status = row.status === 0 ? 1 : 0;
+      })
     }
   }
+}
 </script>
 
 <style scoped>

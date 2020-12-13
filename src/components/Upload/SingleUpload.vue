@@ -1,23 +1,19 @@
 <template>
   <div>
     <el-upload
-      :headers="headers"
-      :action="uploadAction"
-      class="avatar-uploader"
-      :before-upload="beforeUpload"
-      :on-remove="handleRemove"
-      :on-success="handleUploadSuccess"
-      :on-preview="handlePreview"
-      :on-exceed="handleExceed"
-      :auto-upload="true"
-      :show-file-list="false"
+        :headers="headers"
+        :action="uploadAction"
+        class="avatar-uploader"
+        :before-upload="beforeUpload"
+        :on-remove="handleRemove"
+        :on-success="handleUploadSuccess"
+        :on-exceed="handleExceed"
+        :auto-upload="true"
+        :show-file-list="false"
     >
-      <img v-if="image" :src="image" class="avatar">
+      <img v-if="imageUrl" :src="imageUrl" class="avatar">
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -34,39 +30,33 @@ export default {
       headers: {authorization: 'Bearer ' + getToken()},
       uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/files',
       dialogVisible: false,
-      dialogImageUrl: null,
-      image: ''
     };
   },
   computed: {
-    imageUrl: {
+
+    imageUrl:{
       get() {
         return this.value
       },
       set(val) {
-        this.image = val
       }
     }
   },
   methods: {
-    emitInput(imageUrl) {
-      this.$emit('input', imageUrl)
+    emitInput(val) {
+      this.$emit('input', val)
     },
     handleRemove(file, fileList) {
       del(file.url)
       this.emitInput(fileList);
-    },
-    handlePreview(file) {
-      this.dialogVisible = true;
-      this.dialogImageUrl = file.url;
     },
     beforeUpload(file) {
 
     },
     handleUploadSuccess(response, file) {
       let url = response.data
-      this.image = url
-      this.emitInput(this.image)
+      this.imageUrl = url
+      this.emitInput(url)
     },
     handleExceed(files, fileList) {
       this.$message({

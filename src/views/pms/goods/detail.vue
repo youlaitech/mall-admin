@@ -36,7 +36,7 @@
         </el-form-item>
 
         <el-form-item label="商品图册" prop="spu.album">
-          <multi-upload v-model="form.spu.album"></multi-upload>
+          <multi-upload v-model="form.spu.pics"></multi-upload>
         </el-form-item>
 
         <el-form-item label="单位" prop="spu.unit">
@@ -113,7 +113,7 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>商品规格</span>
-        <el-button style="float: right;" type="primary" size="mini" @click="handleAddSpecification">添加规格
+        <el-button v-if="!spuId" style="float: right;" type="primary" size="mini" @click="handleAddSpecification">添加规格
         </el-button>
       </div>
       <el-form size="mini"
@@ -135,7 +135,7 @@
               {{ scope.row.value }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="150">
+          <el-table-column v-if="!spuId" label="操作" width="150">
             <template slot-scope="scope">
               <el-form-item>
                 <el-button icon="el-icon-edit" size="mini" circle
@@ -175,7 +175,7 @@
 
           <el-table-column
             prop="price"
-            label="价格(元)">
+            label="现价(元)">
             <template slot-scope="scope">
               <el-form-item :prop="'specifications[' + scope.$index + '].price'" :rules="rules.specification.price">
                 <el-input-number v-model="scope.row.price" :precision="2" :min="0" :max="2147483647"/>
@@ -185,7 +185,7 @@
 
           <el-table-column
             prop="originPrice"
-            label="吊牌价(元)">
+            label="原价(元)">
             <template slot-scope="scope">
               <el-form-item :prop="'specifications[' + scope.$index + '].originPrice'"
                             :rules="rules.specification.originPrice">
@@ -260,7 +260,7 @@
 
 <script>
 
-import {add, update} from '@/api/pms/goods'
+import {add, update, detail} from '@/api/pms/goods'
 import {list as categoryList} from '@/api/pms/category'
 import {list as brandList} from '@/api/pms/brand'
 
@@ -275,6 +275,7 @@ export default {
   components: {SingleUpload, MultiUpload, MiniCardUpload, Tinymce},
   data() {
     return {
+      spuId: undefined,
       categoryOptions: [],
       brandOptions: [],
       form: {
@@ -286,7 +287,7 @@ export default {
           originPrice: undefined,
           price: undefined,
           pic: undefined,
-          album: [],
+          pics: [],
           unit: undefined,
           description: undefined,
           detail: undefined,
@@ -327,7 +328,6 @@ export default {
         name: [{required: true, message: '请填写规格名称', trigger: 'blur'}],
         value: [{required: true, message: '请填写规格值', trigger: 'blur'}]
       },
-      cacheSkuList: [],
       specificationTitles: []
     }
   },
@@ -338,7 +338,13 @@ export default {
     async loadData() {
       await this.loadCategoryOptions()
       await this.loadBrandOptions()
-      console.log('页面跳转参数',this.$route.query.id)
+      const spuId = this.$route.query.id
+      this.spuId = spuId
+      if (spuId) {
+        detail(spuId).then(response => {
+          this.form = response.data
+        })
+      }
     },
     loadCategoryOptions() {
       categoryList({queryMode: 2}).then(response => {
@@ -372,14 +378,14 @@ export default {
       this.specificationForm = {...row, ...{index: index}}
     },
     handleRemoveSpecification(index) {
-      const _this = this
+      const that = this
       this.$confirm("删除规格将导致库存信息重新生成，确认删除？", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(function () {
-        _this.form.specifications.splice(index, 1)
-        _this.generateSkuList()
+        that.form.specifications.splice(index, 1)
+        that.generateSkuList()
       })
     },
     handleSubmitSpecification() {
@@ -496,18 +502,22 @@ export default {
                       data.spu = {
                         ...data.spu, ...{
                           price: data.spu.price * 100,
-                          originPrice: data.spu.originPrice * 100,
-                          album: JSON.stringify(data.spu.album)
+                          originPrice: data.spu.originPrice * 100
                         }
                       }
                       // sku处理
                       data.skuList.map(sku => {
                         sku.price = sku.price * 100
                       })
-                      console.log(JSON.stringify(data))
-                      add(data).then(response => {
-                        this.$router.push({name: 'Goods'})
-                      })
+                      if (!this.spuId) {
+                        add(data).then(response => {
+                          this.$router.push({name: 'Goods'})
+                        })
+                      } else {
+                        update(this.spuId, data).then(response => {
+                          this.$router.push({name: 'Goods'})
+                        })
+                      }
                     }
                   })
                 }
@@ -516,9 +526,6 @@ export default {
           })
         }
       })
-    },
-    close() {
-
     }
   }
 }

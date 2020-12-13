@@ -32,10 +32,10 @@ export function update(id, data) {
 }
 
 export function del(ids) {
+  console.log('删除开始',ids)
   return request({
-    url: '/mall-pms/goods',
-    method: 'delete',
-    params: { ids: ids }
+    url: '/mall-pms/goods/'+ids,
+    method: 'delete'
   })
 }
 
