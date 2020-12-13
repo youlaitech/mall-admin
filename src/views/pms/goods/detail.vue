@@ -342,7 +342,16 @@ export default {
       this.spuId = spuId
       if (spuId) {
         detail(spuId).then(response => {
-          this.form = response.data
+          const data = response.data
+          // 金额转换
+          data.spu.originPrice /= 100
+          data.spu.price /= 100
+          data.skuList.map(item => {
+            item.originPrice /= 100
+            item.price /= 100
+          })
+
+          this.form = data
         })
       }
     },
