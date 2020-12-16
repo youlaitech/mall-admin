@@ -15,6 +15,7 @@ service.interceptors.request.use(
     if (store.getters.token) {
       config.headers['Authorization'] = 'Bearer ' + getToken()
     }
+    config.headers['SystemType'] = 1
     return config
   },
   error => {
@@ -71,7 +72,7 @@ service.interceptors.response.use(
         })
       }
     }
-    return  response.data
+    return response.data
   },
   error => {
     return Promise.reject(error)
