@@ -37,7 +37,7 @@
                   编辑
                 </el-button>
                 <el-button
-                  v-show="!data.children || data.children.length <= 0"
+                  v-show="data.id && (!data.children || data.children.length <= 0)"
                   type="danger"
                   size="mini"
                   round
@@ -69,7 +69,7 @@
           <el-input v-model="form.sort" style="width: 220px"></el-input>
         </el-form-item>
         <el-form-item label="类目图标" prop="icon">
-          <single-upload v-model="form.icon"></single-upload>
+          <single-upload v-model="form.iconUrl"></single-upload>
         </el-form-item>
         <el-form-item label="是否显示" prop="status">
           <el-radio-group v-model="form.status">
@@ -116,6 +116,9 @@
           name: [{
             required: true, message: '请输入类目名称', trigger: 'blur'
           }]
+        },
+        queryParams: {
+          queryMode: 'tree'
         }
       }
     },
@@ -124,7 +127,7 @@
     },
     methods: {
       handleQuery() {
-        list().then(response => {
+        list(this.queryParams).then(response => {
           this.list = [{
             name: '全部类目',
             id: 0,
@@ -191,14 +194,13 @@
         )
       },
       handleSubmit() {
-        console.log("1", this.current)
         this.$refs["form"].validate((valid) => {
           if (valid) {
             const id = this.form.id
             if (id != undefined) {
               update(id, this.form).then(response => {
-                const {name, icon} = response.data
-                this.current.icon = icon
+                const {name, iconUrl} = response.data
+                this.current.iconUrl = iconUrl
                 this.current.name = name
                 this.$message.success("修改成功")
                 this.dialog.visible = false
@@ -206,6 +208,7 @@
             } else {
               add(this.form).then(response => {
                 this.parent.children.push(response.data)
+                console.log(this.parent.children)
                 this.$message.success("新增成功")
                 this.dialog.visible = false
               })

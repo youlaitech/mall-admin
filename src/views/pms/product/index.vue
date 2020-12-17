@@ -53,7 +53,7 @@
       </el-table-column>
       <el-table-column label="商品ID" prop="id" min-width="50"/>
       <el-table-column label="商品名称" prop="name" min-width="100"/>
-      <el-table-column label="图片" prop="pic">
+      <el-table-column label="商品图片" prop="pic">
         <template slot-scope="scope">
           <img :src="scope.row.pic" width="40">
         </template>
@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import {list, del, patch} from '@/api/pms/goods'
+import {list, del, patch} from '@/api/pms/product'
 import {list as categoryList} from '@/api/pms/category'
 
 export default {
@@ -184,10 +184,10 @@ export default {
       this.dialogVisible = true
     },
     handleAdd() {
-      this.$router.push({name: 'GoodsDetail'})
+      this.$router.push({name: 'ProductDetail'})
     },
     handleEdit(row) {
-      this.$router.push({path: 'goodsDetail', query: {id: row.id}})
+      this.$router.push({path: 'productDetail', query: {id: row.id}})
     },
     handleDelete(row) {
       const ids = row.id || this.ids.join(',')

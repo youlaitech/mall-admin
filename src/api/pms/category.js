@@ -35,7 +35,7 @@ export function del(ids) {
   return request({
     url: '/mall-pms/categories',
     method: 'delete',
-    params: {ids: ids}
+    params: {id: ids}
   })
 }
 

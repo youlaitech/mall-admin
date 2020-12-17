@@ -31,12 +31,8 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="商品主图" prop="spu.pic">
-          <single-upload v-model="form.spu.pic"></single-upload>
-        </el-form-item>
-
-        <el-form-item label="商品图册" prop="spu.album">
-          <multi-upload v-model="form.spu.pics"></multi-upload>
+        <el-form-item label="商品相册" prop="spu.album">
+          <multi-upload v-model="form.spu.picUrls"></multi-upload>
         </el-form-item>
 
         <el-form-item label="单位" prop="spu.unit">
@@ -44,10 +40,11 @@
         </el-form-item>
 
         <el-form-item label="所属类目" prop="spu.categoryId">
-          <el-cascader v-model="form.spu.categoryId" :options="categoryOptions"
-                       expand-trigger="hover" clearable
-                       @change="handleCategoryChange"
-          />
+          <el-cascader v-model="form.spu.categoryId"
+                       :options="categoryOptions"
+                       expand-trigger="hover"
+                       clearable
+                       @change="handleCategoryChange"/>
         </el-form-item>
         <el-form-item label="所属品牌" prop="spu.categoryId">
           <el-select v-model="form.spu.brandId" clearable>
@@ -212,12 +209,12 @@
           </el-table-column>
 
           <el-table-column
-            prop="barCode"
+            prop="code"
             label="商品条码">
             <template slot-scope="scope">
-              <el-form-item :prop="'specifications[' + scope.$index + '].barCode'">
-                <el-input v-model="scope.row.barCode" maxlength="200">
-                  <el-button slot="append" @click="handleGenerateBarCode(scope.row)">随机</el-button>
+              <el-form-item :prop="'specifications[' + scope.$index + '].code'">
+                <el-input v-model="scope.row.code" maxlength="200">
+                  <el-button slot="append" @click="handleGeneratecode(scope.row)">随机</el-button>
                 </el-input>
               </el-form-item>
             </template>
@@ -259,7 +256,7 @@
 
 <script>
 
-  import {add, update, detail} from '@/api/pms/goods'
+  import {add, update, detail} from '@/api/pms/product'
   import {list as categoryList} from '@/api/pms/category'
   import {list as brandList} from '@/api/pms/brand'
 
@@ -270,7 +267,7 @@
   import Tinymce from '@/components/Tinymce'
 
   export default {
-    name: "GoodsDetail",
+    name: "ProductDetail",
     components: {SingleUpload, MultiUpload, MiniCardUpload, Tinymce},
     data() {
       return {
@@ -285,8 +282,7 @@
             brandId: undefined,
             originPrice: undefined,
             price: undefined,
-            pic: undefined,
-            pics: [],
+            picUrls: [],
             unit: undefined,
             description: undefined,
             detail: undefined,
@@ -349,7 +345,6 @@
               item.originPrice /= 100
               item.price /= 100
             })
-
             this.form = data
           })
         }
@@ -466,7 +461,7 @@
               Object.assign(obj, item)
               obj[current.name] = value
               if (index === specifications.length - 1) {
-                Object.assign(obj, {price: 0, originPrice: 0, stock: 0, pic: undefined, barCode: undefined})
+                Object.assign(obj, {price: 0, originPrice: 0, stock: 0, pic: undefined, code: undefined})
               }
               result.push(obj)
             })
@@ -475,12 +470,12 @@
         }, [{}])
 
         this.form.skuList.map(sku => {
-          let {originPrice, price, stock, pic, barCode, ...specification} = sku
+          let {originPrice, price, stock, pic, code, ...specification} = sku
           sku.specification = JSON.stringify(specification)
         })
       },
-      handleGenerateBarCode(row) {
-        row.barCode = new Date().getTime() + ''
+      handleGeneratecode(row) {
+        row.code = new Date().getTime() + ''
         this.$forceUpdate()
       },
       handleSubmit() {
