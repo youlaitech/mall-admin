@@ -13,13 +13,29 @@
             default-expand-all>
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span>
-                <el-image style="width: 30px; height: 30px;vertical-align: middle" v-show="data.level === 2"
+                <el-image style="width: 30px; height: 30px;vertical-align: middle"
+                          v-show="data.level == 2"
                           :src="data.icon"/>
                 {{ data.name }}
+                <el-link
+                  v-show="data.children.length==0"
+                  style="margin-left:5px"
+                  type="primary"
+                  @click="showAttrDialog(data)">
+                  属性
+                </el-link>
+
+                <el-link
+                  v-show="data.children.length==0"
+                  style="margin-left:5px"
+                  type="primary"
+                  @click="showSpecDialog(data)">
+                  规格
+                </el-link>
               </span>
               <span>
                 <el-button
-                  v-show="data.level !== 2 "
+                  v-show="data.level != 2 "
                   type="primary"
                   size="mini"
                   round
@@ -55,7 +71,7 @@
     <el-dialog
       :title="dialog.title"
       :visible.sync="dialog.visible"
-      @close="cancel"
+      @close="closeDialog"
       top="5vh"
       width="600px">
       <el-form id="form" label-width="120px" :model="form" :rules="rules" ref="form">
@@ -79,166 +95,322 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
+        <el-button @click="closeDialog">取 消</el-button>
         <el-button type="primary" @click="handleSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      :title="attrDialog.title"
+      :visible.sync="attrDialog.visible"
+      @close="closeAttrDialog"
+      top="5vh"
+      width="600px">
+      <el-button style="float: right" type="text" @click="handleAttrAdd">添加属性</el-button>
+      <el-divider></el-divider>
+      <el-form id="attrForm" label-width="80px" :model="attrForm" ref="attrForm">
+        <el-form-item
+          v-for="(item, index) in attrForm.attributes"
+          :label="'属性' + (index+1)"
+          :prop="'attributes.' + index + '.name'"
+          :rules="rules.attribute.name">
+          <el-input v-model="item.name" style="width:400px"></el-input>
+          <el-button type="danger" icon="el-icon-delete" circle size="mini" @click.prevent="removeAttr(index)"
+                     style="margin-left: 5px"></el-button>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeAttrDialog">取 消</el-button>
+        <el-button type="primary" @click="handleAttrSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      :title="specDialog.title"
+      :visible.sync="specDialog.visible"
+      @close="closeSpecDialog"
+      top="5vh"
+      width="600px">
+      <el-button style="float: right" type="text" @click="handleSpecAdd">添加规格</el-button>
+      <el-divider></el-divider>
+      <el-form id="specForm" label-width="80px" :model="specForm" ref="specForm">
+        <el-form-item
+          v-for="(item, index) in specForm.specifications"
+          :label="'规格' + (index+1)"
+          :prop="'specifications.' + index + '.name'"
+          :rules="rules.specification.name">
+          <el-input v-model="item.name" style="width:400px"></el-input>
+          <el-button type="danger" icon="el-icon-delete" circle size="mini" @click.prevent="removeSpec(index)"
+                     style="margin-left: 5px"></el-button>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeSpecDialog">取 消</el-button>
+        <el-button type="primary" @click="handleSpecSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import {list, detail, update, add, del, patch} from '@/api/pms/category'
-  import SingleUpload from '@/components/Upload/SingleUpload'
+import {list, detail, update, add, del} from '@/api/pms/category'
+import SingleUpload from '@/components/Upload/SingleUpload'
 
-  export default {
-    components: {SingleUpload},
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
-        list: [],
-        dialog: {
-          title: undefined,
-          visible: false,
-        },
-        form: {
+export default {
+  components: {SingleUpload},
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      list: [],
+      dialog: {
+        visible: false,
+      },
+      attrDialog: {
+        title: undefined,
+        visible: false
+      },
+      specDialog: {
+        title: undefined,
+        visible: false
+      },
+      form: {
+        id: undefined,
+        name: undefined,
+        parentId: undefined,
+        level: undefined,
+        icon: undefined,
+        status: 1,
+        sort: undefined
+      },
+      attrForm: {
+        attributes: [{
           id: undefined,
-          name: undefined,
-          parentId: undefined,
-          level: undefined,
-          icon: undefined,
-          status: 1,
-          sort: undefined
-        },
-        current: {}, // 记录当前行
-        parent: {}, // 记录上级行
-        rules: {
+          categoryId: undefined,
+          name: undefined
+        }]
+      },
+      specForm: {
+        specifications: [{
+          id: undefined,
+          categoryId: undefined,
+          name: undefined
+        }]
+      },
+      current: {}, // 记录当前行
+      parent: {}, // 记录上级行
+      rules: {
+        name: [{
+          required: true, message: '请输入类目名称', trigger: 'blur'
+        }],
+        attribute: {
           name: [{
-            required: true, message: '请输入类目名称', trigger: 'blur'
+            required: true, message: '请输入属性名称'
           }]
         },
-        queryParams: {
-          queryMode: 'tree'
-        }
-      }
-    },
-    created() {
-      this.handleQuery()
-    },
-    methods: {
-      handleQuery() {
-        list(this.queryParams).then(response => {
-          this.list = [{
-            name: '全部类目',
-            id: 0,
-            children: response.data
+        specification: {
+          name: [{
+            required: true, message: '请输入规格名称'
           }]
-          this.loading = false
-        })
-      },
-      resetForm() {
-        this.form = {
-          id: undefined,
-          name: undefined,
-          parentId: undefined,
-          level: undefined,
-          icon: undefined,
-          status: 1,
-          sort: undefined
         }
       },
-      handleAdd(row) {
-        this.parent = row
-        this.form.parentId = row.id
-        if (this.form.parentId == 0) {
-          this.form.level = 0
-        } else {
-          this.form.level = row.level + 1
-        }
-        this.dialog = {
-          title: "新增类目",
-          visible: true
-        }
-      },
-      handleUpdate(row) {
-        const parentNode = this.$refs.category.getNode(row.parentId)
-        this.parent = {
-          id: parentNode.key,
-          name: parentNode.label
-        }
-        this.current = row
-        this.dialog = {
-          title: "修改类目",
-          visible: true
-        }
-        const id = row.id || this.ids
-        detail(id).then(response => {
-          this.form = response.data
-        })
-      },
-      handleDelete(node, row) {
-        this.$confirm('确认删除已选中的数据项？', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-            del(row.id).then(() => {
-              this.$message.success("删除成功")
-              const parent = node.parent;
-              const children = parent.data.children || parent.data;
-              const index = children.findIndex(d => d.id === row.id);
-              children.splice(index, 1);
-              this.$forceUpdate()
-            })
-          }
-        )
-      },
-      handleSubmit() {
-        this.$refs["form"].validate((valid) => {
-          if (valid) {
-            const id = this.form.id
-            if (id != undefined) {
-              update(id, this.form).then(response => {
-                const {name, iconUrl} = response.data
-                this.current.iconUrl = iconUrl
-                this.current.name = name
-                this.$message.success("修改成功")
-                this.dialog.visible = false
-              })
-            } else {
-              add(this.form).then(response => {
-                this.parent.children.push(response.data)
-                console.log(this.parent.children)
-                this.$message.success("新增成功")
-                this.dialog.visible = false
-              })
-            }
-          }
-        })
-      },
-      cancel() {
-        this.resetForm()
-        this.dialog = {
-          title: undefined,
-          visible: false
-        }
+      queryParams: {
+        queryMode: 'tree'
       }
     }
+  },
+  created() {
+    this.handleQuery()
+  },
+  methods: {
+    handleQuery() {
+      list(this.queryParams).then(response => {
+        this.list = [{
+          id: 0,
+          name: '全部类目',
+          children: response.data
+        }]
+        this.loading = false
+      })
+    },
+    resetForm() {
+      this.form = {
+        id: undefined,
+        name: undefined,
+        parentId: undefined,
+        level: undefined,
+        icon: undefined,
+        status: 1,
+        sort: undefined
+      }
+    },
+    handleAdd(row) {
+      this.parent = row
+      if (!this.parent.children) {
+        this.parent.children = []
+      }
+      this.form.parentId = row.id
+      if (this.form.parentId == 0) {
+        this.form.level = 0
+      } else {
+        this.form.level = row.level + 1
+      }
+      this.dialog = {
+        title: "新增类目",
+        visible: true
+      }
+    },
+    handleUpdate(row) {
+      const parentNode = this.$refs.category.getNode(row.parentId)
+      this.parent = {
+        id: parentNode.key,
+        name: parentNode.label
+      }
+      this.current = row
+      this.dialog = {
+        title: "修改类目",
+        visible: true
+      }
+      const id = row.id || this.ids
+      detail(id).then(response => {
+        this.form = response.data
+      })
+    },
+    handleDelete(node, row) {
+      this.$confirm('确认删除已选中的数据项？', "警告", {
+        confirmButtonText: "确定",
+        closeButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+          del(row.id).then(() => {
+            this.$message.success("删除成功")
+            const parent = node.parent;
+            const children = parent.data.children || parent.data;
+            const index = children.findIndex(d => d.id === row.id);
+            children.splice(index, 1);
+            this.$forceUpdate()
+          })
+        }
+      )
+    },
+    handleSubmit() {
+      this.$refs["form"].validate((valid) => {
+        if (valid) {
+          const id = this.form.id
+          if (id != undefined) {
+            update(id, this.form).then(response => {
+              const {name, iconUrl} = response.data
+              this.current.iconUrl = iconUrl
+              this.current.name = name
+              this.$message.success("修改成功")
+              this.dialog.visible = false
+            })
+          } else {
+            add(this.form).then(response => {
+              this.parent.children.push(response.data)
+              this.$message.success("新增成功")
+              this.dialog.visible = false
+            })
+          }
+        }
+      })
+    },
+    closeDialog() {
+      this.resetForm()
+      this.dialog = {
+        title: undefined,
+        visible: false
+      }
+    },
+    showAttrDialog(row) {
+      this.current = row
+      this.attrDialog.title = '【' + this.current.name + '】属性'
+      this.attrDialog.visible = true
+    },
+    closeAttrDialog() {
+      this.attrDialog = {
+        title: undefined,
+        visible: false
+      }
+      this.resetAttrForm()
+    },
+    resetAttrForm() {
+      this.attrForm.attributes = [{
+        id: undefined,
+        categoryId: undefined,
+        name: undefined
+      }]
+    },
+    removeAttr(index) {
+      this.attrForm.attributes.splice(index, 1)
+    },
+    showSpecDialog(row) {
+      this.current = row
+      this.specDialog = {
+        title: '【' + this.current.name + '】规格',
+        visible: true
+      }
+    },
+    closeSpecDialog() {
+      this.specDialog = {
+        title: undefined,
+        visible: false
+      }
+      this.resetSpecForm()
+    },
+    resetSpecForm() {
+      this.specForm.specifications = [{
+        id: undefined,
+        categoryId: undefined,
+        name: undefined
+      }]
+    },
+    removeSpec(index) {
+      this.specForm.specifications.splice(index, 1)
+    },
+    handleAttrAdd() {
+      this.attrForm.attributes.push({categoryId: this.current.id, name: undefined})
+    },
+
+    handleSpecAdd() {
+      this.specForm.specifications.push({categoryId: this.current.id, name: undefined})
+    },
+    handleAttrSubmit() {
+      this.$refs["attrForm"].validate((valid) => {
+        if (valid) {
+          console.log('attr', this.attrForm.attributes)
+        }
+      })
+    },
+    handleSpecSubmit() {
+      this.$refs["specForm"].validate((valid) => {
+        if (valid) {
+          console.log('spec', this.specForm.specifications)
+        }
+      })
+    },
+
   }
+}
 </script>
 
 <style>
-  .custom-tree-node {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
-  }
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+}
 
-  .el-tree-node__content {
-    height: 40px;
-  }
+.el-tree-node__content {
+  height: 40px;
+}
+
+.el-divider--horizontal {
+  margin: 30px 0 15px;
+}
+
 
 </style>
