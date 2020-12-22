@@ -46,3 +46,39 @@ export function patch(id, data) {
     data: data
   })
 }
+
+
+
+export function attrCategoryList(queryParams) {
+  return request({
+    url: '/mall-pms/admin-api/v1/attr-categories',
+    method: 'get',
+    params: queryParams
+  })
+}
+
+export function saveAttrCategoryBatch(data) {
+  return request({
+    url: '/mall-pms/admin-api/v1/attr-categories',
+    method: 'post',
+    data: data
+  })
+}
+
+export function specCategoryList(queryParams) {
+  return request({
+    url: '/mall-pms/admin-api/v1/spec-categories',
+    method: 'get',
+    params: queryParams
+  })
+}
+
+
+export function saveSpecCategoryBatch(data) {
+  return request({
+    url: '/mall-pms/admin-api/v1/spec-categories',
+    method: 'post',
+    data: data
+  })
+}
+

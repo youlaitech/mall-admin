@@ -153,7 +153,7 @@ export default {
 
     },
     loadCategoryOptions() {
-      categoryList({queryMode: 2}).then(response => {
+      categoryList({queryMode: 'cascader'}).then(response => {
         this.categoryOptions = response.data
       })
     },
