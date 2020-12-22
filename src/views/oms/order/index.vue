@@ -104,7 +104,7 @@
           <el-form-item label="商品信息">
             <el-table :data="orderDetail.orderItems" border fit highlight-current-row>
               <el-table-column align="center" label="商品名称" prop="spuName"/>
-              <el-table-column align="center" label="货品规格" prop="skuSpecifications"/>
+              <el-table-column align="center" label="货品规格" prop="skuspecs"/>
               <el-table-column align="center" label="货品价格" prop="skuPrice"/>
               <el-table-column align="center" label="货品数量" prop="skuQuantity"/>
               <el-table-column align="center" label="货品图片" prop="skuPic">

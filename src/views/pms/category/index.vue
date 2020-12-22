@@ -135,9 +135,9 @@
       <el-divider></el-divider>
       <el-form id="specForm" label-width="80px" :model="specForm" ref="specForm">
         <el-form-item
-          v-for="(item, index) in specForm.specifications"
+          v-for="(item, index) in specForm.specs"
           :label="'规格' + (index+1)"
-          :prop="'specifications.' + index + '.name'"
+          :prop="'specs.' + index + '.name'"
           :rules="rules.specification.name">
           <el-input v-model="item.name" style="width:400px"></el-input>
           <el-button type="danger" icon="el-icon-delete" circle size="mini" @click.prevent="removeSpec(index)"
@@ -201,7 +201,7 @@
           }]
         },
         specForm: {
-          specifications: [{
+          specs: [{
             id: undefined,
             categoryId: undefined,
             name: undefined
@@ -368,7 +368,7 @@
         }
         specCategoryList({categoryId: row.id}).then(response => {
           if (response.data) {
-            this.specForm.specifications = response.data
+            this.specForm.specs = response.data
           }
         })
       },
@@ -380,21 +380,21 @@
         this.resetSpecForm()
       },
       resetSpecForm() {
-        this.specForm.specifications = [{
+        this.specForm.specs = [{
           id: undefined,
           categoryId: undefined,
           name: undefined
         }]
       },
       removeSpec(index) {
-        this.specForm.specifications.splice(index, 1)
+        this.specForm.specs.splice(index, 1)
       },
       handleAttrAdd() {
         this.attrForm.attributes.push({categoryId: this.current.id, name: undefined})
       },
 
       handleSpecAdd() {
-        this.specForm.specifications.push({categoryId: this.current.id, name: undefined})
+        this.specForm.specs.push({categoryId: this.current.id, name: undefined})
       },
       handleAttrSubmit() {
         this.$refs["attrForm"].validate((valid) => {
@@ -409,7 +409,7 @@
       handleSpecSubmit() {
         this.$refs["specForm"].validate((valid) => {
           if (valid) {
-            saveSpecCategoryBatch(this.specForm.specifications).then(response => {
+            saveSpecCategoryBatch(this.specForm.specs).then(response => {
               this.$message.success("提交成功")
               this.closeSpecDialog()
             })
