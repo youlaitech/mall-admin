@@ -67,8 +67,6 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>商品参数</span>
-        <el-button style="float: right;" type="primary" size="mini" @click="handleAddAttribute">添加参数
-        </el-button>
       </div>
       <el-form size="mini"
                ref="attributeForm"
@@ -81,9 +79,7 @@
           border>
           <el-table-column property="name" label="参数名称">
             <template slot-scope="scope">
-              <el-form-item :prop="'attributes[' + scope.$index + '].name'" :rules="rules.attribute.name">
-                <el-input v-model="scope.row.name"></el-input>
-              </el-form-item>
+              {{scope.row.name}}
             </template>
           </el-table-column>
 
@@ -91,14 +87,6 @@
             <template slot-scope="scope">
               <el-form-item :prop="'attributes[' + scope.$index + '].value'" :rules="rules.attribute.value">
                 <el-input v-model="scope.row.value"></el-input>
-              </el-form-item>
-            </template>
-          </el-table-column>
-
-          <el-table-column label="操作" width="150">
-            <template slot-scope="scope">
-              <el-form-item>
-                <el-button type="danger" icon="el-icon-minus" circle @click="handleRemoveAttribute(scope.$index)"/>
               </el-form-item>
             </template>
           </el-table-column>
@@ -110,8 +98,6 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>商品规格</span>
-        <el-button v-if="!spuId" style="float: right;" type="primary" size="mini" @click="handleAddSpecification">添加规格
-        </el-button>
       </div>
       <el-form size="mini"
                ref="specificationForm"
@@ -128,16 +114,14 @@
           </el-table-column>
           <el-table-column label="规格值">
             <template slot-scope="scope">
-              {{ scope.row.value }}
-            </template>
-          </el-table-column>
-          <el-table-column v-if="!spuId" label="操作" width="150">
-            <template slot-scope="scope">
-              <el-form-item>
-                <el-button icon="el-icon-edit" size="mini" circle
-                           @click="handleEditSpecification(scope.row,scope.$index)" title="修改规格"/>
-                <el-button type="danger" icon="el-icon-minus" circle @click="handleRemoveSpecification(scope.$index)"/>
-              </el-form-item>
+              <el-tag
+                v-for="item in scope.row.values"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(item)">
+                {{item.value}}
+              </el-tag>
+
             </template>
           </el-table-column>
         </el-table>
@@ -149,7 +133,6 @@
       <div slot="header" class="clearfix">
         <span>商品库存</span>
       </div>
-
       <el-form size="mini"
                ref="skuForm"
                :model="form"
@@ -225,39 +208,18 @@
     </el-card>
 
     <div class="footer">
-      <el-button @click="close">取 消</el-button>
+      <el-button @click="closeDialog">取 消</el-button>
       <el-button type="primary" @click="handleSubmit">确 定</el-button>
     </div>
 
-    <el-dialog
-      :title="specificationDialog.title"
-      :visible.sync="specificationDialog.visible"
-      @close="closeSpecificationDialog"
-      top="20vh"
-      width="500px">
-      <el-form label-width="120px" :model="specificationForm" :rules="specificationRules">
-        <el-form-item label="规格名称" prop="name">
-          <el-select v-model="specificationForm.name" filterable allow-create default-first-option
-                     placeholder="请输入或选择规格名称">
-            <el-option v-for="name in new Set(form.specifications.map(d=>d.name))" :label="name" :value="name"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="规格值" prop="value" style="width:320px">
-          <el-input v-model="specificationForm.value"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="closeSpecificationDialog">取 消</el-button>
-        <el-button type="primary" @click="handleSubmitSpecification">确 定</el-button>
-      </div>
-    </el-dialog>
+
   </div>
 </template>
 
 <script>
 
   import {add, update, detail} from '@/api/pms/product'
-  import {list as categoryList} from '@/api/pms/category'
+  import {list as categoryList, attrCategoryList, specCategoryList} from '@/api/pms/category'
   import {list as brandList} from '@/api/pms/brand'
 
 
@@ -350,12 +312,20 @@
         }
       },
       loadCategoryOptions() {
-        categoryList({queryMode: 2}).then(response => {
+        categoryList({queryMode: 'cascader'}).then(response => {
           this.categoryOptions = response.data
         })
       },
       handleCategoryChange(value) {
-        this.form.spu.categoryId = value[value.length - 1]
+        const categoryId = value[value.length - 1]
+        this.form.spu.categoryId = categoryId
+        attrCategoryList({categoryId: categoryId}).then(response => {
+          this.form.attributes = response.data
+        })
+
+        specCategoryList({categoryId: categoryId}).then(response => {
+          this.form.specifications = response.data
+        })
       },
       loadBrandOptions() {
         brandList({queryMode: 2}).then(response => {
@@ -365,31 +335,10 @@
       handleAddAttribute() {
         this.form.attributes.push({})
       },
-      handleRemoveAttribute(index) {
-        this.form.attributes.splice(index, 1)
-      },
-
       handleAddSpecification() {
         this.specificationDialog.title = '添加规格'
         this.specificationDialog.visible = true
         this.specificationDialog.type = 'add'
-      },
-      handleEditSpecification(row, index) {
-        this.specificationDialog.title = '修改规格'
-        this.specificationDialog.visible = true
-        this.specificationDialog.type = 'edit'
-        this.specificationForm = {...row, ...{index: index}}
-      },
-      handleRemoveSpecification(index) {
-        const that = this
-        this.$confirm("删除规格将导致库存信息重新生成，确认删除？", "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function () {
-          that.form.specifications.splice(index, 1)
-          that.generateSkuList()
-        })
       },
       handleSubmitSpecification() {
         const type = this.specificationDialog.type
@@ -522,8 +471,8 @@
           }
         })
       },
-      close() {
-
+      closeDialog() {
+       console.log('close')
       }
     }
   }
