@@ -110,9 +110,9 @@
       <el-divider></el-divider>
       <el-form id="attrForm" label-width="80px" :model="attrForm" ref="attrForm">
         <el-form-item
-          v-for="(item, index) in attrForm.attributes"
+          v-for="(item, index) in attrForm.attrs"
           :label="'属性' + (index+1)"
-          :prop="'attributes.' + index + '.name'"
+          :prop="'attrs.' + index + '.name'"
           :rules="rules.attribute.name">
           <el-input v-model="item.name" style="width:400px"></el-input>
           <el-button type="danger" icon="el-icon-delete" circle size="mini" @click.prevent="removeAttr(index)"
@@ -159,10 +159,10 @@
     update,
     add,
     del,
-    attrCategoryList,
-    saveAttrCategoryBatch,
-    specCategoryList,
-    saveSpecCategoryBatch
+    attrList,
+    saveAttrs,
+    specList,
+    saveSpecs
   } from '@/api/pms/category'
   import SingleUpload from '@/components/Upload/SingleUpload'
 
@@ -194,7 +194,7 @@
           sort: undefined
         },
         attrForm: {
-          attributes: [{
+          attrs: [{
             id: undefined,
             categoryId: undefined,
             name: undefined
@@ -337,9 +337,9 @@
         this.attrDialog.title = '【' + this.current.name + '】属性'
         this.attrDialog.visible = true
 
-        attrCategoryList({categoryId: row.id}).then(response => {
+        attrList({categoryId: row.id}).then(response => {
           if (response.data) {
-            this.attrForm.attributes = response.data
+            this.attrForm.attrs = response.data
           }
         })
       },
@@ -351,14 +351,14 @@
         this.resetAttrForm()
       },
       resetAttrForm() {
-        this.attrForm.attributes = [{
+        this.attrForm.attrs = [{
           id: undefined,
           categoryId: undefined,
           name: undefined
         }]
       },
       removeAttr(index) {
-        this.attrForm.attributes.splice(index, 1)
+        this.attrForm.attrs.splice(index, 1)
       },
       showSpecDialog(row) {
         this.current = row
@@ -366,7 +366,7 @@
           title: '【' + row.name + '】规格',
           visible: true
         }
-        specCategoryList({categoryId: row.id}).then(response => {
+        specList({categoryId: row.id}).then(response => {
           if (response.data) {
             this.specForm.specs = response.data
           }
@@ -390,7 +390,7 @@
         this.specForm.specs.splice(index, 1)
       },
       handleAttrAdd() {
-        this.attrForm.attributes.push({categoryId: this.current.id, name: undefined})
+        this.attrForm.attrs.push({categoryId: this.current.id, name: undefined})
       },
 
       handleSpecAdd() {
@@ -399,7 +399,7 @@
       handleAttrSubmit() {
         this.$refs["attrForm"].validate((valid) => {
           if (valid) {
-            saveAttrCategoryBatch(this.attrForm.attributes).then(response => {
+            saveAttrs(this.attrForm.attrs).then(response => {
               this.$message.success("提交成功")
               this.closeAttrDialog()
             })
@@ -409,7 +409,7 @@
       handleSpecSubmit() {
         this.$refs["specForm"].validate((valid) => {
           if (valid) {
-            saveSpecCategoryBatch(this.specForm.specs).then(response => {
+            saveSpecs(this.specForm.specs).then(response => {
               this.$message.success("提交成功")
               this.closeSpecDialog()
             })

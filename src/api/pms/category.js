@@ -49,34 +49,34 @@ export function patch(id, data) {
 
 
 
-export function attrCategoryList(queryParams) {
+export function attrList(queryParams) {
   return request({
-    url: '/mall-pms/admin-api/v1/attr-categories',
+    url: '/mall-pms/admin-api/v1/attrs',
     method: 'get',
     params: queryParams
   })
 }
 
-export function saveAttrCategoryBatch(data) {
+export function saveAttrs(data) {
   return request({
-    url: '/mall-pms/admin-api/v1/attr-categories',
+    url: '/mall-pms/admin-api/v1/attrs',
     method: 'post',
     data: data
   })
 }
 
-export function specCategoryList(queryParams) {
+export function specList(queryParams) {
   return request({
-    url: '/mall-pms/admin-api/v1/spec-categories',
+    url: '/mall-pms/admin-api/v1/specs',
     method: 'get',
     params: queryParams
   })
 }
 
 
-export function saveSpecCategoryBatch(data) {
+export function saveSpecs(data) {
   return request({
-    url: '/mall-pms/admin-api/v1/spec-categories',
+    url: '/mall-pms/admin-api/v1/specs',
     method: 'post',
     data: data
   })

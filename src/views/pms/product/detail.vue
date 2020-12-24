@@ -67,10 +67,10 @@
     <el-card class="box-card">
       <div slot="header">
         <span>商品参数</span>
-      </div>
 
-      <el-button style="float: right;" type="primary" size="mini" @click="handleAddAttr">添加参数
-      </el-button>
+        <el-button style="float: right;" type="primary" size="mini" @click="handleAddAttr">添加参数
+        </el-button>
+      </div>
 
       <el-form size="mini"
                ref="attrForm"
@@ -83,7 +83,9 @@
           border>
           <el-table-column property="name" label="参数名称">
             <template slot-scope="scope">
-              {{ scope.row.name }}
+              <el-form-item :prop="'attrs[' + scope.$index + '].name'" :rules="rules.attr.name">
+                <el-input v-model="scope.row.name"></el-input>
+              </el-form-item>
             </template>
           </el-table-column>
 
@@ -166,11 +168,12 @@
           highlight-current-row
           border>
           <el-table-column
+            width="350"
             label="名称">
             <template slot-scope="scope">
               <el-form-item>
                 <el-form-item :prop="'skuList[' + scope.$index + '].name'" :rules="rules.sku.name">
-                  <el-input v-model="scope.row.name"></el-input>
+                  <el-input v-model="scope.row.name" style="width: 300px"/>
                 </el-form-item>
               </el-form-item>
             </template>
@@ -216,7 +219,7 @@
 
           <el-table-column
             prop="code"
-            label="商品条码">
+            label="商品码">
             <template slot-scope="scope">
               <el-form-item :prop="'skuList[' + scope.$index + '].code'">
                 <el-input v-model="scope.row.code" maxlength="200">
@@ -230,7 +233,7 @@
     </el-card>
 
     <div class="footer">
-      <el-button @click="closeDialog">取 消</el-button>
+      <el-button @click="close">取 消</el-button>
       <el-button type="primary" @click="handleSubmit">确 定</el-button>
     </div>
   </div>
@@ -239,7 +242,7 @@
 <script>
 
   import {add, update, detail} from '@/api/pms/product'
-  import {list as categoryList, attrCategoryList, specCategoryList} from '@/api/pms/category'
+  import {list as categoryList, attrList, specList} from '@/api/pms/category'
   import {list as brandList} from '@/api/pms/brand'
 
 
@@ -307,6 +310,7 @@
         if (spuId) {
           detail(spuId).then(response => {
             const data = response.data
+
             // 金额转换
             data.spu.originPrice /= 100
             data.spu.price /= 100
@@ -314,6 +318,17 @@
               item.originPrice /= 100
               item.price /= 100
             })
+            specList({categoryId: data.spu.categoryId}).then(response => {
+              response.data.forEach(item => {
+                data.specs.forEach(value => {
+                  if (value.specId == item.id) {
+                    item.values.push(value)
+                  }
+                })
+              })
+              data.specs = response.data
+            })
+            console.log(data);
             this.form = data
           })
         }
@@ -324,15 +339,15 @@
         })
       },
       handleCategoryChange(value) {
-
         if (value && value.length > 0) {
           const categoryId = value[value.length - 1]
           this.form.spu.categoryId = categoryId
-          attrCategoryList({categoryId: categoryId}).then(response => {
-            this.form.attrs = response.data
+          attrList({categoryId: categoryId}).then(response => {
+            response.data.forEach(item => {
+              this.form.attrs.push({attrId: item.id, name: item.name})
+            })
           })
-
-          specCategoryList({categoryId: categoryId}).then(response => {
+          specList({categoryId: categoryId}).then(response => {
             const {data} = response
             this.form.specs = data
 
@@ -356,64 +371,6 @@
         row.code = new Date().getTime()
         this.$forceUpdate()
       },
-      handleSubmit() {
-        // 表单验证
-        this.$refs["spuForm"].validate((valid) => {
-          if (valid) {
-            this.$refs["attrForm"].validate((valid) => {
-              if (valid) {
-
-                // 规格值验证 el-tag
-                if (!this.form.specs || this.form.specs.length <= 0) {
-                  this.$message.warning('商品规格不存在')
-                  return false
-                }
-
-                for (let i = 0; i < this.form.specs.length; i++) {
-                  const item = this.form.specs[i]
-                  if (!item.values || item.values.length <= 0) {
-                    this.$message.warning(item.name + '规格至少有一个规格值')
-                    return false
-                  }
-                }
-                this.$refs["skuForm"].validate((valid) => {
-                  if (valid) {
-                    // 对象深度复制
-                    let data = JSON.parse(JSON.stringify(this.form));
-                    // spu处理
-                    data.spu = {
-                      ...data.spu, ...{
-                        price: data.spu.price * 100,
-                        originPrice: data.spu.originPrice * 100
-                      }
-                    }
-                    // sku处理
-                    data.skuList.map(sku => {
-                      sku.name = data.spu.name + ' ' + sku.name // sku名称 = spu名称 + 规格组合
-                      sku.price *= 100
-                      sku.originPrice *= 100
-                    })
-
-                    console.log('提交表单数据', data)
-                    if (!this.spuId) {
-                      add(data).then(response => {
-                        this.$router.push({name: 'Goods'})
-                      })
-                    } else {
-                      update(this.spuId, data).then(response => {
-                        this.$router.push({name: 'Goods'})
-                      })
-                    }
-                  }
-                })
-              }
-            })
-          }
-        })
-      },
-      closeDialog() {
-        console.log('close')
-      },
 
       handleClose(rowIndex, value) {
         const removeIndex = this.form.specs[rowIndex].values.indexOf(value)
@@ -425,10 +382,6 @@
       },
 
       showInput(rowIndex) {
-        if (!this.form.spu.name) {
-          this.$message.warning("请输入商品名称")
-          return
-        }
         this.currentColumnIndex = this.form.specs[rowIndex].values.length
         this.$set(this.inputVisibleArr[rowIndex], this.currentColumnIndex, true)
       },
@@ -447,50 +400,46 @@
         }
         this.form.specs[rowIndex].values.push({
           id: new Date().getTime(),
-          specCategoryId: this.form.specs[rowIndex].categoryId,
+          specId: this.form.specs[rowIndex].id,
           value: inputValue
         });
         this.inputVisibleArr[rowIndex][this.currentColumnIndex] = false;
         this.inputValueArr[rowIndex][this.currentColumnIndex] = ''
 
-
-        // 生成sku
         this.generateSkuList()
-
       },
+      // 笛卡尔积生成sku
       generateSkuList() {
         let specs = JSON.parse(JSON.stringify(this.form.specs)) // 深拷贝
-
         // [
-        //    { 'name':'颜色','values':['白色','黑色','蓝色'] },
-        //    { 'name':'内存','values':['4G','6G','8G'] },
-        //    { 'name':'存储','values':['64G','128G','256G']},
+        //    { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] },
+        //    { 'id':2,'name':'版本','values':[{id:1,value:'6+128G'},{id:2,value:'8+128G'},{id:3,value:'8G+256G'}] }
         // ]
         // accumulator 累加值  current 当前值
         this.form.skuList = specs.reduce((acc, curr) => {
-          const result = []
-          acc.forEach(a => {
-            curr.values.forEach(v => {
-              const obj = {}
-              Object.assign(obj, a)
-              obj.name += ' ' + curr.name + ':' + v.value
-              obj.specValueIds.push(v.id)
-              result.push(obj)
+          let result = []
+          acc.forEach(a => {  // a=> {}
+            // curr => { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] }
+            curr.values.forEach(v => {  // v=>{id:1,value:'白色'}
+              let temp = {}
+              Object.assign(temp, a); // a=>{name:'白色 ',specValueIds:1,}
+              temp.name += v.value + ' '
+              temp.specValueIds += v.id + ','
+              result.push(temp)
             })
           })
+
           return result
-        }, [{name: '', specValueIds: []}]) // -> initialValue 初始值
+        }, [{name: '', specValueIds: ''}]) // -> initialValue 初始值
 
         this.form.skuList.forEach(item => {
-          item.originPrice = 0
-          item.price = 0
-          item.stock = 100
+          item.originPrice = this.form.spu.originPrice
+          item.price = this.form.spu.price
+          item.stock = 9999
           item.picUrl = this.form.spu.picUrls[0]
           item.code = new Date().getTime()
-          item.specValueIds = item.specValueIds.join(',')
+          item.specValueIds = item.specValueIds.substring(0, item.specValueIds.length - 1)
         })
-
-        console.log('sku列表', this.form.skuList)
       },
       handleAddAttr() {
         this.form.attrs.push({})
@@ -498,6 +447,73 @@
       handleRemoveAttr(index) {
         this.form.attrs.splice(index, 1)
       },
+      close() {
+        this.$store.dispatch('tagsView/delView', this.$route)
+        this.$router.go(-1);
+      },
+      handleSubmit() {
+        // 表单验证
+        this.$refs["spuForm"].validate((valid) => {
+          if (valid) {
+            this.$refs["attrForm"].validate((valid) => {
+              if (valid) {
+                // 规格值验证 el-tag
+                if (!this.form.specs || this.form.specs.length <= 0) {
+                  this.$message.warning('商品规格不存在')
+                  return false
+                }
+
+                for (let i = 0; i < this.form.specs.length; i++) {
+                  const item = this.form.specs[i]
+                  if (!item.values || item.values.length <= 0) {
+                    this.$message.warning(item.name + '规格至少有一个规格值')
+                    return false
+                  }
+                }
+
+                this.$refs["skuForm"].validate((valid) => {
+                  if (valid) {
+                    // 对象深度复制
+                    let data = JSON.parse(JSON.stringify(this.form));
+                    // spu处理
+                    data.spu = {
+                      ...data.spu, ...{
+                        price: data.spu.price * 100,
+                        originPrice: data.spu.originPrice * 100
+                      }
+                    }
+                    // 规格处理
+                    data.specs = data.specs.map(item => item.values).reduce((acc, crr) => {
+                      return acc.concat(crr)
+                    })
+                    // sku处理
+                    data.skuList.map(sku => {
+                      sku.name = data.spu.name + ' ' + sku.name // sku名称 = spu名称 + 规格组合
+                      sku.price *= 100
+                      sku.originPrice *= 100
+                    })
+
+                    if (!this.spuId) {
+                      add(data).then(response => {
+                        this.$message.success('保存成功')
+                        const that = this
+                        setTimeout(function () {
+                          that.close()
+                          that.$router.push({name: 'Goods'})
+                        }, 1000)
+                      })
+                    } else {
+                      update(this.spuId, data).then(response => {
+                        this.$router.push({name: 'Goods'})
+                      })
+                    }
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
     }
   }
 </script>
