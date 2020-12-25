@@ -141,7 +141,7 @@
 
               <el-input
                 class="input-new-tag"
-                v-if="inputVisibleArr[scope.$index][currentColumnIndex]==true"
+                v-if="!isLoading&&inputVisibleArr[scope.$index][currentColumnIndex]==true"
                 v-model="inputValueArr[scope.$index][currentColumnIndex]"
                 size="mini"
                 @keyup.enter.native="handleInputConfirm(scope.$index)"
@@ -273,8 +273,8 @@
             detail: undefined,
             status: 1
           },
-          attrs: [],
-          specs: [],
+          attrValues: [],
+          specValues: [],
           skuList: []
         },
         rules: {
@@ -292,10 +292,11 @@
           }
         },
 
-        inputVisibleArr: [[false]],
-        inputValueArr: [['']],
+        inputVisibleArr: [],
+        inputValueArr: [],
         currentColumnIndex: 0,
-        colors: ['', 'success', 'info', 'warning', 'danger']
+        colors: ['', 'success', 'info', 'warning', 'danger'],
+        isLoading: false
       }
     },
     created() {
@@ -308,9 +309,9 @@
         const spuId = this.$route.query.id
         this.spuId = spuId
         if (spuId) {
+          this.isLoading = true
           detail(spuId).then(response => {
             const data = response.data
-
             // 金额转换
             data.spu.originPrice /= 100
             data.spu.price /= 100
@@ -318,21 +319,37 @@
               item.originPrice /= 100
               item.price /= 100
             })
+
+            const specValues = data.specs
+
             specList({categoryId: data.spu.categoryId}).then(response => {
-              response.data.forEach(item => {
-                data.specs.forEach(value => {
-                  if (value.specId == item.id) {
-                    item.values.push(value)
+              const specs = response.data
+              this.inputVisibleArr = []
+              this.inputValueArr = []
+
+              specs.forEach((spec, rowIndex) => {
+                this.inputVisibleArr.push([])
+                this.inputValueArr.push([])
+                specValues.forEach((value) => {
+                  if (value.specId == spec.id) {
+                    spec.values.push(value)
+                    this.inputVisibleArr[rowIndex].push(false)
+                    this.inputValueArr[rowIndex].push('')
                   }
                 })
               })
-              data.specs = response.data
+              console.log(this.inputVisibleArr)
+              console.log('规格列表', specs)
+              data.specs = specs
+              this.isLoading = false
             })
-            console.log(data);
             this.form = data
           })
+        } else {
+          this.form = {}
         }
       },
+
       loadCategoryOptions() {
         categoryList({queryMode: 'cascader'}).then(response => {
           this.categoryOptions = response.data
@@ -433,6 +450,7 @@
         }, [{name: '', specValueIds: ''}]) // -> initialValue 初始值
 
         this.form.skuList.forEach(item => {
+          item.name = this.spu.name + ' ' + item.name
           item.originPrice = this.form.spu.originPrice
           item.price = this.form.spu.price
           item.stock = 9999
@@ -488,7 +506,6 @@
                     })
                     // sku处理
                     data.skuList.map(sku => {
-                      sku.name = data.spu.name + ' ' + sku.name // sku名称 = spu名称 + 规格组合
                       sku.price *= 100
                       sku.originPrice *= 100
                     })
@@ -513,7 +530,9 @@
             })
           }
         })
-      }
+      },
+
+
     }
   }
 </script>
