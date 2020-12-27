@@ -4,7 +4,7 @@
     <!-- 商品信息 -->
     <el-card class="box-card">
       <div slot="header">
-        <span>商品介绍</span>
+        <span>商品信息</span>
       </div>
       <el-form
         ref="spuForm"
