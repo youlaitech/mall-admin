@@ -256,12 +256,9 @@
       },
       handleAdd(row) {
         this.parent = row
-        if (!this.parent.children) {
-          this.parent.children = []
-        }
         this.form.parentId = row.id
         if (this.form.parentId == 0) {
-          this.form.level = 0
+          this.form.level = 1
         } else {
           this.form.level = row.level + 1
         }
@@ -317,6 +314,10 @@
               })
             } else {
               add(this.form).then(response => {
+                console.log('parent', this.parent.children)
+                if (!this.parent.children) {
+                  this.$set(this.parent, 'children', []);
+                }
                 this.parent.children.push(response.data)
                 this.$message.success("新增成功")
                 this.closeDialog()
@@ -336,10 +337,15 @@
         this.current = row
         this.attrDialog.title = '【' + this.current.name + '】属性'
         this.attrDialog.visible = true
-
         attrList({categoryId: row.id}).then(response => {
-          if (response.data) {
+          if (response.data&&response.data.length>0) {
             this.attrForm.attrs = response.data
+          }else{
+            this.attrForm.attrs = [{
+              id: undefined,
+              categoryId: row.id,
+              name: undefined
+            }]
           }
         })
       },
@@ -367,8 +373,14 @@
           visible: true
         }
         specList({categoryId: row.id}).then(response => {
-          if (response.data) {
+          if (response.data&&response.data.length>0) {
             this.specForm.specs = response.data
+          }else{
+            this.specForm.specs = [{
+              id: undefined,
+              categoryId: row.id,
+              name: undefined
+            }]
           }
         })
       },
