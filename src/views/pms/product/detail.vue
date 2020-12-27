@@ -472,6 +472,8 @@ export default {
 
         if (cacheSku) { // 缓存取值
           console.log('缓存取sku',cacheSku,item)
+          item.name = this.form.spu.name + ' ' + item.name
+          item.specValueIds = item.specValueIds.substring(0, item.specValueIds.length - 1)
           item.id=cacheSku.id
           item.originPrice = cacheSku.originPrice
           item.price = cacheSku.price
@@ -479,13 +481,15 @@ export default {
           item.picUrl = cacheSku.picUrl
           item.code = cacheSku.code
         }else{ // 默认
+          console.log('新生成sku')
           item.name = this.form.spu.name + ' ' + item.name
+          item.specValueIds = item.specValueIds.substring(0, item.specValueIds.length - 1)
           item.originPrice = this.form.spu.originPrice
           item.price = this.form.spu.price
           item.stock = 9999
           item.picUrl = this.form.spu.picUrls[0]
           item.code = new Date().getTime()
-          item.specValueIds = item.specValueIds.substring(0, item.specValueIds.length - 1)
+
         }
       })
 
@@ -539,6 +543,8 @@ export default {
                   data.skuList.map(sku => {
                     sku.price *= 100
                     sku.originPrice *= 100
+                    // 排序
+                    sku.specValueIds=sku.specValueIds.split(',').sort().join(',')
                   })
 
                   if (!this.spuId) {
