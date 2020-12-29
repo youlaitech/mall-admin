@@ -10,11 +10,12 @@
             :props="{ label: 'name', children: 'children' }"
             node-key="id"
             :expand-on-click-node="false"
-            default-expand-all>
+            default-expand-all
+            :accordion="true">
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span>
                 <el-image style="width: 30px; height: 30px;vertical-align: middle"
-                          v-show="data.level == 2"
+                          v-show="data.level == 3"
                           :src="data.iconUrl"/>
                 {{ data.name }}
                 <el-link
@@ -35,7 +36,7 @@
               </span>
               <span>
                 <el-button
-                  v-show="data.level != 2 "
+                  v-show="data.level != 3 "
                   type="primary"
                   size="mini"
                   round
@@ -338,9 +339,9 @@
         this.attrDialog.title = '【' + this.current.name + '】属性'
         this.attrDialog.visible = true
         attrList({categoryId: row.id}).then(response => {
-          if (response.data&&response.data.length>0) {
+          if (response.data && response.data.length > 0) {
             this.attrForm.attrs = response.data
-          }else{
+          } else {
             this.attrForm.attrs = [{
               id: undefined,
               categoryId: row.id,
@@ -373,9 +374,9 @@
           visible: true
         }
         specList({categoryId: row.id}).then(response => {
-          if (response.data&&response.data.length>0) {
+          if (response.data && response.data.length > 0) {
             this.specForm.specs = response.data
-          }else{
+          } else {
             this.specForm.specs = [{
               id: undefined,
               categoryId: row.id,
