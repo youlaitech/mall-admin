@@ -1,17 +1,16 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :model="queryParams" size="small" :inline="true">
+    <el-form ref="queryForm" :model="queryParams"  :inline="true">
       <el-form-item>
         <el-button type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
         <el-button type="success" icon="el-icon-edit" :disabled="single" @click="handleUpdate">修改</el-button>
         <el-button type="danger" icon="el-icon-delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
-      <el-form-item label="广告名称" prop="id">
+      <el-form-item  >
         <el-input
           v-model="queryParams.name"
           placeholder="广告名称"
           clearable
-          style="width: 240px"
           @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item>
@@ -144,6 +143,7 @@ export default {
       // 非多个禁用
       multiple: true,
       queryParams: {
+        queryMode: 'page',
         name: undefined
       },
       pagination: {
@@ -201,7 +201,8 @@ export default {
         total: 0
       }
       this.queryParams = {
-        id: undefined
+        queryMode: 'page',
+        name:undefined
       }
       this.handleQuery()
     },

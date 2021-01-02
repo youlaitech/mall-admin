@@ -266,6 +266,7 @@ export default {
           brandId: undefined,
           originPrice: undefined,
           price: undefined,
+          priUrl: undefined,
           picUrls: [],
           unit: undefined,
           description: undefined,
@@ -471,16 +472,16 @@ export default {
         }
 
         if (cacheSku) { // 缓存取值
-          console.log('缓存取sku',cacheSku,item)
+          console.log('缓存取sku', cacheSku, item)
           item.name = this.form.spu.name + ' ' + item.name
           item.specValueIds = item.specValueIds.substring(0, item.specValueIds.length - 1)
-          item.id=cacheSku.id
+          item.id = cacheSku.id
           item.originPrice = cacheSku.originPrice
           item.price = cacheSku.price
           item.stock = cacheSku.stock
           item.picUrl = cacheSku.picUrl
           item.code = cacheSku.code
-        }else{ // 默认
+        } else { // 默认
           console.log('新生成sku')
           item.name = this.form.spu.name + ' ' + item.name
           item.specValueIds = item.specValueIds.substring(0, item.specValueIds.length - 1)
@@ -489,7 +490,6 @@ export default {
           item.stock = 9999
           item.picUrl = this.form.spu.picUrls[0]
           item.code = new Date().getTime()
-
         }
       })
 
@@ -532,7 +532,8 @@ export default {
                   data.spu = {
                     ...data.spu, ...{
                       price: data.spu.price * 100,
-                      originPrice: data.spu.originPrice * 100
+                      originPrice: data.spu.originPrice * 100,
+                      picUrl: data.spu.picUrls[0] //主图取相册第一张
                     }
                   }
                   // 规格处理
@@ -544,13 +545,13 @@ export default {
                     sku.price *= 100
                     sku.originPrice *= 100
                     // 排序
-                    sku.specValueIds=sku.specValueIds.split(',').sort().join(',')
+                    sku.specValueIds = sku.specValueIds.split(',').sort().join(',')
                   })
 
+                  const that = this
                   if (!this.spuId) {
                     add(data).then(response => {
                       this.$message.success('保存成功')
-                      const that = this
                       setTimeout(function () {
                         that.close()
                         that.$router.push({name: 'Goods'})
@@ -558,7 +559,11 @@ export default {
                     })
                   } else {
                     update(this.spuId, data).then(response => {
-                      this.$router.push({name: 'Goods'})
+                      this.$message.success('保存成功')
+                      setTimeout(function () {
+                        that.close()
+                        that.$router.push({name: 'Goods'})
+                      }, 1000)
                     })
                   }
                 }
