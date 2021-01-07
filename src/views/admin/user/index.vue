@@ -423,7 +423,7 @@
         })
       },
       loadDeptOptions() {
-        deptList({mode: 2}).then(response => {
+        deptList({queryMode:'treeselect'}).then(response => {
           this.deptOptions = [{
             id: 0,
             label: '有来科技',
