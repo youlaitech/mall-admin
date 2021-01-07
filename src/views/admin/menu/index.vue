@@ -197,7 +197,7 @@
     },
     methods: {
       handleQuery() {
-        this.queryParams.queryMode = 1
+        this.queryParams.queryMode = 'tree'
         list(this.queryParams).then(response => {
           this.pageList = response.data
           this.loading = false

@@ -321,12 +321,12 @@
         }
       },
       loadMenuOptions() {
-        menuList({queryMode: 2}).then(response => {
+        menuList({queryMode: 'treeselect'}).then(response => {
           this.menuOptions = response.data
         })
       },
       loadRoleMenuOptions(roleId) {
-        menuList({queryMode: 2, roleId: roleId}).then(response => {
+        menuList({queryMode: 'treeselect', roleId: roleId}).then(response => {
           this.menuOptions = response.data.menus
           this.$refs.menu.setCheckedKeys(response.data.checkedKeys)
         })

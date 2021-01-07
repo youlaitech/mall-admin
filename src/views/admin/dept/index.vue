@@ -195,7 +195,7 @@
     },
     methods: {
       handleQuery() {
-        this.queryParams.mode = 1
+        this.queryParams.queryMode = 'tree'
         list(this.queryParams).then(response => {
           this.pageList = response.data
           this.loading = false
@@ -284,7 +284,7 @@
         }
       },
       loadDeptOptions() {
-        this.queryParams.mode = 2
+        this.queryParams.queryMode = 'treeselect'
         this.deptOptions = []
         list(this.queryParams).then(response => {
           const deptOption = {id: 0, label: '有来科技'}

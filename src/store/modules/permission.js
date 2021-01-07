@@ -1,6 +1,6 @@
 import {asyncRoutes, constantRoutes} from '@/router'
 import Layout from '@/layout'
-import {list as getRoutes} from '@/api/admin/menu'
+import {list as menuList} from '@/api/admin/menu'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -9,7 +9,7 @@ import {list as getRoutes} from '@/api/admin/menu'
  */
 function hasPermission(roles, route) {
   if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
+    return roles.some(role => route.meta.roles.includes(parseFloat(role)))
   } else {
     return true
   }
@@ -57,7 +57,7 @@ const mutations = {
 const actions = {
   generateRoutes({commit}, roles) {
     return new Promise(resolve => {
-      getRoutes({queryMode: 3}).then(response => {
+      menuList({queryMode: 'router'}).then(response => {
         let accessedRoutes = filterAsyncRoutes(response.data, roles)
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)
