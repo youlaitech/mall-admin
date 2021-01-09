@@ -6,7 +6,7 @@
         <el-button type="success" icon="el-icon-edit" :disabled="single" @click="handleUpdate">修改</el-button>
         <el-button type="danger" icon="el-icon-delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
-      <el-form-item label="客户端ID" prop="clientId">
+      <el-form-item  prop="clientId">
         <el-input
           v-model="queryParams.clientId"
           placeholder="客户端ID"
@@ -160,7 +160,8 @@ export default {
       pageList: [],
       dialog: {
         title: undefined,
-        visible: false
+        visible: false,
+        type: undefined  // type 操作类型：1-新增 2-修改
       },
       // 菜单列表
       menuOptions: [],
@@ -176,7 +177,7 @@ export default {
         webServerRedirectUri: undefined,
         authorities: undefined,
         additionalInformation: undefined,
-        autoapprove:'false'
+        autoapprove: 'false'
       },
       // 表单校验
       rules: {
@@ -209,7 +210,7 @@ export default {
       this.queryParams.page = this.pagination.page
       this.queryParams.limit = this.pagination.limit
       list(this.queryParams).then(response => {
-        console.log("响应列表",response)
+        console.log("响应列表", response)
         this.pageList = response.data
         this.pagination.total = response.total
         this.loading = false
@@ -236,7 +237,8 @@ export default {
       this.loadAuthorizedGrantTypesOptions()
       this.dialog = {
         title: '新增客户端',
-        visible: true
+        visible: true,
+        type: 1
       }
     },
     handleUpdate(row) {
@@ -244,7 +246,8 @@ export default {
       this.loadAuthorizedGrantTypesOptions()
       this.dialog = {
         title: '修改客户端',
-        visible: true
+        visible: true,
+        type: 2
       }
       const id = row.clientId || this.ids
       detail(id).then(response => {
@@ -275,16 +278,24 @@ export default {
         if (valid) {
           const id = this.form.clientId
           this.form.authorizedGrantTypes = this.form.authorizedGrantTypes.join(',')
-          if (id != undefined) {
+          if (this.dialog.type == 2) {
             update(this.form.clientId, this.form).then(() => {
               this.$message.success('修改成功')
-              this.dialog.visible = false
+              this.dialog = {
+                title: undefined,
+                visible: false,
+                type: undefined
+              }
               this.handleQuery()
             })
           } else {
             add(this.form).then(() => {
               this.$message.success('新增成功')
-              this.dialog.visible = false
+              this.dialog = {
+                title: undefined,
+                visible: false,
+                type: undefined
+              }
               this.handleQuery()
             })
           }
@@ -301,7 +312,7 @@ export default {
         webServerRedirectUri: undefined,
         authorities: undefined,
         additionalInformation: undefined,
-        autoapprove:'false'
+        autoapprove: 'false'
       }
       if (this.$refs['form']) {
         this.$refs['form'].resetFields()

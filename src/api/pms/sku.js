@@ -10,14 +10,14 @@ export function list(queryParams) {
 
 export function detail(id) {
   return request({
-    url: '/mall-pms/sku/' + id,
+    url: '/mall-pms/api.admin/v1/sku/' + id,
     method: 'get'
   })
 }
 
 export function add(data) {
   return request({
-    url: '/mall-pms/sku',
+    url: '/mall-pms/api.admin/v1/sku',
     method: 'post',
     data: data
   })
@@ -25,7 +25,7 @@ export function add(data) {
 
 export function update(id, data) {
   return request({
-    url: '/mall-pms/sku/' + id,
+    url: '/mall-pms/api.admin/v1/sku/' + id,
     method: 'put',
     data: data
   })
@@ -33,16 +33,18 @@ export function update(id, data) {
 
 export function del(ids) {
   return request({
-    url: '/mall-pms/sku',
+    url: '/mall-pms/api.admin/v1/sku',
     method: 'delete',
-    params: { ids: ids }
+    params: {ids: ids}
   })
 }
 
 export function patch(id, data) {
   return request({
-    url: '/mall-pms/sku/' + id,
+    url: '/mall-pms/api.admin/v1/sku/' + id,
     method: 'patch',
     data: data
   })
 }
+
+

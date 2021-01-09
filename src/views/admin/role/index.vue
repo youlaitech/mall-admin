@@ -23,7 +23,7 @@
 
     <el-table v-loading="loading" :data="pageList" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="角色编号" prop="id" width="280"/>
+      <el-table-column label="序号" type="index" width="100" />
       <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" width="200"/>
       <el-table-column label="权限字符" prop="perms" :show-overflow-tooltip="true" width="200"/>
       <el-table-column label="显示顺序" prop="sort" width="100"/>

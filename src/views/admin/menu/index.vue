@@ -30,6 +30,7 @@
       row-key="id"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border>
+
       <el-table-column prop="title" label="菜单名称" :show-overflow-tooltip="true" min-width="11%"/>
       <el-table-column prop="icon" label="图标" align="center" min-width="11%">
         <template slot-scope="scope">
@@ -102,7 +103,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="菜单名称" prop="name">
+            <el-form-item label="菜单名称" prop="title">
               <el-input v-model="form.title" placeholder="请输入菜单名称"/>
             </el-form-item>
           </el-col>
@@ -112,18 +113,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="路由名称" prop="path">
-              <el-input v-model="form.name" placeholder="请输入路由名称"/>
+            <el-form-item label="路由名称" prop="name">
+              <el-input v-model="form.name" placeholder="例如：User"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="路由路径" prop="path">
-              <el-input v-model="form.path" placeholder="请输入路由路径"/>
+              <el-input v-model="form.path" placeholder="例如：user"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="组件路径" prop="component">
-              <el-input v-model="form.component" placeholder="请输入组件路径"/>
+              <el-input v-model="form.component" placeholder="例如：admin/user"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -183,8 +184,11 @@
           status: 1 // 默认可用
         },
         rules: {
-          name: [
+          title: [
             {required: true, message: '菜单名称不能为空', trigger: 'blur'}
+          ],
+          name: [
+            {required: true, message: '路由名称不能为空', trigger: 'blur'}
           ],
           sort: [
             {required: true, message: '菜单顺序不能为空', trigger: 'blur'}
@@ -301,7 +305,7 @@
         }
       },
       loadMenuOptions() {
-        this.queryParams.queryMode = 2
+        this.queryParams.queryMode = 'treeselect'
         this.menuOptions = []
         list(this.queryParams).then(response => {
           const menuOption = {id: 0, label: '主类目', children: response.data}

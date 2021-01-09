@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
+    <el-row :gutter="40">
       <!--部门数据-->
       <el-col :span="4" :xs="24">
         <div class="head-container">
           <el-input
             v-model="deptName"
-            placeholder="部门名称"
             clearable
-            size="small"
+            placeholder="请输入部门名称"
             prefix-icon="el-icon-search"
+            size="small"
             style="margin-bottom: 20px"
           />
         </div>
@@ -26,63 +26,89 @@
       </el-col>
 
       <el-col :span="20" :xs="24">
-        <el-form ref="queryForm" :model="queryParams" size="small" :inline="true" label-width="68px">
+        <el-form ref="queryForm" :inline="true" :model="queryParams" label-width="68px" size="small">
           <el-form-item>
-            <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
-            <el-button type="success" icon="el-icon-edit" :disabled="single" @click="handleUpdate">修改
+            <el-button  icon="el-icon-plus" type="primary" @click="handleAdd">新增
             </el-button>
-            <el-button type="danger" icon="el-icon-delete" :disabled="multiple" @click="handleDelete">删除
+            <el-button
+              :disabled="single"
+              icon="el-icon-edit"
+              type="success"
+              style="margin-left:15px"
+              @click="handleUpdate"
+            >修改
+            </el-button>
+            <el-button
+              :disabled="multiple"
+              icon="el-icon-delete"
+              type="danger"
+              style="margin-left:15px"
+              @click="handleDelete"
+            >删除
             </el-button>
           </el-form-item>
 
           <el-form-item label="用户名" prop="username">
             <el-input
               v-model="queryParams.username"
-              placeholder="用户名"
               clearable
+              placeholder="请输入用户名"
               size="small"
               style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="手机号码" prop="mobile">
+          <el-form-item label="手机号码" prop="mobile" style="margin-left: 10px">
             <el-input
               v-model="queryParams.mobile"
-              placeholder="手机号码"
               clearable
+              placeholder="请输入手机号码"
               size="small"
               style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="状态" prop="status">
+          <el-form-item label="状态" prop="status" style="margin-left: -10px">
             <el-select
               v-model="queryParams.status"
-              placeholder="用户状态"
               clearable
+              size="small"
+              style="width: 150px"
+              placeholder="选择用户状态"
             >
               <el-option label="正常" value="1"/>
               <el-option label="停用" value="0"/>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-search" type="primary" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
           </el-form-item>
         </el-form>
 
         <el-table
           v-loading="loading"
+          element-loading-text="数据载入中"
+          element-loading-spinner="el-icon-loading"
+          border
           :data="pageList"
-          @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="50" align="center"/>
-          <el-table-column label="用户编号" prop="id" width="180"/>
-          <el-table-column label="用户名" prop="username"/>
-          <el-table-column label="用户昵称" prop="nickName"/>
-          <el-table-column label="角色" prop="roleGroup"/>
-          <el-table-column label="部门" prop="deptName"/>
-          <el-table-column label="手机号码" prop="tel" width="120"/>
-          <el-table-column label="状态">
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column align="center" type="selection" width="50"/>
+          <el-table-column align="center" label="用户编号" prop="id" width="100"/>
+          <el-table-column align="center" label="用户名" prop="username" width="126"/>
+          <el-table-column align="center" label="用户昵称" prop="nickname" width="126"/>
+          <el-table-column align="center" label="性别" prop="gender" width="126">
+            <template slot-scope="scope">
+              <span v-if="scope.row.gender===0">未知</span>
+              <span v-if="scope.row.gender===1">男</span>
+              <span v-if="scope.row.gender===2">女</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="部门" prop="deptName" width="126"/>
+          <el-table-column align="center" label="角色名称" prop="roleName" width="126"/>
+          <el-table-column align="center" label="手机号码" prop="mobile" width="126"/>
+          <el-table-column align="center" label="状态" width="125">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -92,29 +118,25 @@
               />
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            width="250"
-            class-name="small-padding fixed-width"
-          >
+          <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="250">
             <template slot-scope="scope">
               <el-button
-                type="text"
                 icon="el-icon-edit"
+                type="text"
                 @click="handleUpdate(scope.row)"
               >修改
               </el-button>
               <el-button
-                v-if="scope.row.id !=1"
-                type="text"
+                v-if="scope.row.id !==1"
                 icon="el-icon-delete"
+                type="text"
                 @click="handleDelete(scope.row)"
-              >删除
+              >
+                删除
               </el-button>
               <el-button
-                type="text"
                 icon="el-icon-key"
+                type="text"
                 @click="handleResetPassword(scope.row)"
               >重置密码
               </el-button>
@@ -124,25 +146,30 @@
 
         <pagination
           v-show="pagination.total>0"
-          :total="pagination.total"
-          :page.sync="pagination.page"
           :limit.sync="pagination.limit"
+          :page.sync="pagination.page"
+          :total="pagination.total"
           @pagination="handleQuery"
         />
       </el-col>
     </el-row>
-    <!-- 添加或修改参数配置对话框 -->
+    <!-- 新增或修改参数配置对话框 -->
     <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="800px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户名" prop="username">
-              <el-input v-model="form.username" :disabled="form.id != undefined" placeholder="请输入用户名"/>
+              <el-input v-model="form.username" :disabled="form.id !== undefined" placeholder="请输入用户名"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="dialog.flag===0" label="用户密码" prop="password">
+              <el-input v-model="form.password" type="text" placeholder="请输入用户密码"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="用户昵称" prop="nickname">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称"/>
+              <el-input v-model="form.nickname" placeholder="请输入用户昵称"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -156,8 +183,8 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择">
+            <el-form-item label="用户角色" prop="roleId">
+              <el-select v-model="form.roleId" placeholder="请选择角色">
                 <el-option
                   v-for="item in roleOptions"
                   :key="parseInt(item.id)"
@@ -168,13 +195,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="tel">
-              <el-input v-model="form.tel" placeholder="请输入手机号码" maxlength="11"/>
+            <el-form-item label="手机号码" prop="mobile">
+              <el-input v-model="form.mobile" maxlength="11" placeholder="请输入手机号码"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
+              <el-input v-model="form.email" maxlength="50" placeholder="请输入邮箱"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -194,7 +221,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="备注">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+              <el-input v-model="form.remark" placeholder="请输入内容" type="textarea"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -208,247 +235,255 @@
 </template>
 
 <script>
-  import {list, detail, update, add, del, patch} from '@/api/admin/user'
-  import {list as deptList} from '@/api/admin/dept'
-  import {list as roleList} from '@/api/admin/role'
-  import TreeSelect from '@riophae/vue-treeselect'
-  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { add, del, detail, list, patch, update } from '@/api/admin/user'
+import { list as deptList } from '@/api/admin/dept'
+import { list as roleList } from '@/api/admin/role'
+import TreeSelect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
-  export default {
-    components: {TreeSelect},
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        queryParams: {
-          username: undefined,
-          mobile: undefined
-        },
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        pageList: [],
-        dialog: {
-          title: undefined,
-          visible: false
-        },
-        // 部门名称
-        deptName: undefined,
-        // 部门树选项
-        deptOptions: undefined,
-        // 角色选项
-        roleOptions: [],
-        // 表单参数
-        form: {},
-        // 表单校验
-        rules: {
-          username: [
-            {required: true, message: '用户名不能为空', trigger: 'blur'}
-          ],
-
-          deptId: [
-            {required: true, message: '归属部门不能为空', trigger: 'blur'}
-          ],
-          email: [
-            {
-              type: 'email',
-              message: "'请输入正确的邮箱地址",
-              trigger: ['blur', 'change']
-            }
-          ],
-          mobile: [
-            {
-              pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-              message: '请输入正确的手机号码',
-              trigger: 'blur'
-            }
-          ]
-        }
-      }
-    },
-    watch: {
-      // 根据名称筛选部门树
-      deptName(val) {
-        this.$refs.tree.filter(val)
-      }
-    },
-    created() {
-      this.loadData()
-    },
-    methods: {
-      async loadData() {
-        this.handleQuery()
-        await this.loadDeptOptions()
+export default {
+  components: { TreeSelect },
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      queryParams: {
+        username: undefined,
+        mobile: undefined
       },
-      handleQuery() {
-        this.queryParams.page = this.pagination.page
-        this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
-          const {data, total} = response
-          this.pageList = data
-          this.pagination.total = total
-          this.loading = false
-        })
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
       },
-      handleResetQuery() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams = {
-          username: undefined,
-          mobile: undefined
-        }
-        this.handleQuery()
+      pageList: [],
+      dialog: {
+        title: undefined,
+        visible: false,
+        flag: 0
       },
-      // 筛选节点
-      filterNode(value, data) {
-        if (!value) return true
-        return data.label.indexOf(value) !== -1
-      },
-      // 部门节点单击事件
-      handleNodeClick(data) {
-        this.queryParams.deptId = data.id
-        this.handleQuery()
-      },
-      // 用户状态修改
-      handleStatusChange(row) {
-        const text = row.status === 1 ? '启用' : '停用'
-        this.$confirm('确认要"' + text + row.username + '"用户吗?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function () {
-          return patch(row.id, {status: row.status})
-        }).then(() => {
-          this.$message.success(text + '成功')
-        }).catch(function () {
-          row.status = row.status === 0 ? 1 : 0
-        })
-      },
-      // 多选框选中数据
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
-      },
-      async handleAdd() {
-        this.resetForm()
-        this.dialog = {
-          title: '新增用户',
-          visible: true
-        }
-        await this.loadRoleOptions()
-        await this.loadDeptOptions()
-      },
-      async handleUpdate(row) {
-        this.resetForm()
-        this.dialog = {
-          title: '修改用户',
-          visible: true
-        }
-        await this.loadRoleOptions()
-        await this.loadDeptOptions()
-        const id = row.id || this.ids
-        detail(id).then(response => {
-          this.form = response.data
-        })
-      },
-
-      handleSubmit: function () {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            const id = this.form.id
-            if (id != undefined) {
-              update(this.form.id, this.form).then(() => {
-                this.$message.success('修改成功')
-                this.dialog.visible = false
-                this.handleQuery()
-              })
-            } else {
-              add(this.form).then(() => {
-                this.$message.success('新增成功')
-                this.dialog.visible = false
-                this.handleQuery()
-              })
-            }
+      // 部门名称
+      deptName: undefined,
+      // 部门树选项
+      deptOptions: undefined,
+      // 角色选项
+      roleOptions: [],
+      // 表单参数
+      form: {},
+      // 表单校验
+      rules: {
+        username: [
+          { required: true, message: '用户名不能为空', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '用户密码不能为空', trigger: 'blur' }
+        ],
+        roleId: [
+          { required: true, message: '用户角色不能为空', trigger: 'blur' }
+        ],
+        deptId: [
+          { required: true, message: '归属部门不能为空', trigger: 'blur' }
+        ],
+        email: [
+          {
+            type: 'email',
+            message: '\'请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
           }
-        })
-      },
-      handleDelete(row) {
-        const ids = row.id || this.ids
-        this.$confirm('确认删除已选中的数据项?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          del(ids).then(() => {
-            this.$message.success('删除成功')
-            this.handleQuery()
-          })
-        }).catch(() =>
-          this.$message.info('已取消删除')
-        )
-      },
-      handleResetPassword(row) {
-        this.$prompt('请输入"' + row.username + '"的新密码', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputValidator: (value) => {
-            if (!value || value.trim().length < 1) {
-              return '请填写新密码'
-            }
+        ],
+        mobile: [
+          {
+            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            message: '请输入正确的手机号码',
+            trigger: 'blur'
           }
-        }).then(({value}) => {
-          patch(row.id, {
-            password: value
-          }).then(() => {
-            this.$message.success('修改成功，新密码是：' + value)
-          })
-        }).catch(() => {
-        })
-      },
-      loadRoleOptions() {
-        roleList().then(response => {
-          this.roleOptions = response.data
-        })
-      },
-      loadDeptOptions() {
-        deptList({queryMode:'treeselect'}).then(response => {
-          this.deptOptions = [{
-            id: 0,
-            label: '有来科技',
-            children: response.data
-          }]
-        })
-      },
-      // 表单重置
-      resetForm() {
-        this.form = {
-          id: undefined,
-          deptId: undefined,
-          username: undefined,
-          nickname: undefined,
-          mobile: undefined,
-          email: undefined,
-          gender: undefined,
-          status: 1,
-          remark: undefined,
-          roleIds: []
+        ]
+      }
+    }
+  },
+  watch: {
+    // 根据名称筛选部门树
+    deptName(val) {
+      this.$refs.tree.filter(val)
+    }
+  },
+  created() {
+    this.loadData()
+  },
+  methods: {
+    async loadData() {
+      this.handleQuery()
+      await this.loadDeptOptions()
+    },
+    handleQuery() {
+      this.queryParams.page = this.pagination.page
+      this.queryParams.limit = this.pagination.limit
+      list(this.queryParams).then(response => {
+        const { data, total } = response
+        this.pageList = data
+        this.pagination.total = total
+        this.loading = false
+      })
+    },
+    handleResetQuery() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
+      }
+      this.queryParams = {
+        username: undefined,
+        mobile: undefined
+      }
+      this.handleQuery()
+    },
+    // 筛选节点
+    filterNode(value, data) {
+      if (!value) {
+        return true
+      }
+      return data.label.indexOf(value) !== -1
+    },
+    // 部门节点单击事件
+    handleNodeClick(data) {
+      this.queryParams.deptId = data.id
+      this.handleQuery()
+    },
+    // 用户状态修改
+    handleStatusChange(row) {
+      const text = row.status === 1 ? '启用' : '停用'
+      this.$confirm('确认要"' + text + row.username + '"用户吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return patch(row.id, { status: row.status })
+      }).then(() => {
+        this.$message.success(text + '成功')
+      }).catch(function() {
+        row.status = row.status === 0 ? 1 : 0
+      })
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
+    },
+    async handleAdd() {
+      this.resetForm()
+      this.dialog = {
+        title: '新增用户',
+        visible: true,
+        flag: 0
+      }
+      await this.loadRoleOptions()
+      await this.loadDeptOptions()
+    },
+    async handleUpdate(row) {
+      this.resetForm()
+      this.dialog = {
+        title: '修改用户',
+        visible: true,
+        flag: 1
+      }
+      await this.loadRoleOptions()
+      await this.loadDeptOptions()
+      const id = row.id || this.ids
+      detail(id, { queryMode: 1 }).then(response => {
+        this.form = response.data
+      })
+    },
+    handleSubmit: function() {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          const id = this.form.id
+          if (id !== undefined) {
+            update(this.form.id, this.form).then(() => {
+              this.$message.success('修改成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          } else {
+            add(this.form).then(() => {
+              this.$message.success('新增成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          }
         }
-        if (this.$refs['form']) {
-          this.$refs['form'].resetFields()
+      })
+    },
+    handleDelete(row) {
+      const ids = row.id || this.ids.join(',')
+      this.$confirm('是否确认删除选中的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return del(ids)
+      }).then(() => {
+        this.$message.success('删除成功')
+        this.handleQuery()
+      }).catch(() =>
+        this.$message.info('已取消删除')
+      )
+    },
+    handleResetPassword(row) {
+      this.$prompt('请输入"' + row.username + '"的新密码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValidator: (value) => {
+          if (!value || value.trim().length < 1) {
+            return '请填写新密码'
+          }
         }
+      }).then(({ value }) => {
+        patch(row.id, {
+          password: value
+        }).then(() => {
+          this.$message.success('修改成功，新密码是：' + value)
+        })
+      }).catch(() => {
+      })
+    },
+    loadRoleOptions() {
+      roleList().then(response => {
+        this.roleOptions = response.data
+      })
+    },
+    loadDeptOptions() {
+      deptList({queryMode:'treeselect'}).then(response => {
+        this.deptOptions = [{
+          id: 0,
+          label: '有来科技',
+          children: response.data
+        }]
+      })
+    },
+    // 表单重置
+    resetForm() {
+      this.form = {
+        id: undefined,
+        deptId: undefined,
+        username: undefined,
+        nickname: undefined,
+        mobile: undefined,
+        email: undefined,
+        gender: undefined,
+        status: 1,
+        remark: undefined
+      }
+      if (this.$refs['form']) {
+        this.$refs['form'].resetFields()
       }
     }
   }
+}
 </script>
