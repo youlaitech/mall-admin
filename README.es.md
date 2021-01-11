@@ -12,10 +12,10 @@
   <a href="https://travis-ci.org/PanJiaChen/vue-element-admin" rel="nofollow">
     <img src="https://travis-ci.org/PanJiaChen/vue-element-admin.svg?branch=master" alt="Estado de Construcción">
   </a>
-  <a href="https://github.com/PanJiaChen/vue-element-admin/blob/master/LICENSE">
+  <a href="https://github.com/hxrui/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="Licencia">
   </a>
-  <a href="https://github.com/PanJiaChen/vue-element-admin/releases">
+  <a href="https://github.com/hxrui/releases">
     <img src="https://img.shields.io/github/release/PanJiaChen/vue-element-admin.svg" alt="Liberación Github">
   </a>
   <a href="https://gitter.im/vue-element-admin/discuss">
@@ -42,18 +42,18 @@ Español | [English](./README.md) | [简体中文](./README.zh-CN.md) | [日本�
 
 - [Para Donaciones](https://panjiachen.github.io/vue-element-admin-site/donate/)
 
-- [Enlace de Wiki](https://github.com/PanJiaChen/vue-element-admin/wiki)
+- [Enlace de Wiki](https://github.com/hxrui/wiki)
 
 - [Canal de Gitee](https://panjiachen.gitee.io/vue-element-admin/)
 
 - Plantilla base recomendada para usar: [vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)
 - Aplicación de Escritorio: [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)
 - Plantilla de Typescript: [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Créditos: [@Armour](https://github.com/Armour))
-- [awesome-project](https://github.com/PanJiaChen/vue-element-admin/issues/2312)
+- [awesome-project](https://github.com/hxrui/issues/2312)
 
-**Después de la versión `v4.1.0+`, la rama por defecto master no tendrá soporte para i18n. Por favor utilice la rama [i18n](https://github.com/PanJiaChen/vue-element-admin/tree/i18n), los cambios serán incluidos en la rama master**
+**Después de la versión `v4.1.0+`, la rama por defecto master no tendrá soporte para i18n. Por favor utilice la rama [i18n](https://github.com/hxrui/tree/i18n), los cambios serán incluidos en la rama master**
 
-**la versión actual es `v4.0+` construida con `vue-cli`. Si encuentra algún problema, por favor coloque un [issue](https://github.com/PanJiaChen/vue-element-admin/issues/new). Si desea usar la versión anterior, puede cambiar de rama a [tag/3.11.0](https://github.com/PanJiaChen/vue-element-admin/tree/tag/3.11.0), no relacionado con `vue-cli`**
+**la versión actual es `v4.0+` construida con `vue-cli`. Si encuentra algún problema, por favor coloque un [issue](https://github.com/hxrui/issues/new). Si desea usar la versión anterior, puede cambiar de rama a [tag/3.11.0](https://github.com/hxrui/tree/tag/3.11.0), no relacionado con `vue-cli`**
 
 **Este proyecto no está soportado para versiones antigüas de navegadores (ej. IE).**
 
@@ -153,7 +153,7 @@ Sea un patrocinante y coloque su logo en nuestro LEEME en GitHub con un enlace d
 
 ```bash
 # clone el proyecto
-git clone https://github.com/PanJiaChen/vue-element-admin.git
+git clone https://github.com/hxrui.git
 
 # vaya al directorio clonado
 cd vue-element-admin
@@ -197,7 +197,7 @@ Vaya a [Documentación](https://panjiachen.github.io/vue-element-admin-site/guid
 
 ## Registro de Cambios
 
-Los cambios detallados por cada liberación se encuentran en [notas de liberación](https://github.com/PanJiaChen/vue-element-admin/releases).
+Los cambios detallados por cada liberación se encuentran en [notas de liberación](https://github.com/hxrui/releases).
 
 ## Demostración en línea
 
@@ -223,6 +223,6 @@ Navegadores modernos e Internet Explorer 10+.
 
 ## Licencia
 
-[MIT](https://github.com/PanJiaChen/vue-element-admin/blob/master/LICENSE)
+[MIT](https://github.com/hxrui/blob/master/LICENSE)
 
 Copyright (c) 2017-presente PanJiaChen
