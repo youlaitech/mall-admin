@@ -35,7 +35,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" type="index" width="100" />
       <el-table-column label="权限名称" prop="name"  width="250" />
-      <el-table-column label="权限路径" prop="url"  />
+      <el-table-column label="权限路径" prop="permission"  />
       <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button

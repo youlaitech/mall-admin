@@ -44,7 +44,7 @@
             type="text"
             icon="el-icon-edit"
             @click="handleAllocateResource(scope.row)"
-          >分配资源
+          >授权
           </el-button>
 
           <el-button
@@ -124,8 +124,8 @@
     </el-dialog>
 
 
-    <!-- 分配资源弹窗 -->
-    <el-dialog title="分配资源" :visible.sync="resourceDialog.visible" width="600px">
+    <!-- 授权弹窗 -->
+    <el-dialog title="授权" :visible.sync="resourceDialog.visible" width="600px">
       <el-form ref="resourceForm" :model="resourceForm" :rules="resourceRule" label-width="80px">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="resourceForm.name" :readonly="true"/>
@@ -340,7 +340,7 @@
         //checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
         return checkedKeys
       },
-      // 分配资源
+      // 授权
       async handleAllocateResource(row) {
         this.resetResourceForm()
         this.resourceDialog.visible = true
@@ -349,7 +349,7 @@
         this.resourceForm.name = row.name
         await this.loadRoleResourceOptions(roleId)
       },
-      // 分配资源提交
+      // 授权提交
       handleAllocateResourceSubmit: function () {
         this.$refs['resourceForm'].validate(valid => {
           if (valid) {
