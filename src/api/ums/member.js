@@ -33,9 +33,8 @@ export function update(id, data) {
 
 export function del(ids) {
   return request({
-    url: '/mall-ums/api.admin/v1/members',
-    method: 'delete',
-    params: { ids: ids }
+    url: '/mall-ums/api.admin/v1/members/' + ids,
+    method: 'delete'
   })
 }
 

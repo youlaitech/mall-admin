@@ -28,7 +28,7 @@
       <el-col :span="20" :xs="24">
         <el-form ref="queryForm" :inline="true" :model="queryParams" label-width="68px" size="small">
           <el-form-item>
-            <el-button  icon="el-icon-plus" type="primary" @click="handleAdd">新增
+            <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增
             </el-button>
             <el-button
               :disabled="single"
@@ -118,6 +118,7 @@
               />
             </template>
           </el-table-column>
+
           <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="250">
             <template slot-scope="scope">
               <el-button
@@ -175,9 +176,9 @@
           <el-col :span="12">
             <el-form-item label="用户性别">
               <el-select v-model="form.gender" placeholder="请选择">
-                <el-option label="未知" value="0"/>
-                <el-option label="男" value="1"/>
-                <el-option label="女" value="2"/>
+                <el-option label="未知" :value="0"/>
+                <el-option label="男" :value="1"/>
+                <el-option label="女" :value="2"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -235,255 +236,255 @@
 </template>
 
 <script>
-import { add, del, detail, list, patch, update } from '@/api/admin/user'
-import { list as deptList } from '@/api/admin/dept'
-import { list as roleList } from '@/api/admin/role'
-import TreeSelect from '@riophae/vue-treeselect'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+  import {add, del, detail, list, patch, update} from '@/api/admin/user'
+  import {list as deptList} from '@/api/admin/dept'
+  import {list as roleList} from '@/api/admin/role'
+  import TreeSelect from '@riophae/vue-treeselect'
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
-export default {
-  components: { TreeSelect },
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      queryParams: {
-        username: undefined,
-        mobile: undefined
-      },
-      pagination: {
-        page: 1,
-        limit: 10,
-        total: 0
-      },
-      pageList: [],
-      dialog: {
-        title: undefined,
-        visible: false,
-        flag: 0
-      },
-      // 部门名称
-      deptName: undefined,
-      // 部门树选项
-      deptOptions: undefined,
-      // 角色选项
-      roleOptions: [],
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '用户密码不能为空', trigger: 'blur' }
-        ],
-        roleId: [
-          { required: true, message: '用户角色不能为空', trigger: 'blur' }
-        ],
-        deptId: [
-          { required: true, message: '归属部门不能为空', trigger: 'blur' }
-        ],
-        email: [
-          {
-            type: 'email',
-            message: '\'请输入正确的邮箱地址',
-            trigger: ['blur', 'change']
-          }
-        ],
-        mobile: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: '请输入正确的手机号码',
-            trigger: 'blur'
-          }
-        ]
-      }
-    }
-  },
-  watch: {
-    // 根据名称筛选部门树
-    deptName(val) {
-      this.$refs.tree.filter(val)
-    }
-  },
-  created() {
-    this.loadData()
-  },
-  methods: {
-    async loadData() {
-      this.handleQuery()
-      await this.loadDeptOptions()
-    },
-    handleQuery() {
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
-      list(this.queryParams).then(response => {
-        const { data, total } = response
-        this.pageList = data
-        this.pagination.total = total
-        this.loading = false
-      })
-    },
-    handleResetQuery() {
-      this.pagination = {
-        page: 1,
-        limit: 10,
-        total: 0
-      }
-      this.queryParams = {
-        username: undefined,
-        mobile: undefined
-      }
-      this.handleQuery()
-    },
-    // 筛选节点
-    filterNode(value, data) {
-      if (!value) {
-        return true
-      }
-      return data.label.indexOf(value) !== -1
-    },
-    // 部门节点单击事件
-    handleNodeClick(data) {
-      this.queryParams.deptId = data.id
-      this.handleQuery()
-    },
-    // 用户状态修改
-    handleStatusChange(row) {
-      const text = row.status === 1 ? '启用' : '停用'
-      this.$confirm('确认要"' + text + row.username + '"用户吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return patch(row.id, { status: row.status })
-      }).then(() => {
-        this.$message.success(text + '成功')
-      }).catch(function() {
-        row.status = row.status === 0 ? 1 : 0
-      })
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
-    async handleAdd() {
-      this.resetForm()
-      this.dialog = {
-        title: '新增用户',
-        visible: true,
-        flag: 0
-      }
-      await this.loadRoleOptions()
-      await this.loadDeptOptions()
-    },
-    async handleUpdate(row) {
-      this.resetForm()
-      this.dialog = {
-        title: '修改用户',
-        visible: true,
-        flag: 1
-      }
-      await this.loadRoleOptions()
-      await this.loadDeptOptions()
-      const id = row.id || this.ids
-      detail(id, { queryMode: 1 }).then(response => {
-        this.form = response.data
-      })
-    },
-    handleSubmit: function() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          const id = this.form.id
-          if (id !== undefined) {
-            update(this.form.id, this.form).then(() => {
-              this.$message.success('修改成功')
-              this.dialog.visible = false
-              this.handleQuery()
-            })
-          } else {
-            add(this.form).then(() => {
-              this.$message.success('新增成功')
-              this.dialog.visible = false
-              this.handleQuery()
-            })
-          }
+  export default {
+    components: {TreeSelect},
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        queryParams: {
+          username: undefined,
+          mobile: undefined
+        },
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: 0
+        },
+        pageList: [],
+        dialog: {
+          title: undefined,
+          visible: false,
+          flag: 0
+        },
+        // 部门名称
+        deptName: undefined,
+        // 部门树选项
+        deptOptions: undefined,
+        // 角色选项
+        roleOptions: [],
+        // 表单参数
+        form: {},
+        // 表单校验
+        rules: {
+          username: [
+            {required: true, message: '用户名不能为空', trigger: 'blur'}
+          ],
+          password: [
+            {required: true, message: '用户密码不能为空', trigger: 'blur'}
+          ],
+          roleId: [
+            {required: true, message: '用户角色不能为空', trigger: 'blur'}
+          ],
+          deptId: [
+            {required: true, message: '归属部门不能为空', trigger: 'blur'}
+          ],
+          email: [
+            {
+              type: 'email',
+              message: '\'请输入正确的邮箱地址',
+              trigger: ['blur', 'change']
+            }
+          ],
+          mobile: [
+            {
+              pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+              message: '请输入正确的手机号码',
+              trigger: 'blur'
+            }
+          ]
         }
-      })
+      }
     },
-    handleDelete(row) {
-      const ids = row.id || this.ids.join(',')
-      this.$confirm('是否确认删除选中的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return del(ids)
-      }).then(() => {
-        this.$message.success('删除成功')
+    watch: {
+      // 根据名称筛选部门树
+      deptName(val) {
+        this.$refs.tree.filter(val)
+      }
+    },
+    created() {
+      this.loadData()
+    },
+    methods: {
+      async loadData() {
         this.handleQuery()
-      }).catch(() =>
-        this.$message.info('已取消删除')
-      )
-    },
-    handleResetPassword(row) {
-      this.$prompt('请输入"' + row.username + '"的新密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValidator: (value) => {
-          if (!value || value.trim().length < 1) {
-            return '请填写新密码'
-          }
-        }
-      }).then(({ value }) => {
-        patch(row.id, {
-          password: value
-        }).then(() => {
-          this.$message.success('修改成功，新密码是：' + value)
+        await this.loadDeptOptions()
+      },
+      handleQuery() {
+        this.queryParams.page = this.pagination.page
+        this.queryParams.limit = this.pagination.limit
+        list(this.queryParams).then(response => {
+          const {data, total} = response
+          this.pageList = data
+          this.pagination.total = total
+          this.loading = false
         })
-      }).catch(() => {
-      })
-    },
-    loadRoleOptions() {
-      roleList().then(response => {
-        this.roleOptions = response.data
-      })
-    },
-    loadDeptOptions() {
-      deptList({queryMode:'treeselect'}).then(response => {
-        this.deptOptions = [{
-          id: 0,
-          label: '有来科技',
-          children: response.data
-        }]
-      })
-    },
-    // 表单重置
-    resetForm() {
-      this.form = {
-        id: undefined,
-        deptId: undefined,
-        username: undefined,
-        nickname: undefined,
-        mobile: undefined,
-        email: undefined,
-        gender: undefined,
-        status: 1,
-        remark: undefined
-      }
-      if (this.$refs['form']) {
-        this.$refs['form'].resetFields()
+      },
+      handleResetQuery() {
+        this.pagination = {
+          page: 1,
+          limit: 10,
+          total: 0
+        }
+        this.queryParams = {
+          username: undefined,
+          mobile: undefined
+        }
+        this.handleQuery()
+      },
+      // 筛选节点
+      filterNode(value, data) {
+        if (!value) {
+          return true
+        }
+        return data.label.indexOf(value) !== -1
+      },
+      // 部门节点单击事件
+      handleNodeClick(data) {
+        this.queryParams.deptId = data.id
+        this.handleQuery()
+      },
+      // 用户状态修改
+      handleStatusChange(row) {
+        const text = row.status === 1 ? '启用' : '停用'
+        this.$confirm('确认要"' + text + row.username + '"用户吗?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function () {
+          return patch(row.id, {status: row.status})
+        }).then(() => {
+          this.$message.success(text + '成功')
+        }).catch(function () {
+          row.status = row.status === 0 ? 1 : 0
+        })
+      },
+      // 多选框选中数据
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id)
+        this.single = selection.length !== 1
+        this.multiple = !selection.length
+      },
+      async handleAdd() {
+        this.resetForm()
+        this.dialog = {
+          title: '新增用户',
+          visible: true,
+          flag: 0
+        }
+        await this.loadRoleOptions()
+        await this.loadDeptOptions()
+      },
+      async handleUpdate(row) {
+        this.resetForm()
+        this.dialog = {
+          title: '修改用户',
+          visible: true,
+          flag: 1
+        }
+        await this.loadRoleOptions()
+        await this.loadDeptOptions()
+        const id = row.id || this.ids
+        detail(id, {queryMode: 1}).then(response => {
+          this.form = response.data
+        })
+      },
+      handleSubmit: function () {
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            const id = this.form.id
+            if (id !== undefined) {
+              update(this.form.id, this.form).then(() => {
+                this.$message.success('修改成功')
+                this.dialog.visible = false
+                this.handleQuery()
+              })
+            } else {
+              add(this.form).then(() => {
+                this.$message.success('新增成功')
+                this.dialog.visible = false
+                this.handleQuery()
+              })
+            }
+          }
+        })
+      },
+      handleDelete(row) {
+        const ids = row.id || this.ids.join(',')
+        this.$confirm('是否确认删除选中的数据项?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function () {
+          return del(ids)
+        }).then(() => {
+          this.$message.success('删除成功')
+          this.handleQuery()
+        }).catch(() =>
+          this.$message.info('已取消删除')
+        )
+      },
+      handleResetPassword(row) {
+        this.$prompt('请输入"' + row.username + '"的新密码', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValidator: (value) => {
+            if (!value || value.trim().length < 1) {
+              return '请填写新密码'
+            }
+          }
+        }).then(({value}) => {
+          patch(row.id, {
+            password: value
+          }).then(() => {
+            this.$message.success('修改成功，新密码是：' + value)
+          })
+        }).catch(() => {
+        })
+      },
+      loadRoleOptions() {
+        roleList().then(response => {
+          this.roleOptions = response.data
+        })
+      },
+      loadDeptOptions() {
+        deptList({queryMode: 'treeselect'}).then(response => {
+          this.deptOptions = [{
+            id: 0,
+            label: '有来科技',
+            children: response.data
+          }]
+        })
+      },
+      // 表单重置
+      resetForm() {
+        this.form = {
+          id: undefined,
+          deptId: undefined,
+          username: undefined,
+          nickname: undefined,
+          mobile: undefined,
+          email: undefined,
+          gender: undefined,
+          status: 1,
+          remark: undefined
+        }
+        if (this.$refs['form']) {
+          this.$refs['form'].resetFields()
+        }
       }
     }
   }
-}
 </script>
