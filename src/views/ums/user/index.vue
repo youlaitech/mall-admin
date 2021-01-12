@@ -124,7 +124,7 @@
 </template>
 
 <script>
-  import {list, patch} from '@/api/ums/member'
+  import {list, patch} from '@/api/ums/user'
 
   export default {
     data() {
