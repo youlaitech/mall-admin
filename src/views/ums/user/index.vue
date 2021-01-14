@@ -29,7 +29,7 @@
             <el-table-column align="center" label="联系方式" prop="mobile"/>
             <el-table-column align="center" label="收货地址" >
               <template slot-scope="scope">
-                {{scope.row.province + scope.row.city + scope.row.area + scope.row.adderss }}
+                {{scope.row.province + scope.row.city + scope.row.area + scope.row.address }}
               </template>
             </el-table-column>
             <el-table-column align="center" label="邮编" prop="zipCode"/>
