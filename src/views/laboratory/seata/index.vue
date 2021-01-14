@@ -63,7 +63,7 @@
 <script>
 import {orderDetail, submit, update as updateOrder} from '@/api/oms/order'
 import {detail as skuDetail, update as updateSku} from '@/api/pms/sku'
-import {detail as memberDetail, update as updateMember} from '@/api/ums/member'
+import {detail as userDetail, update as updateUser} from '@/api/ums/user'
 
 export default {
   data() {
@@ -100,7 +100,7 @@ export default {
         this.skuLoading = false
         this.skuData.push(response.data)
       })
-      memberDetail(1).then(response => {
+      userDetail(1).then(response => {
         console.log('会员信息', response.data)
         this.memberLoading = false
         this.memberData.push(response.data)
@@ -110,7 +110,7 @@ export default {
     handleReset() {
       updateOrder(1, {id: 1, status: 101}).then(r1 => {
         updateSku(1, {id: 1, stock: 9999}).then(r2 => {
-          updateMember(1, {id: 1, point: 0}).then(r3 => {
+          updateUser(1, {id: 1, point: 0}).then(r3 => {
             this.$message.success("重置数据成功")
             this.handleQuery()
           })

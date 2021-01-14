@@ -25,11 +25,11 @@
             size="small"
             border>
             <el-table-column type="index" label="序号" width="80" align="center"/>
-            <el-table-column align="center" label="收货人" prop="receiverName"/>
-            <el-table-column align="center" label="联系方式" prop="receiverMobile"/>
+            <el-table-column align="center" label="收货人" prop="name"/>
+            <el-table-column align="center" label="联系方式" prop="mobile"/>
             <el-table-column align="center" label="收货地址" >
               <template slot-scope="scope">
-                {{scope.row.province + scope.row.city + scope.row.area + scope.row.addressDetail }}
+                {{scope.row.province + scope.row.city + scope.row.area + scope.row.adderss }}
               </template>
             </el-table-column>
             <el-table-column align="center" label="邮编" prop="zipCode"/>
@@ -39,25 +39,6 @@
                 <el-tag v-if="scope.row.defaulted==0" type="info">否</el-tag>
               </template>
             </el-table-column>
-
-           <!-- <el-table-column label="操作" align="center" min-width="10" class-name="small-padding fixed-width">
-              <template slot-scope="scope">
-
-                <el-button
-                  type="text"
-                  size="mini"
-                  @click="handleAddressEdit(scope.row)">编辑
-                </el-button>
-
-                <el-button
-                  type="text"
-                  icon="el-icon-delete"
-                  @click="handleAddressDelete(scope.row)">
-                  删除
-                </el-button>
-              </template>
-            </el-table-column>-->
-
           </el-table>
         </template>
       </el-table-column>
@@ -84,7 +65,6 @@
       </el-table-column>
       <el-table-column prop="mobile" label="手机号码" min-width="10"/>
       <el-table-column prop="birthday" label="出生日期" min-width="10"/>
-      <!--<el-table-column prop="point" label="会员积分" min-width="6"/>-->
       <el-table-column prop="status" label="状态" min-width="6">
         <template slot-scope="scope">
           <el-switch
@@ -208,14 +188,6 @@
         }).catch(function () {
           row.status = row.status === 0 ? 1 : 0
         })
-      },
-
-
-      handleAddressEdit(){
-
-      },
-      handleAddressDelete(){
-
       }
     }
   }

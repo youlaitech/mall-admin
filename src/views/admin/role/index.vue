@@ -6,7 +6,7 @@
         <el-button type="success" icon="el-icon-edit" :disabled="single" @click="handleUpdate">修改</el-button>
         <el-button type="danger" icon="el-icon-delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
-      <el-form-item label="角色名称" prop="name">
+      <el-form-item  prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="角色名称"
@@ -43,7 +43,7 @@
           <el-button
             type="text"
             icon="el-icon-edit"
-            @click="handleAllocateResource(scope.row)"
+            @click="handleAllocatePermission(scope.row)"
           >授权
           </el-button>
 
@@ -125,16 +125,16 @@
 
 
     <!-- 授权弹窗 -->
-    <el-dialog title="授权" :visible.sync="resourceDialog.visible" width="600px">
-      <el-form ref="resourceForm" :model="resourceForm" :rules="resourceRule" label-width="80px">
+    <el-dialog title="授权" :visible.sync="permissionDialog.visible" width="600px">
+      <el-form ref="permissionForm" :model="permissionForm" :rules="permissionRule" label-width="80px">
         <el-form-item label="角色名称" prop="name">
-          <el-input v-model="resourceForm.name" :readonly="true"/>
+          <el-input v-model="permissionForm.name" :readonly="true"/>
         </el-form-item>
         <el-form-item label="资源权限">
           <el-tree
-            ref="resource"
+            ref="permission"
             :check-strictly="true"
-            :data="resourceOptions"
+            :data="permissionOptions"
             show-checkbox
             node-key="id"
             empty-text="加载中，请稍后"
@@ -142,8 +142,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleAllocateResourceSubmit">确 定</el-button>
-        <el-button @click="resourceDialog.visible=false">取 消</el-button>
+        <el-button type="primary" @click="handleAllocatePermissionSubmit">确 定</el-button>
+        <el-button @click="permissionDialog.visible=false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -152,7 +152,7 @@
 <script>
   import {list, detail, update, add, del, patch} from '@/api/admin/role'
   import {list as menuList} from '@/api/admin/menu'
-  import {list as resourceList} from '@/api/admin/resource'
+  import {list as permissionList} from '@/api/admin/permission'
 
   export default {
     data() {
@@ -191,16 +191,16 @@
             {required: true, message: '权限字符不能为空', trigger: 'blur'}
           ]
         },
-        resourceDialog: {
+        permissionDialog: {
           visible: false
         },
-        resourceForm: {
+        permissionForm: {
           id: undefined,
           name: undefined,
-          resourceIds: []
+          permissionIds: []
         },
-        resourceRule: {},
-        resourceOptions: []
+        permissionRule: {},
+        permissionOptions: []
       }
     },
     created() {
@@ -341,51 +341,51 @@
         return checkedKeys
       },
       // 授权
-      async handleAllocateResource(row) {
-        this.resetResourceForm()
-        this.resourceDialog.visible = true
+      async handleAllocatePermission(row) {
+        this.resetPermissionForm()
+        this.permissionDialog.visible = true
         const roleId = row.id
-        this.resourceForm.id = roleId
-        this.resourceForm.name = row.name
-        await this.loadRoleResourceOptions(roleId)
+        this.permissionForm.id = roleId
+        this.permissionForm.name = row.name
+        await this.loadRolePermissionOptions(roleId)
       },
       // 授权提交
-      handleAllocateResourceSubmit: function () {
-        this.$refs['resourceForm'].validate(valid => {
+      handleAllocatePermissionSubmit: function () {
+        this.$refs['permissionForm'].validate(valid => {
           if (valid) {
-            const roleId = this.resourceForm.id
-            const resourceIds = this.getResourceAllCheckedKeys()
-             patch(roleId, 2, {resourceIds: resourceIds}).then(()=>{
+            const roleId = this.permissionForm.id
+            const permissionIds = this.getPermissionAllCheckedKeys()
+             patch(roleId, {permissionIds: permissionIds}).then(()=>{
                this.$message.success('分配成功')
-               this.resourceDialog.visible = false
+               this.permissionDialog.visible = false
                this.handleQuery()
              })
           }
         })
       },
-      resetResourceForm: function () {
-        if (this.$refs.resource != undefined) {
-          this.$refs.resource.setCheckedKeys([])
+      resetPermissionForm: function () {
+        if (this.$refs.permission != undefined) {
+          this.$refs.permission.setCheckedKeys([])
         }
-        this.resourceForm = {
+        this.permissionForm = {
           id: undefined,
           name: undefined,
-          resourceIds: []
+          permissionIds: []
         }
-        if (this.$refs['resourceForm']) {
-          this.$refs['resourceForm'].resetFields()
+        if (this.$refs['permissionForm']) {
+          this.$refs['permissionForm'].resetFields()
         }
       },
-      loadRoleResourceOptions(roleId) {
-        resourceList({mode: 2, roleId: roleId}).then(response => {
-          this.resourceOptions = response.data.resources
-          this.$refs.resource.setCheckedKeys(response.data.checkedKeys)
+      loadRolePermissionOptions(roleId) {
+        permissionList({queryMode: 'tree', roleId: roleId}).then(response => {
+          this.permissionOptions = response.data.permissions
+          this.$refs.permission.setCheckedKeys(response.data.checkedKeys)
         })
       },
       // 所有菜单节点数据
-      getResourceAllCheckedKeys() {
-        return this.$refs.resource.getCheckedKeys()
-      },
+      getPermissionAllCheckedKeys() {
+        return this.$refs.permission.getCheckedKeys()
+      }
     }
   }
 </script>

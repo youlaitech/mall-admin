@@ -455,7 +455,7 @@
         })
       },
       loadRoleOptions() {
-        roleList().then(response => {
+        roleList({queryMode: 'list'}).then(response => {
           this.roleOptions = response.data
         })
       },
