@@ -79,16 +79,27 @@
       </el-table-column>
 
       <el-table-column prop="gmtCreate" label="注册时间" min-width="15"/>
+
+      <el-table-column  label="余额" min-width="6">
+        <template slot-scope="scope">
+          {{scope.row.balance}}
+        </template>
+      </el-table-column>
+
       <el-table-column label="操作" align="center" min-width="10" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-
-
           <el-button
+            type="text"
+            icon="el-icon-delete"
+            @click="handleRecharge(scope.row)">
+            充值
+          </el-button>
+          <!--<el-button
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)">
             删除
-          </el-button>
+          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -105,6 +116,7 @@
 
 <script>
   import {list, patch} from '@/api/ums/user'
+  import {recharge} from "@/api/ums/recharge";
 
   export default {
     data() {
@@ -188,7 +200,12 @@
         }).catch(function () {
           row.status = row.status === 0 ? 1 : 0
         })
+      },
+      // 充值
+      handleRecharge(){
+
       }
+
     }
   }
 </script>
