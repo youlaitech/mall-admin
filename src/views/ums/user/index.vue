@@ -27,7 +27,7 @@
             <el-table-column type="index" label="序号" width="80" align="center"/>
             <el-table-column align="center" label="收货人" prop="name"/>
             <el-table-column align="center" label="联系方式" prop="mobile"/>
-            <el-table-column align="center" label="收货地址" >
+            <el-table-column align="center" label="收货地址">
               <template slot-scope="scope">
                 {{scope.row.province + scope.row.city + scope.row.area + scope.row.address }}
               </template>
@@ -80,9 +80,9 @@
 
       <el-table-column prop="gmtCreate" label="注册时间" min-width="15"/>
 
-      <el-table-column  label="余额" min-width="6">
+      <el-table-column label="余额" min-width="6">
         <template slot-scope="scope">
-          {{scope.row.balance}}
+          {{ scope.row.balance/100 }}
         </template>
       </el-table-column>
 
@@ -90,16 +90,10 @@
         <template slot-scope="scope">
           <el-button
             type="text"
-            icon="el-icon-delete"
+            icon="el-icon-coin"
             @click="handleRecharge(scope.row)">
             充值
           </el-button>
-          <!--<el-button
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)">
-            删除
-          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -111,12 +105,67 @@
       :limit.sync="pagination.limit"
       @pagination="handleQuery"/>
 
+
+    <el-dialog title="会员充值" :visible.sync="dialog.visible" width="700px">
+      <h1 class="mod-title">
+        <!--支付宝支付图标-->
+        <p style="color: rgb(51, 51, 51); font-size: 12px; margin-top: 10px; display: none;" class="n-wx-zfb">
+          请先截屏,使用支付宝"扫一扫"识别相册图片支付</p>
+        <span class="ico_log ico-4"></span><span class="ico_log ico-3"></span>
+      </h1>
+
+      <div class="mod-ct">
+        <div class="amount" id="money"><span class="amount2">{{recharge.price}}</span></div>
+        <div class="qrcode-img-wrapper" data-role="qrPayImgWrapper">
+          <div data-role="qrPayImg" class="qrcode-img-area">
+            <div class="ui-loading qrcode-loading" data-role="qrPayImgLoading" style="display: none;"></div>
+            <div style="position: relative;display: inline-block;">
+              <img id="imgCode2" width="210" src="@/assets/images/zfbpay.png">
+              <img id="imgCode3" width="210" src="@/assets/images/wxpay.png">
+              <!--支付宝图标/微信图标-->
+              <input name="istype" id="istype" type="hidden" value="1">
+              <div id="qrcode"></div>
+              <img src="" style="display: none" id="qrLost">
+              <canvas id="imgCanvas" width="310" height="270" style="display: none;"></canvas>
+              <div class="timeOut" style="display: none">过期时间<span id="timeOut">2020-09-29 14:11:20</span></div>
+              <input type="hidden" id="now_time" value="2020-09-29 14:05:20">
+            </div>
+          </div>
+        </div>
+
+        <div class="time-item" style="padding-top: 10px">
+          <div class="time-item" id="msg">
+            <h1 class="overtime">订单名称：<span>{{recharge.name}}</span></h1>
+          </div>
+          <div class="time-item"><h1>订单号:<span>{{recharge.orderId}}</span></h1>
+            <strong id="hour_show"><s id="h"></s>订单支付有效期</strong>
+            <strong id="minute_show"><s></s></strong>
+            <strong id="second_show"><s></s></strong>
+            <div class="time-item"></div>
+            <strong class='resultMsg'><s></s>20秒后自动获取支付结果</strong>
+          </div>
+
+          <div class="tip">
+            <div class="ico-scan"></div>
+            <div class="tip-text">
+              <!--支付宝支付提示/微信支付提示-->
+              <p id="showtext">打开支付宝或微信[扫一扫]</p>
+            </div>
+          </div>
+        </div>
+
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialog.visible=false">取 消</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-  import {list, patch} from '@/api/ums/user'
-  import {recharge} from "@/api/ums/recharge";
+  import {list, patch} from '../../../api/ums/user'
+  import {recharge} from "../../../api/ums/recharge";
 
   export default {
     data() {
@@ -138,7 +187,16 @@
           limit: 10,
           total: 0
         },
-        pageList: []
+        pageList: [],
+        dialog: {
+          visible: false
+        },
+
+        recharge: {
+          orderId: undefined,
+          name: '会员充值',
+          price: '0.01'
+        }
       }
     },
     async created() {
@@ -202,10 +260,304 @@
         })
       },
       // 充值
-      handleRecharge(){
+      handleRecharge() {
+        this.dialog.visible = true
+        this.handleCreateRechargeOrder()
+      },
+      handleCreateRechargeOrder() {
 
       }
-
     }
   }
 </script>
+
+<style scoped>
+
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+    font-family: arial, 'hiragino sans gb', 'microsoft yahei', 'Simsun', sans-serif
+  }
+
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0
+  }
+
+  address, caption, cite, code, dfn, em, th, var {
+    font-style: normal;
+    font-weight: normal
+  }
+
+  li {
+    list-style: none
+  }
+
+  caption, th {
+    text-align: left
+  }
+
+  q:before, q:after {
+    content: ''
+  }
+
+  abbr, acronym {
+    border: 0;
+    font-variant: normal
+  }
+
+  sup {
+    vertical-align: text-top
+  }
+
+  sub {
+    vertical-align: text-bottom
+  }
+
+  fieldset, img, a img, iframe {
+    border-width: 0;
+    border-style: none
+  }
+
+  img {
+    -ms-interpolation-mode: bicubic
+  }
+
+  textarea {
+    overflow-y: auto
+  }
+
+  legend {
+    color: #000
+  }
+
+  a:link, a:visited {
+    text-decoration: none
+  }
+
+  hr {
+    height: 0
+  }
+
+  label {
+    cursor: pointer
+  }
+
+  a {
+    color: #328CE5
+  }
+
+  a:hover {
+    color: #2b8ae8;
+    text-decoration: none
+  }
+
+  a:focus {
+    outline: none
+  }
+
+  body, .body {
+    background: #f7f7f7;
+    height: 100%;
+    max-width: 640px;
+    min-width: 300px;
+    min-height: 100%;
+    margin: 0 auto;
+  }
+
+  .mod-title {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    background: #fff
+  }
+
+  .ico_log {
+    display: inline-block;
+    width: 130px;
+    height: 38px;
+    vertical-align: middle;
+    margin-right: 7px
+  }
+
+  .ico-1 {
+    background: url("../../../assets/images/logo_alipay.jpg") no-repeat;
+    background-size: cover;
+  }
+
+  .ico-2 {
+    background: url("../../../assets/images/logo_weixin.jpg") no-repeat;
+  }
+
+  .ico-3 {
+    background: url("../../../assets/images/logo_weixin.jpg") no-repeat;
+    background-size: cover;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .ico-4 {
+    background: url("../../../assets/images/logo_alipay.jpg") no-repeat;
+    background-size: cover;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .mod-title .text {
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+    vertical-align: middle
+  }
+
+  .timeOut {
+    font-family: "微软雅黑";
+    font-size: 15px;
+    margin: 5px 0;
+    padding-bottom: 2px;
+    letter-spacing: 2px;
+    color: #3ec742;
+  }
+
+  .mod-ct {
+    min-width: 300px;
+    max-width: 640px;
+    margin: 0 auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    background: #fff url("../../../assets/images/wave.png") top center repeat-x;
+    text-align: center;
+    color: #333;
+    border: 1px solid #e5e5e5;
+    border-top: none
+  }
+
+  .mod-ct .order {
+    font-size: 20px;
+    padding-top: 10px
+  }
+
+  .mod-ct .amount {
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .mod-ct .amount2 {
+    font-size: 25px;
+  }
+
+  .moneySize {
+    font-size: 20px;
+    color: #f00;
+  }
+
+  .mod-ct .qr-image {
+    margin-top: 30px
+  }
+
+  .mod-ct .qr-image img {
+    width: 230px;
+    height: 230px
+  }
+
+  .mod-ct .detail {
+    margin-top: 10px;
+    padding-top: 0px;
+    padding-bottom: 10px;
+
+  }
+
+  .mod-ct .detail .arrow .ico-arrow {
+    display: inline-block;
+    width: 20px;
+    height: 11px;
+    background: url("../../../assets/images/wechat-pay.png") -25px -100px no-repeat
+  }
+
+  .mod-ct .detail .detail-ct {
+    display: none;
+    font-size: 12px;
+    text-align: right;
+    line-height: 28px
+  }
+
+  .mod-ct .detail .detail-ct dt {
+    float: left
+  }
+
+  .mod-ct .detail-open {
+    border-top: 1px solid #e5e5e5
+  }
+
+  .mod-ct .detail .arrow {
+    padding: 6px 34px;
+    border: 1px solid #e5e5e5
+  }
+
+  .mod-ct .detail .arrow .ico-arrow {
+    display: inline-block;
+    width: 20px;
+    height: 11px;
+    background: url("../../../assets/images/wechat-pay.png") -25px -100px no-repeat
+  }
+
+  .mod-ct .detail-open .arrow .ico-arrow {
+    display: inline-block;
+    width: 20px;
+    height: 11px;
+    background: url("../../../assets/images/wechat-pay.png") 0 -100px no-repeat
+  }
+
+  .mod-ct .detail-open .detail-ct {
+    display: block
+  }
+
+  .mod-ct .tip {
+    margin-top: 20px;
+    border-top: 1px dashed #e5e5e5;
+    padding: 10px 0;
+    position: relative
+  }
+
+  .mod-ct .tip .ico-scan {
+    display: inline-block;
+    width: 56px;
+    height: 55px;
+    background: url("../../../assets/images/wechat-pay.png") 0 0 no-repeat;
+    vertical-align: middle;
+    *display: inline;
+    *zoom: 1
+  }
+
+  .mod-ct .tip .tip-text {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    margin-left: 23px;
+    font-size: 16px;
+    line-height: 28px;
+    *display: inline;
+    *zoom: 1
+  }
+
+  .mod-ct .tip .dec {
+    display: inline-block;
+    width: 22px;
+    height: 45px;
+    background: url("../../../assets/images/wechat-pay.png") 0 -55px no-repeat;
+    position: absolute;
+    top: -23px
+  }
+
+  .mod-ct .tip .dec-left {
+    background-position: 0 -55px;
+    left: -136px
+  }
+
+  .mod-ct .tip .dec-right {
+    background-position: -25px -55px;
+    right: -136px
+  }
+
+</style>
