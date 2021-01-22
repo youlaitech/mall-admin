@@ -80,9 +80,9 @@
 
       <el-table-column prop="gmtCreate" label="注册时间" min-width="15"/>
 
-      <el-table-column label="余额" min-width="6">
+      <el-table-column label="账户余额" min-width="6">
         <template slot-scope="scope">
-          {{ scope.row.balance/100 }}
+          {{ scope.row.balance / 100 }}
         </template>
       </el-table-column>
 
@@ -115,7 +115,10 @@
       </h1>
 
       <div class="mod-ct">
-        <div class="amount" id="money"><span class="amount2">{{recharge.price}}</span></div>
+        <div class="amount" id="money">
+          <span style="color:#F56C6C;">充值1分就送有来商城1000元体验金</span>
+        </div>
+
         <div class="qrcode-img-wrapper" data-role="qrPayImgWrapper">
           <div data-role="qrPayImg" class="qrcode-img-area">
             <div class="ui-loading qrcode-loading" data-role="qrPayImgLoading" style="display: none;"></div>
@@ -132,12 +135,15 @@
             </div>
           </div>
         </div>
-
         <div class="time-item" style="padding-top: 10px">
           <div class="time-item" id="msg">
-            <h1 class="overtime">订单名称：<span>{{recharge.name}}</span></h1>
+            <el-row>
+              <el-col>订单名称：<span>{{recharge.name}}</span></el-col>
+              <el-col>会员名称：<span>{{nickname}}</span></el-col>
+              <el-col>订单号:<span>{{recharge.orderId}}</span></el-col>
+            </el-row>
           </div>
-          <div class="time-item"><h1>订单号:<span>{{recharge.orderId}}</span></h1>
+          <div class="time-item">
             <strong id="hour_show"><s id="h"></s>订单支付有效期</strong>
             <strong id="minute_show"><s></s></strong>
             <strong id="second_show"><s></s></strong>
@@ -152,10 +158,6 @@
               <p id="showtext">打开支付宝或微信[扫一扫]</p>
             </div>
           </div>
-        </div>
-
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialog.visible=false">取 消</el-button>
         </div>
       </div>
     </el-dialog>
@@ -191,12 +193,13 @@
         dialog: {
           visible: false
         },
-
         recharge: {
           orderId: undefined,
           name: '会员充值',
-          price: '0.01'
-        }
+          price: '0.01',
+          thirduid: undefined
+        },
+        nickname: undefined
       }
     },
     async created() {
@@ -260,12 +263,17 @@
         })
       },
       // 充值
-      handleRecharge() {
+      handleRecharge(row) {
+        console.log('会员信息', row)
+        this.recharge.thirduid = row.id
+        this.nickname = row.nickname
         this.dialog.visible = true
         this.handleCreateRechargeOrder()
       },
       handleCreateRechargeOrder() {
-
+        recharge(this.recharge).then(response => {
+          console.log('订单', response.data)
+        })
       }
     }
   }
@@ -439,8 +447,8 @@
 
   .mod-ct .amount {
     font-size: 18px;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin: 10px auto;
+    padding-top: 20px;
   }
 
   .mod-ct .amount2 {
@@ -558,6 +566,19 @@
   .mod-ct .tip .dec-right {
     background-position: -25px -55px;
     right: -136px
+  }
+
+
+  .time-item strong {
+    background: #3ec742;
+    color: #fff;
+    line-height: 25px;
+    font-size: 15px;
+    font-family: Arial;
+    padding: 0 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
   }
 
 </style>
