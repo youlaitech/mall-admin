@@ -43,38 +43,38 @@
               icon="el-icon-delete"
               type="danger"
               style="margin-left:15px"
-              @click="handleDelete"
-            >删除
+              @click="handleDelete">
+              删除
             </el-button>
           </el-form-item>
 
-          <el-form-item label="用户名" prop="username">
+          <el-form-item prop="nickname">
             <el-input
-              v-model="queryParams.username"
+              v-model="queryParams.nickname"
               clearable
-              placeholder="请输入用户名"
+              placeholder="用户昵称"
               size="small"
               style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="手机号码" prop="mobile" style="margin-left: 10px">
+          <el-form-item prop="mobile" style="margin-left: 10px">
             <el-input
               v-model="queryParams.mobile"
               clearable
-              placeholder="请输入手机号码"
+              placeholder="手机号码"
               size="small"
               style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="状态" prop="status" style="margin-left: -10px">
+          <el-form-item prop="status" style="margin-left: 10px">
             <el-select
               v-model="queryParams.status"
               clearable
               size="small"
               style="width: 150px"
-              placeholder="选择用户状态"
+              placeholder="全部"
             >
               <el-option label="正常" value="1"/>
               <el-option label="停用" value="0"/>
@@ -106,7 +106,7 @@
             </template>
           </el-table-column>
           <el-table-column align="center" label="部门" prop="deptName" width="126"/>
-          <el-table-column align="center" label="角色名称" prop="roleName" width="126"/>
+          <el-table-column align="center" label="角色名称" prop="roleNames"/>
           <el-table-column align="center" label="手机号码" prop="mobile" width="126"/>
           <el-table-column align="center" label="状态" width="125">
             <template slot-scope="scope">
@@ -174,7 +174,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="用户性别">
+            <el-form-item label="性别">
               <el-select v-model="form.gender" placeholder="请选择">
                 <el-option label="未知" :value="0"/>
                 <el-option label="男" :value="1"/>
@@ -184,13 +184,12 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="用户角色" prop="roleId">
-              <el-select v-model="form.roleId" placeholder="请选择角色">
+            <el-form-item label="角色" prop="roleIds">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择角色"   style="width: 250px">
                 <el-option
                   v-for="item in roleOptions"
-                  :key="parseInt(item.id)"
                   :label="item.name"
-                  :value="item.id"
+                  :value="item.id.toString()"
                 />
               </el-select>
             </el-form-item>
@@ -276,7 +275,9 @@
         // 角色选项
         roleOptions: [],
         // 表单参数
-        form: {},
+        form: {
+          roleIds: []
+        },
         // 表单校验
         rules: {
           username: [
@@ -479,7 +480,8 @@
           email: undefined,
           gender: undefined,
           status: 1,
-          remark: undefined
+          remark: undefined,
+          roleIds: []
         }
         if (this.$refs['form']) {
           this.$refs['form'].resetFields()
