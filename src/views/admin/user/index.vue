@@ -100,9 +100,9 @@
           <el-table-column align="center" label="用户昵称" prop="nickname" width="126"/>
           <el-table-column align="center" label="性别" prop="gender" width="126">
             <template slot-scope="scope">
-              <span v-if="scope.row.gender===0">未知</span>
               <span v-if="scope.row.gender===1">男</span>
               <span v-if="scope.row.gender===2">女</span>
+              <span v-if="scope.row.gender===0">未知</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="部门" prop="deptName" width="126"/>
