@@ -41,8 +41,7 @@ export function patch(id, data) {
 
 export function del(ids) {
   return request({
-    url: '/youlai-admin/users',
+    url: '/youlai-admin/users/'+ids,
     method: 'delete',
-    params: { ids: ids }
   })
 }

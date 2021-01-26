@@ -185,7 +185,7 @@
 
           <el-col :span="12">
             <el-form-item label="角色" prop="roleIds">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择角色"   style="width: 250px">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 250px">
                 <el-option
                   v-for="item in roleOptions"
                   :label="item.name"
@@ -398,7 +398,7 @@
         await this.loadRoleOptions()
         await this.loadDeptOptions()
         const id = row.id || this.ids
-        detail(id, {queryMode: 1}).then(response => {
+        detail(id).then(response => {
           this.form = response.data
         })
       },
