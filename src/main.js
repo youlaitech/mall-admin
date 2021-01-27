@@ -22,6 +22,8 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 import Pagination from '@/components/Pagination'
 
+import 'default-passive-events' // 移除浏览器提示 Added non-passive event listener to a scroll-blocking...
+
 import { listByTypeCode } from "@/api/admin/dict"
 
 /**

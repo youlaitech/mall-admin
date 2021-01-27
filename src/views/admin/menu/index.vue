@@ -30,18 +30,29 @@
       row-key="id"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border>
+      <el-table-column prop="name" label="菜单名称" :show-overflow-tooltip="true" min-width="11%"/>
 
-      <el-table-column prop="title" label="菜单名称" :show-overflow-tooltip="true" min-width="11%"/>
+      <el-table-column label="类型"  min-width="11%">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.type==1">目录</el-tag>
+          <el-tag v-else-if="scope.row.type==2">菜单</el-tag>
+          <el-tag v-else>按钮</el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="icon" label="图标" align="center" min-width="11%">
         <template slot-scope="scope">
           <svg-icon :icon-class="scope.row.icon"/>
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="11%"/>
-      <el-table-column prop="name" label="路由名称" min-width="11%"/>
-      <el-table-column prop="path" label="路由路径" min-width="11%"/>
       <el-table-column prop="component" label="组件路径" min-width="11%"/>
-      <el-table-column prop="visible" label="是否显示" :formatter="visibleFormat" min-width="11%"/>
+      <el-table-column label="是否显示" min-width="11%">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.visible==1" type="success">显示</el-tag>
+          <el-tag v-else type="info">隐藏</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" min-width="12%" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -187,9 +198,6 @@
           title: [
             {required: true, message: '菜单名称不能为空', trigger: 'blur'}
           ],
-          name: [
-            {required: true, message: '路由名称不能为空', trigger: 'blur'}
-          ],
           sort: [
             {required: true, message: '菜单顺序不能为空', trigger: 'blur'}
           ]
@@ -213,18 +221,6 @@
           status: undefined
         }
         this.handleQuery()
-      },
-      visibleFormat(row) {
-        if (row.type == 2) {
-          return ''
-        }
-        if (row.visible == 1) {
-          return '显示'
-        } else if (row.visible == 0) {
-          return '隐藏'
-        } else {
-          return ''
-        }
       },
       selected(name) {
         this.form.icon = name
