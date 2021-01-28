@@ -36,6 +36,7 @@
                           :label="(scope.$index+1)"></el-radio>
               </template>
             </el-table-column>
+
             <el-table-column label="类型名称" prop="name" width="120"/>
             <el-table-column label="类型编码" prop="code" :show-overflow-tooltip="true" width="160"/>
             <el-table-column label="状态" align="center" width="80">
@@ -54,17 +55,15 @@
                 <el-button
                   type="text"
                   icon="el-icon-edit"
-                  size="mini"
+                  style="color:#409EFF"
                   @click="handleUpdateForType(scope.row)"
-                >修改
-                </el-button>
+                />
                 <el-button
                   type="text"
-                  size="mini"
                   icon="el-icon-delete"
+                  style="color:#F56C6C"
                   @click="handleDeleteForType(scope.row)"
-                >删除
-                </el-button>
+                />
               </template>
             </el-table-column>
           </el-table>
@@ -137,10 +136,10 @@
             @selection-change="handleSelectionChange"
             @row-click="handleRowClick">
             <el-table-column type="selection" min-width="5%"></el-table-column>
-            <el-table-column label="字典名称" prop="name" />
-            <el-table-column label="字典值" prop="value" />
-            <el-table-column label="字典类型" prop="typeCode" />
-            <el-table-column label="状态" align="center" >
+            <el-table-column label="字典名称" prop="name"/>
+            <el-table-column label="字典值" prop="value"/>
+            <el-table-column label="字典类型" prop="typeCode"/>
+            <el-table-column label="状态" align="center">
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.status"
@@ -149,23 +148,21 @@
                   @change="handleStatusChange(scope.row)"/>
               </template>
             </el-table-column>
-           <!-- <el-table-column label="备注" prop="remark"/>-->
-            <el-table-column label="操作" align="center" >
+            <!-- <el-table-column label="备注" prop="remark"/>-->
+            <el-table-column label="操作" align="center">
               <template slot-scope="scope">
                 <el-button
                   type="text"
                   icon="el-icon-edit"
-                  size="mini"
+                  style="color:#409EFF"
                   @click="handleUpdate(scope.row)"
-                >修改
-                </el-button>
+                />
                 <el-button
                   type="text"
-                  size="mini"
                   icon="el-icon-delete"
+                  style="color:#F56C6C"
                   @click="handleDelete(scope.row)"
-                >删除
-                </el-button>
+                />
               </template>
             </el-table-column>
           </el-table>
