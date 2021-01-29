@@ -29,7 +29,7 @@ let refreshing = false,// 正在刷新标识，避免重复刷新
 
 service.interceptors.response.use(
   response => {
-    const {code, msg, data} = response.data
+    const {code, msg} = response.data
     if (code !== '00000') {
       if (code === 'A0230') { // access_token过期 使用refresh_token换取access_token
         const config = response.config
@@ -71,9 +71,12 @@ service.interceptors.response.use(
           type: 'error',
           duration: 5 * 1000
         })
+        return Promise.reject(new Error(msg|| 'Error'))
       }
+    }else{
+      return response.data
     }
-    return response.data
+
   },
   error => {
     return Promise.reject(error)
