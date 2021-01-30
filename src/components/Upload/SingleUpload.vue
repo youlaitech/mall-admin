@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       headers: {authorization: 'Bearer ' + getToken()},
-      uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/files',
+      uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/api/v1/files',
       dialogVisible: false,
     };
   },

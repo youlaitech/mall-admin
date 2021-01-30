@@ -31,7 +31,7 @@ export function update(id, data) {
   })
 }
 
-export function del() {
+export function del(ids) {
   return request({
     url: '/youlai-admin/api.admin/v1/roles/' + ids,
     method: 'delete'
