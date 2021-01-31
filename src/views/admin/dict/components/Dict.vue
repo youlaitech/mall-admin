@@ -37,7 +37,7 @@
     >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="字典名称" prop="name" width="120"/>
-      <el-table-column label="字典编码" prop="code" :show-overflow-tooltip="true" />
+      <el-table-column label="字典编码" prop="code" :show-overflow-tooltip="true"/>
       <el-table-column label="状态" align="center" width="80">
         <template slot-scope="scope">
           <el-switch
@@ -53,15 +53,17 @@
       <el-table-column label="操作" align="center" width="150">
         <template slot-scope="scope">
           <el-button
-            type="text"
+            type="primary"
             icon="el-icon-edit"
-            style="color:#409EFF"
+            size="mini"
+            circle
             @click="handleUpdate(scope.row)"
           />
           <el-button
-            type="text"
+            type="danger"
             icon="el-icon-delete"
-            style="color:#F56C6C"
+            size="mini"
+            circle
             @click="handleDelete(scope.row)"
           />
         </template>
@@ -124,7 +126,8 @@ export default {
       single: true,
       multiple: true,
       queryParams: {
-        name: undefined
+        name: undefined,
+        queryMode:'page'
       },
       pagination: {
         page: 1,
@@ -136,7 +139,9 @@ export default {
         title: undefined,
         visible: false
       },
-      form: {},
+      form: {
+        status: 1
+      },
       rules: {
         name: [
           {required: true, message: '请输入字典名称', trigger: 'blur'}
@@ -170,7 +175,8 @@ export default {
         total: 0
       }
       this.queryParams = {
-        name: undefined
+        name: undefined,
+        queryMode: 'page'
       }
       this.handleQuery()
     },
@@ -261,7 +267,9 @@ export default {
       }
     },
     resetForm() {
-      this.form = {}
+      this.form = {
+        status: 1
+      }
       if (this.$refs['form']) {
         this.$refs['form'].resetFields()
       }

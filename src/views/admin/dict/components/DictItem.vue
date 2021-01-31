@@ -26,10 +26,12 @@
       border
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" min-width="5%"></el-table-column>
+      <el-table-column type="selection" min-width="5%"/>
       <el-table-column label="字典项名称" prop="name"/>
       <el-table-column label="字典项值" prop="value"/>
-      <el-table-column label="字典编码" prop="dictCode"/>
+      <el-table-column label="字典名称">
+        {{ dict.name }}
+      </el-table-column>
       <el-table-column label="状态" align="center">
         <template slot-scope="scope">
           <el-switch
@@ -42,15 +44,17 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button
-            type="text"
+            type="primary"
             icon="el-icon-edit"
-            style="color:#409EFF"
+            size="mini"
+            circle
             @click="handleUpdate(scope.row)"
           />
           <el-button
-            type="text"
+            type="danger"
             icon="el-icon-delete"
-            style="color:#F56C6C"
+            size="mini"
+            circle
             @click="handleDelete(scope.row)"
           />
         </template>
@@ -74,7 +78,7 @@
       @close="closeDialog"
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="字典名称" >
+        <el-form-item label="字典名称">
           <el-input v-model="dict.name" :disabled="true"/>
         </el-form-item>
         <el-form-item label="字典项名称" prop="name">
@@ -93,7 +97,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" ></el-input>
+          <el-input v-model="form.remark" type="textarea"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -147,7 +151,7 @@ export default {
       if (!this.dict.code) {
         return
       }
-      this.loading=true
+      this.loading = true
       this.queryParams.page = this.pagination.page
       this.queryParams.limit = this.pagination.limit
       list(this.queryParams).then(response => {
@@ -164,7 +168,7 @@ export default {
       }
       this.queryParams = {
         name: undefined,
-        dictCode: undefined,
+        dictCode: this.dict.code,
         queryMode: 'page'
       }
       this.handleQuery()
@@ -195,7 +199,7 @@ export default {
         title: '新增字典项',
         visible: true
       }
-      this.form.dictCode=this.dict.code
+      this.form.dictCode = this.dict.code
     },
 
     handleUpdate(row) {

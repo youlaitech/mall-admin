@@ -6,39 +6,39 @@
     <div class="icon-list">
       <div v-for="(item, index) in iconList" :key="index" @click="selectedIcon(item)">
         <svg-icon :icon-class="item" style="height: 30px;width: 16px;" />
-        <span>{{ item }}</span>
+        <span style="margin-left: 2px">{{ item }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import icons from './requireIcons'
-  export default {
-    name: 'IconSelect',
-    data() {
-      return {
-        name: '',
-        iconList: icons
+import icons from './requireIcons'
+export default {
+  name: 'IconSelect',
+  data() {
+    return {
+      name: '',
+      iconList: icons
+    }
+  },
+  methods: {
+    filterIcons() {
+      this.iconList = icons
+      if (this.name) {
+        this.iconList = this.iconList.filter(item => item.includes(this.name))
       }
     },
-    methods: {
-      filterIcons() {
-        this.iconList = icons
-        if (this.name) {
-          this.iconList = this.iconList.filter(item => item.includes(this.name))
-        }
-      },
-      selectedIcon(name) {
-        this.$emit('selected', name)
-        document.body.click()
-      },
-      reset() {
-        this.name = ''
-        this.iconList = icons
-      }
+    selectedIcon(name) {
+      this.$emit('selected', name)
+      document.body.click()
+    },
+    reset() {
+      this.name = ''
+      this.iconList = icons
     }
   }
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

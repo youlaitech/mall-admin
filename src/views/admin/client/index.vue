@@ -1,12 +1,18 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :model="queryParams" size="small" :inline="true">
+    <!-- 搜索表单 -->
+    <el-form
+      ref="queryForm"
+      :model="queryParams"
+      size="small"
+      :inline="true"
+    >
       <el-form-item>
         <el-button type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
         <el-button type="success" icon="el-icon-edit" :disabled="single" @click="handleUpdate">修改</el-button>
         <el-button type="danger" icon="el-icon-delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
-      <el-form-item  prop="clientId">
+      <el-form-item prop="clientId">
         <el-input
           v-model="queryParams.clientId"
           placeholder="客户端ID"
@@ -21,7 +27,12 @@
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="pageList" border @selection-change="handleSelectionChange">
+    <!-- 数据表格 -->
+    <el-table v-loading="loading"
+              :data="pageList"
+              border
+              @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="序号" type="index" width="55" align="center"/>
       <el-table-column label="客户端ID" prop="clientId" width="200"/>
@@ -57,7 +68,7 @@
       @pagination="handleQuery"
     />
 
-    <!-- 添加或修改客户端配置对话框 -->
+    <!-- 表单弹窗 -->
     <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="700px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
 
@@ -83,7 +94,7 @@
           <el-col :span="12">
             <el-form-item label="自动放行" prop="autoapprove">
               <el-radio-group v-model="form.autoapprove">
-                <el-radio label="true">是</el-radio>
+                <el-radio label="true" >是</el-radio>
                 <el-radio label="false">否</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -136,7 +147,7 @@
 
 <script>
 import {list, detail, update, add, del} from '@/api/admin/client'
-import {list as dictList} from '@/api/admin/dict'
+import {list as dictList} from '@/api/admin/dict-item'
 
 export default {
   data() {
@@ -197,24 +208,23 @@ export default {
     }
   },
   async created() {
-    await this.loadAuthorizedGrantTypesOptions()
     this.handleQuery()
   },
   methods: {
-    loadAuthorizedGrantTypesOptions() {
-      dictList({typeCode: 'grant_type'}).then(response => {
-        this.authorizedGrantTypesOptions = response.data
-      })
-    },
+
     handleQuery() {
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
-      list(this.queryParams).then(response => {
-        console.log("响应列表", response)
-        this.pageList = response.data
-        this.pagination.total = response.total
-        this.loading = false
+      dictList({dictCode: 'grant_type', queryMode: 'list'}).then(response => {
+        this.authorizedGrantTypesOptions = response.data
+        this.queryParams.page = this.pagination.page
+        this.queryParams.limit = this.pagination.limit
+        list(this.queryParams).then(response => {
+          this.pageList = response.data
+          this.pagination.total = response.total
+          this.loading = false
+        })
+
       })
+
     },
     handleResetQuery() {
       this.pagination = {
@@ -234,20 +244,18 @@ export default {
     },
     handleAdd() {
       this.resetForm()
-      this.loadAuthorizedGrantTypesOptions()
       this.dialog = {
         title: '新增客户端',
         visible: true,
-        type: 1
+        type: 'add'
       }
     },
     handleUpdate(row) {
       this.resetForm()
-      this.loadAuthorizedGrantTypesOptions()
       this.dialog = {
         title: '修改客户端',
         visible: true,
-        type: 2
+        type: 'edit'
       }
       const id = row.clientId || this.ids
       detail(id).then(response => {
@@ -276,26 +284,18 @@ export default {
     handleSubmit: function () {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          const id = this.form.clientId
           this.form.authorizedGrantTypes = this.form.authorizedGrantTypes.join(',')
-          if (this.dialog.type == 2) {
+          // 因为客户端ID是可以修改的，所以这里不能拿id作为新增还是修改的判断依据
+          if (this.dialog.type == 'edit') {
             update(this.form.clientId, this.form).then(() => {
               this.$message.success('修改成功')
-              this.dialog = {
-                title: undefined,
-                visible: false,
-                type: undefined
-              }
+              this.closeDialog()
               this.handleQuery()
             })
           } else {
             add(this.form).then(() => {
               this.$message.success('新增成功')
-              this.dialog = {
-                title: undefined,
-                visible: false,
-                type: undefined
-              }
+              this.closeDialog()
               this.handleQuery()
             })
           }
@@ -331,8 +331,14 @@ export default {
       grantTypes.split(',').forEach(type => {
         temp.push(this.authorizedGrantTypesOptions.filter(item => item.value == type)[0].name)
       })
-
       return temp.join(' | ')
+    },
+    closeDialog() {
+      this.dialog = {
+        title: undefined,
+        visible: false,
+        type: undefined
+      }
     }
   }
 }

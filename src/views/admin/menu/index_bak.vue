@@ -1,0 +1,312 @@
+<template>
+  <div class="app-container">
+    <el-form
+      ref="queryForm"
+      size="small"
+      :model="queryParams"
+      :inline="true"
+    >
+      <el-form-item>
+        <el-button type="success" icon="el-icon-plus" @click="handleAdd">新增</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          v-model="queryParams.name"
+          placeholder="菜单名称"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-table
+      v-loading="loading"
+      :data="pageList"
+      row-key="id"
+      highlight-current-row
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      border>
+      <el-table-column label="菜单名称" min-width="11%">
+        <template slot-scope="scope">
+          <svg-icon :icon-class="scope.row.icon"/>
+          {{ scope.row.name }}
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" min-width="11%">
+        <template slot-scope="scope">
+          <el-tag size="mini" v-if="scope.row.visible==1" type="success">正常</el-tag>
+          <el-tag size="mini" v-else type="info">停用</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="是否显示" min-width="11%">
+        <template slot-scope="scope">
+          <el-tag size="mini" v-if="scope.row.visible==1" type="success">显示</el-tag>
+          <el-tag size="mini" v-else type="info">隐藏</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="150">
+        <template slot-scope="scope">
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+            circle
+            @click="handleUpdate(scope.row)"
+          />
+          <el-button
+            type="success"
+            icon="el-icon-plus"
+            size="mini"
+            circle
+            @click="handleAdd(scope.row)"
+          />
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            circle
+            @click="handleDelete(scope.row)"
+          />
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog
+      :title="dialog.title"
+      :visible.sync="dialog.visible"
+      width="600px"
+    >
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="上级菜单">
+              <tree-select
+                v-model="form.parentId"
+                :options="menuOptions"
+                placeholder="选择上级菜单"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="菜单图标">
+              <el-popover
+                placement="bottom-start"
+                width="460"
+                trigger="click"
+                @show="$refs['iconSelect'].reset()">
+                <IconSelect ref="iconSelect" @selected="selected"/>
+                <el-input slot="reference" v-model="form.icon" placeholder="点击选择图标" readonly>
+                  <svg-icon
+                    v-if="form.icon"
+                    slot="prefix"
+                    :icon-class="form.icon"
+                    class="el-input__icon"
+                    style="height: 40px;width: 16px; "/>
+                  <i v-else slot="prefix" class="el-icon-search el-input__icon"/>
+                </el-input>
+              </el-popover>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="菜单名称" prop="title">
+              <el-input v-model="form.title" placeholder="请输入菜单名称"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sort">
+              <el-input-number v-model="form.sort" controls-position="right" :min="0"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="路由名称" prop="name">
+              <el-input v-model="form.name" placeholder="例如：User"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="路由路径" prop="path">
+              <el-input v-model="form.path" placeholder="例如：user"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="组件路径" prop="component">
+              <el-input v-model="form.component" placeholder="例如：admin/user"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="跳转路径">
+              <el-input v-model="form.redirect" placeholder="请输入跳转路径" maxlength="50"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="菜单状态">
+              <el-radio-group v-model="form.visible">
+                <el-radio :label="1">显示</el-radio>
+                <el-radio :label="0">隐藏</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleSubmit">确 定</el-button>
+        <el-button @click="dialog.visible=false">取 消</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+<script>
+
+import {list, detail, update, add, del} from '@/api/admin/menu'
+import TreeSelect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import IconSelect from '@/components/IconSelect'
+
+export default {
+  components: {TreeSelect, IconSelect},
+  data() {
+    return {
+      loading: true,
+      pageList: [],
+      menuOptions: [],
+      queryParams: {
+        name: undefined
+      },
+      dialog: {
+        title: undefined,
+        visible: false
+      },
+      form: {
+        id: undefined,
+        title: undefined,
+        parentId: undefined,
+        name: undefined,
+        path: undefined,
+        components: undefined,
+        redirect: undefined,
+        icon: undefined,
+        sort: undefined,
+        visible: 1, // 默认可见
+        status: 1 // 默认可用
+      },
+      rules: {
+        title: [
+          {required: true, message: '菜单名称不能为空', trigger: 'blur'}
+        ],
+        sort: [
+          {required: true, message: '菜单顺序不能为空', trigger: 'blur'}
+        ]
+      }
+    }
+  },
+  created() {
+    this.handleQuery()
+  },
+  methods: {
+    handleQuery() {
+      this.queryParams.queryMode = 'tree'
+      list(this.queryParams).then(response => {
+        this.pageList = response.data
+        this.loading = false
+      })
+    },
+    handleResetQuery() {
+      this.queryParams = {
+        name: undefined,
+        status: undefined
+      }
+      this.handleQuery()
+    },
+    selected(name) {
+      this.form.icon = name
+    },
+    async handleAdd(row) {
+      this.resetForm()
+      this.dialog = {
+        title: '新增菜单',
+        visible: true
+      }
+      await this.loadMenuOptions()
+      if (row) {
+        this.form.parentId = row.id
+      }
+    },
+    async handleUpdate(row) {
+      this.resetForm()
+      this.dialog = {
+        title: '修改菜单',
+        visible: true
+      }
+      await this.loadMenuOptions()
+      detail(row.id).then(response => {
+        this.form = response.data
+      })
+    },
+    handleSubmit: function () {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          const id = this.form.id
+          if (id != undefined) {
+            update(id, this.form).then(() => {
+              this.$message.success('修改成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          } else {
+            add(this.form).then(() => {
+              this.$message.success('新增成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          }
+        }
+      })
+    },
+    handleDelete(row) {
+      const ids = row.id || this.ids
+      this.$confirm('确认删除已选中的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del(ids).then(() => {
+          this.$message.success('删除成功')
+          this.handleQuery()
+        })
+      }).catch(() =>
+        this.$message.info('已取消删除')
+      )
+    },
+    resetForm() {
+      this.form = {
+        id: undefined,
+        name: undefined,
+        parentId: undefined,
+        path: undefined,
+        components: undefined,
+        perms: undefined,
+        type: 1, // 默认菜单
+        icon: undefined,
+        sort: undefined,
+        visible: 1, // 默认可见
+        status: 1 // 默认可用
+      }
+      if (this.$refs['form']) {
+        this.$refs['form'].resetFields()
+      }
+    },
+    loadMenuOptions() {
+      this.queryParams.queryMode = 'treeselect'
+      this.menuOptions = []
+      list(this.queryParams).then(response => {
+        const menuOption = {id: 0, label: '主类目', children: response.data}
+        this.menuOptions.push(menuOption)
+      })
+    }
+
+  }
+}
+</script>
