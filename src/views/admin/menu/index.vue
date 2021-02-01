@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :sm="16" :xs="24">
-        <menu-manage></menu-manage>
+      <el-col :sm="14" :xs="24">
+        <menu-manage @menuClick="menuClick"></menu-manage>
       </el-col>
-      <el-col :sm="8" :xs="24">
+      <el-col :sm="10" :xs="24">
         <el-card class="box-card">
           <div class="clearfix" slot="header">
-            <span>资源权限</span>
+            <span>{{ menuName }}权限设置</span>
           </div>
-          <permission></permission>
+          <permission ref="permission"></permission>
         </el-card>
       </el-col>
     </el-row>
@@ -22,7 +22,18 @@ import Permission from './components/Permission'
 
 export default {
   name: "index",
-  components: {MenuManage, Permission}
+  components: {MenuManage, Permission},
+  data() {
+    return {
+      menuName: undefined
+    }
+  },
+  methods: {
+    menuClick(row) {
+      this.menuName = '【' + row.name + '】'
+      this.$refs.permission.menuClick(row)
+    }
+  }
 }
 </script>
 

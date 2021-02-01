@@ -37,7 +37,7 @@
     >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="字典名称" prop="name" width="120"/>
-      <el-table-column label="字典编码" prop="code" :show-overflow-tooltip="true"/>
+      <el-table-column label="字典编码" prop="code" />
       <el-table-column label="状态" align="center" width="80">
         <template slot-scope="scope">
           <el-switch
@@ -127,7 +127,7 @@ export default {
       multiple: true,
       queryParams: {
         name: undefined,
-        queryMode:'page'
+        queryMode: 'page'
       },
       pagination: {
         page: 1,
@@ -147,9 +147,7 @@ export default {
           {required: true, message: '请输入字典名称', trigger: 'blur'}
         ],
         code: [
-          {
-            required: true, message: '请输入字典编码', trigger: 'blur'
-          }
+          {required: true, message: '请输入字典编码', trigger: 'blur'}
         ]
       }
     }

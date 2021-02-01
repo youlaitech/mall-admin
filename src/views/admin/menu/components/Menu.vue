@@ -132,7 +132,7 @@
             </el-form-item>
 
             <el-form-item label="组件">
-              <el-input v-model="form.component" placeholder="src/views/组件.vue，例如：admin/user/index" />
+              <el-input v-model="form.component" placeholder="src/views/组件.vue，例如：admin/user/index"/>
             </el-form-item>
 
             <el-form-item label="菜单状态">
@@ -163,188 +163,186 @@
 </template>
 
 <script>
-  import {add, del, detail, list, patch, update} from "@/api/admin/menu";
-  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-  import TreeSelect from '@riophae/vue-treeselect'
-  import IconSelect from '@/components/IconSelect'
+import {add, del, list, patch, update} from "@/api/admin/menu";
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import TreeSelect from '@riophae/vue-treeselect'
+import IconSelect from '@/components/IconSelect'
 
-  export default {
-    name: "Menu",
-    components: {TreeSelect, IconSelect},
-    data() {
-      return {
-        loading: true,
-        ids: [],
-        single: true,
-        multiple: true,
-        queryParams: {
-          name: undefined,
-          queryMode: 'tree'
-        },
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        pageList: [],
-        dialog: {
-          title: undefined,
-          visible: false
-        },
-        form: {
-          parentId: 0,
-          status: 1,
-          icon: 'menu',
-          sort: 1
-        },
-        rules: {
-          parentId: [
-            {required: true, message: '请选择顶级菜单', trigger: 'blur'}
-          ],
-          name: [
-            {required: true, message: '请输入菜单名称', trigger: 'blur'}
-          ],
-          path: [
-            { required: true, message: '请输入路由路径', trigger: 'blur'  }
-          ],
-          component: [
-            { required: true, message: '请输入组件', trigger: 'blur' }
-          ]
-        },
-        title: '新增',
-        menuOptions: [],
-        currentRow: undefined
-      }
+export default {
+  name: "Menu",
+  components: {TreeSelect, IconSelect},
+  data() {
+    return {
+      loading: true,
+      ids: [],
+      single: true,
+      multiple: true,
+      queryParams: {
+        name: undefined,
+        queryMode: 'tree'
+      },
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
+      },
+      pageList: [],
+      dialog: {
+        title: undefined,
+        visible: false
+      },
+      form: {
+        parentId: 0,
+        status: 1,
+        icon: 'menu',
+        sort: 1
+      },
+      rules: {
+        parentId: [
+          {required: true, message: '请选择顶级菜单', trigger: 'blur'}
+        ],
+        name: [
+          {required: true, message: '请输入菜单名称', trigger: 'blur'}
+        ],
+        path: [
+          {required: true, message: '请输入路由路径', trigger: 'blur'}
+        ],
+        component: [
+          {required: true, message: '请输入组件', trigger: 'blur'}
+        ]
+      },
+      title: '新增菜单',
+      menuOptions: [],
+      currentRow: undefined
+    }
+  },
+  created() {
+    this.loadMenuOptions()
+    this.handleQuery()
+  },
+  methods: {
+    handleQuery() {
+      this.queryParams.page = this.pagination.page
+      this.queryParams.limit = this.pagination.limit
+      list(this.queryParams).then(response => {
+        this.pageList = response.data
+        this.pagination.total = response.total
+        this.loading = false
+      })
     },
-    created() {
-      this.loadMenuOptions()
+    resetQuery() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
+      }
+      this.queryParams.name = undefined
       this.handleQuery()
     },
-    methods: {
-      handleQuery() {
-        this.queryParams.page = this.pagination.page
-        this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
-          this.pageList = response.data
-          this.pagination.total = response.total
-          this.loading = false
-        })
-      },
-      resetQuery() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams = {
-          name: undefined,
-          queryMode: undefined
-        }
-        this.handleQuery()
-      },
-      rowClick(row) {
-        const currentRow= JSON.parse(JSON.stringify(row));
-        this.currentRow = currentRow
-        this.form = currentRow
-        this.title = '修改'
-      },
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
-      },
-      handleStatusChange(row) {
-        const text = row.status === 1 ? '启用' : '停用'
-        this.$confirm('确认要"' + text + row.name + '"数据项吗?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function () {
-          return patch(row.id, 1, {status: row.status})
-        }).then(() => {
-          this.$message.success(text + '成功')
-        }).catch(function () {
-          row.status = row.status === 1 ? 0 : 1
-        })
-      },
+    rowClick(row) {
+      const currentRow = JSON.parse(JSON.stringify(row));
+      this.currentRow = currentRow
+      this.form = currentRow
+      this.title = '修改菜单'
+      this.$emit('menuClick', row)
+    },
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length != 1
+      this.multiple = !selection.length
+    },
+    handleStatusChange(row) {
+      const text = row.status === 1 ? '启用' : '停用'
+      this.$confirm('确认要"' + text + row.name + '"数据项吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function () {
+        return patch(row.id, 1, {status: row.status})
+      }).then(() => {
+        this.$message.success(text + '成功')
+      }).catch(function () {
+        row.status = row.status === 1 ? 0 : 1
+      })
+    },
 
-      handleAdd(row) {
-        this.resetForm()
-        if (row.id) { // 行点击新增
-          this.form.parentId = row.id
-        } else { // 工具栏点击新增
-          if (this.currentRow) {
-            this.form.parentId = this.currentRow.id
-          } else {
-            this.form.parentId = 0
-            this.form.component = 'Layout'
-          }
+    handleAdd(row) {
+      this.resetForm()
+      if (row.id) { // 行点击新增
+        this.form.parentId = row.id
+      } else { // 工具栏点击新增
+        if (this.currentRow) {
+          this.form.parentId = this.currentRow.id
+        } else {
+          this.form.parentId = 0
+          this.form.component = 'Layout'
         }
-        this.title = '新增'
-      },
-      handleUpdate(row) {
-        this.resetForm()
-        this.title = '修改'
-        this.form = JSON.parse(JSON.stringify(row))
-      },
-
-      handleSubmit: function () {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            const id = this.form.id
-            if (id != undefined) {
-              update(id, this.form).then(() => {
-                this.$message.success('修改成功')
-                this.handleQuery()
-              })
-            } else {
-              add(this.form).then(() => {
-                this.$message.success('新增成功')
-                this.handleQuery()
-              })
-            }
-          }
-        })
-      },
-
-      handleDelete(row) {
-        const ids = [row.id || this.ids].join(',')
-        this.$confirm('确认删除已选中的数据项？', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          del(ids).then(() => {
-            this.$message.success('删除成功')
-            this.handleQuery()
-          })
-        }).catch(() =>
-          this.$message.info('已取消删除')
-        )
-      },
-      resetForm() {
-        this.form = {
-          status: 1,
-          parentId: 0,
-          icon: 'menu',
-          sort: 1
-        }
-        if (this.$refs['form']) {
-          this.$refs['form'].resetFields()
-        }
-      },
-      loadMenuOptions() {
-        this.menuOptions = []
-        list({queryMode: 'treeselect'}).then(response => {
-          const menuOption = {id: 0, label: '顶级菜单', children: response.data}
-          this.menuOptions.push(menuOption)
-        })
-      },
-      handleIconSelected(name) {
-        this.form.icon = name
       }
+      this.title = '新增菜单'
+    },
+    handleUpdate(row) {
+      this.resetForm()
+      this.title = '修改菜单'
+      this.form = JSON.parse(JSON.stringify(row))
+    },
+
+    handleSubmit: function () {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          const id = this.form.id
+          if (id != undefined) {
+            update(id, this.form).then(() => {
+              this.$message.success('修改成功')
+              this.handleQuery()
+            })
+          } else {
+            add(this.form).then(() => {
+              this.$message.success('新增成功')
+              this.handleQuery()
+            })
+          }
+        }
+      })
+    },
+
+    handleDelete(row) {
+      const ids = [row.id || this.ids].join(',')
+      this.$confirm('确认删除已选中的数据项？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del(ids).then(() => {
+          this.$message.success('删除成功')
+          this.handleQuery()
+        })
+      }).catch(() =>
+        this.$message.info('已取消删除')
+      )
+    },
+    resetForm() {
+      this.form = {
+        status: 1,
+        parentId: 0,
+        icon: 'menu',
+        sort: 1
+      }
+      if (this.$refs['form']) {
+        this.$refs['form'].resetFields()
+      }
+    },
+    loadMenuOptions() {
+      this.menuOptions = []
+      list({queryMode: 'treeselect'}).then(response => {
+        const menuOption = {id: 0, label: '顶级菜单', children: response.data}
+        this.menuOptions.push(menuOption)
+      })
+    },
+    handleIconSelected(name) {
+      this.form.icon = name
     }
   }
+}
 </script>
 
 <style scoped>
