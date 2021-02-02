@@ -2,15 +2,14 @@
   <div>
     <el-row :gutter="10">
       <el-col :sm="12" :xs="24">
-        <el-card class="box-card">
+        <el-card class="box-card" shadow="always">
           <div class="clearfix" slot="header">
-            <span>菜单列表</span>
+            <b><svg-icon icon-class="menu"/> 菜单列表</b>
           </div>
-
           <!-- 搜索表单 -->
           <el-form
             ref="queryForm"
-            size="small"
+            size="mini"
             :model="queryParams"
             :inline="true"
           >
@@ -39,7 +38,9 @@
             highlight-current-row
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
             @row-click="rowClick"
-            border>
+            border
+            size="mini"
+          >
             <el-table-column label="菜单名称" min-width="11%">
               <template slot-scope="scope">
                 <svg-icon :icon-class="scope.row.icon"/>
@@ -48,8 +49,8 @@
             </el-table-column>
             <el-table-column label="状态" width="80">
               <template slot-scope="scope">
-                <el-tag size="mini" v-if="scope.row.status==1" type="success">正常</el-tag>
-                <el-tag size="mini" v-else type="info">停用</el-tag>
+                <el-tag size="mini" v-if="scope.row.visible==1" type="success">显示</el-tag>
+                <el-tag size="mini" v-else type="info">隐藏</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="操作" align="center" width="150">
@@ -59,6 +60,7 @@
                   icon="el-icon-edit"
                   size="mini"
                   circle
+                  plain
                   @click.stop="handleUpdate(scope.row)"
                 />
                 <el-button
@@ -66,6 +68,7 @@
                   icon="el-icon-plus"
                   size="mini"
                   circle
+                  plain
                   @click.stop="handleAdd(scope.row)"
                 />
                 <el-button
@@ -73,6 +76,7 @@
                   icon="el-icon-delete"
                   size="mini"
                   circle
+                  plain
                   @click.stop="handleDelete(scope.row)"
                 />
               </template>
@@ -83,10 +87,9 @@
         </el-card>
       </el-col>
       <el-col :sm="12" :xs="24">
-
-        <el-card class="box-card">
+        <el-card class="box-card" shadow="always">
           <div class="clearfix" slot="header">
-            <span>{{ title }}</span>
+            <b> <svg-icon icon-class="form"></svg-icon> {{ title }}</b>
           </div>
 
           <el-form
@@ -135,10 +138,10 @@
               <el-input v-model="form.component" placeholder="src/views/组件.vue，例如：admin/user/index"/>
             </el-form-item>
 
-            <el-form-item label="菜单状态">
-              <el-radio-group v-model="form.status">
-                <el-radio :label="1">正常</el-radio>
-                <el-radio :label="0">禁用</el-radio>
+            <el-form-item label="状态">
+              <el-radio-group v-model="form.visible">
+                <el-radio :label="1">显示</el-radio>
+                <el-radio :label="0">隐藏</el-radio>
               </el-radio-group>
             </el-form-item>
 
@@ -163,186 +166,188 @@
 </template>
 
 <script>
-import {add, del, list, patch, update} from "@/api/admin/menu";
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import TreeSelect from '@riophae/vue-treeselect'
-import IconSelect from '@/components/IconSelect'
+  import {add, del, list, patch, update} from "@/api/admin/menu";
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+  import TreeSelect from '@riophae/vue-treeselect'
+  import IconSelect from '@/components/IconSelect'
 
-export default {
-  name: "Menu",
-  components: {TreeSelect, IconSelect},
-  data() {
-    return {
-      loading: true,
-      ids: [],
-      single: true,
-      multiple: true,
-      queryParams: {
-        name: undefined,
-        queryMode: 'tree'
-      },
-      pagination: {
-        page: 1,
-        limit: 10,
-        total: 0
-      },
-      pageList: [],
-      dialog: {
-        title: undefined,
-        visible: false
-      },
-      form: {
-        parentId: 0,
-        status: 1,
-        icon: 'menu',
-        sort: 1
-      },
-      rules: {
-        parentId: [
-          {required: true, message: '请选择顶级菜单', trigger: 'blur'}
-        ],
-        name: [
-          {required: true, message: '请输入菜单名称', trigger: 'blur'}
-        ],
-        path: [
-          {required: true, message: '请输入路由路径', trigger: 'blur'}
-        ],
-        component: [
-          {required: true, message: '请输入组件', trigger: 'blur'}
-        ]
-      },
-      title: '新增菜单',
-      menuOptions: [],
-      currentRow: undefined
-    }
-  },
-  created() {
-    this.loadMenuOptions()
-    this.handleQuery()
-  },
-  methods: {
-    handleQuery() {
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
-      list(this.queryParams).then(response => {
-        this.pageList = response.data
-        this.pagination.total = response.total
-        this.loading = false
-      })
-    },
-    resetQuery() {
-      this.pagination = {
-        page: 1,
-        limit: 10,
-        total: 0
+  export default {
+    name: "Menu",
+    components: {TreeSelect, IconSelect},
+    data() {
+      return {
+        loading: true,
+        ids: [],
+        single: true,
+        multiple: true,
+        queryParams: {
+          name: undefined,
+          queryMode: 'tree'
+        },
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: 0
+        },
+        pageList: [],
+        dialog: {
+          title: undefined,
+          visible: false
+        },
+        form: {
+          parentId: 0,
+          visible: 1,
+          icon: undefined,
+          sort: 1,
+          component: 'Layout',
+        },
+        rules: {
+          parentId: [
+            {required: true, message: '请选择顶级菜单', trigger: 'blur'}
+          ],
+          name: [
+            {required: true, message: '请输入菜单名称', trigger: 'blur'}
+          ],
+          path: [
+            {required: true, message: '请输入路由路径', trigger: 'blur'}
+          ],
+          component: [
+            {required: true, message: '请输入组件', trigger: 'blur'}
+          ]
+        },
+        title: '新增菜单',
+        menuOptions: [],
+        currentRow: undefined
       }
-      this.queryParams.name = undefined
+    },
+    created() {
+      this.loadMenuOptions()
       this.handleQuery()
     },
-    rowClick(row) {
-      const currentRow = JSON.parse(JSON.stringify(row));
-      this.currentRow = currentRow
-      this.form = currentRow
-      this.title = '修改菜单'
-      this.$emit('menuClick', row)
-    },
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length != 1
-      this.multiple = !selection.length
-    },
-    handleStatusChange(row) {
-      const text = row.status === 1 ? '启用' : '停用'
-      this.$confirm('确认要"' + text + row.name + '"数据项吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function () {
-        return patch(row.id, 1, {status: row.status})
-      }).then(() => {
-        this.$message.success(text + '成功')
-      }).catch(function () {
-        row.status = row.status === 1 ? 0 : 1
-      })
-    },
-
-    handleAdd(row) {
-      this.resetForm()
-      if (row.id) { // 行点击新增
-        this.form.parentId = row.id
-      } else { // 工具栏点击新增
-        if (this.currentRow) {
-          this.form.parentId = this.currentRow.id
-        } else {
-          this.form.parentId = 0
-          this.form.component = 'Layout'
+    methods: {
+      handleQuery() {
+        this.resetForm()
+        this.queryParams.page = this.pagination.page
+        this.queryParams.limit = this.pagination.limit
+        list(this.queryParams).then(response => {
+          this.pageList = response.data
+          this.pagination.total = response.total
+          this.loading = false
+        })
+      },
+      resetQuery() {
+        this.pagination = {
+          page: 1,
+          limit: 10,
+          total: 0
         }
-      }
-      this.title = '新增菜单'
-    },
-    handleUpdate(row) {
-      this.resetForm()
-      this.title = '修改菜单'
-      this.form = JSON.parse(JSON.stringify(row))
-    },
+        this.queryParams.name = undefined
+        this.handleQuery()
+      },
+      rowClick(row) {
+        const currentRow = JSON.parse(JSON.stringify(row));
+        this.currentRow = currentRow
+        this.form = currentRow
+        this.title = '【' + currentRow.name + '】' + '菜单修改'
+        this.$emit('menuClick', row)
+      },
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id)
+        this.single = selection.length != 1
+        this.multiple = !selection.length
+      },
+      handleStatusChange(row) {
+        const text = row.status === 1 ? '启用' : '停用'
+        this.$confirm('确认要"' + text + row.name + '"数据项吗?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function () {
+          return patch(row.id, 1, {status: row.status})
+        }).then(() => {
+          this.$message.success(text + '成功')
+        }).catch(function () {
+          row.status = row.status === 1 ? 0 : 1
+        })
+      },
 
-    handleSubmit: function () {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          const id = this.form.id
-          if (id != undefined) {
-            update(id, this.form).then(() => {
-              this.$message.success('修改成功')
-              this.handleQuery()
-            })
+      handleAdd(row) {
+        this.resetForm()
+        if (row.id) { // 行点击新增
+          this.form.parentId = row.id
+        } else { // 工具栏点击新增
+          if (this.currentRow) {
+            this.form.parentId = this.currentRow.id
           } else {
-            add(this.form).then(() => {
-              this.$message.success('新增成功')
-              this.handleQuery()
-            })
+            this.form.parentId = 0
+            this.form.component = 'Layout'
           }
         }
-      })
-    },
+        this.title = '新增菜单'
+      },
+      handleUpdate(row) {
+        this.resetForm()
+        this.title = '修改菜单'
+        this.form = JSON.parse(JSON.stringify(row))
+      },
 
-    handleDelete(row) {
-      const ids = [row.id || this.ids].join(',')
-      this.$confirm('确认删除已选中的数据项？', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        del(ids).then(() => {
-          this.$message.success('删除成功')
-          this.handleQuery()
+      handleSubmit: function () {
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            const id = this.form.id
+            if (id != undefined) {
+              update(id, this.form).then(() => {
+                this.$message.success('修改成功')
+                this.handleQuery()
+              })
+            } else {
+              add(this.form).then(() => {
+                this.$message.success('新增成功')
+                this.handleQuery()
+              })
+            }
+          }
         })
-      }).catch(() =>
-        this.$message.info('已取消删除')
-      )
-    },
-    resetForm() {
-      this.form = {
-        status: 1,
-        parentId: 0,
-        icon: 'menu',
-        sort: 1
+      },
+      handleDelete(row) {
+        const ids = [row.id || this.ids].join(',')
+        this.$confirm('确认删除已选中的数据项？', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          del(ids).then(() => {
+            this.$message.success('删除成功')
+            this.handleQuery()
+          })
+        }).catch(() =>
+          this.$message.info('已取消删除')
+        )
+      },
+      resetForm() {
+        this.form = {
+          visible: 1,
+          parentId: 0,
+          icon: undefined,
+          sort: 1,
+          component: 'Layout'
+        }
+        if (this.$refs['form']) {
+          this.$refs['form'].resetFields()
+        }
+      },
+      loadMenuOptions() {
+        this.menuOptions = []
+        list({queryMode: 'treeselect'}).then(response => {
+          const menuOption = {id: 0, label: '顶级菜单', children: response.data}
+          this.menuOptions.push(menuOption)
+        })
+      },
+      handleIconSelected(name) {
+        this.form.icon = name
       }
-      if (this.$refs['form']) {
-        this.$refs['form'].resetFields()
-      }
-    },
-    loadMenuOptions() {
-      this.menuOptions = []
-      list({queryMode: 'treeselect'}).then(response => {
-        const menuOption = {id: 0, label: '顶级菜单', children: response.data}
-        this.menuOptions.push(menuOption)
-      })
-    },
-    handleIconSelected(name) {
-      this.form.icon = name
     }
   }
-}
 </script>
 
 <style scoped>
