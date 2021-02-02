@@ -45,3 +45,11 @@ export function patch(id, data) {
     data: data
   })
 }
+
+
+export function roleMenuIds(id) {
+  return request({
+    url: '/youlai-admin/api.admin/v1/roles/' + id + '/menu_ids',
+    method: 'get'
+  })
+}

@@ -27,33 +27,38 @@
 </template>
 
 <script>
-  import {list as menuList} from "@/api/admin/menu";
+import {list as menuList} from "@/api/admin/menu";
+import {roleMenuIds} from "@/api/admin/role"
 
-  export default {
-    name: "Menu",
-    data() {
-      return {
-        menuOptions: [],
-        expandedKeys: []
-      }
+export default {
+  name: "Menu",
+  data() {
+    return {
+      menuOptions: [],
+      expandedKeys: []
+    }
+  },
+  created() {
+    this.loadMenus()
+  },
+  methods: {
+    loadMenus() {
+      menuList({queryMode: 'treeselect'}).then(response => {
+        this.menuOptions = response.data
+        this.expandedKeys = this.menuOptions.map(node => node.id) //展开所有节点
+
+      })
     },
-    created() {
-      this.loadMenus()
+    handleSubmit() {
+
     },
-    methods: {
-      loadMenus() {
-        menuList({queryMode: 'treeselect'}).then(response => {
-          this.menuOptions = response.data
-          this.expandedKeys = this.menuOptions.map(node => node.id)
-          console.log('ex', this.expandedKeys)
-
-        })
-      },
-      handleSubmit() {
-
-      }
+    roleClick(role) {
+      roleMenuIds(role.id).then(response => {
+        this.$refs.menu.setCheckedKeys(response.data)
+      })
     }
   }
+}
 </script>
 
 <style scoped>

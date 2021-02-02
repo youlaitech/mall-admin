@@ -6,7 +6,7 @@
         <role @roleClick="roleClick"></role>
       </el-col>
       <el-col :sm="6" :xs="24">
-        <menus></menus>
+        <menus ref="menu"></menus>
       </el-col>
       <el-col :sm="9" :xs="24">
         <permission></permission>
@@ -26,7 +26,7 @@
     components: {Permission, Role, Menus},
     methods: {
       roleClick(role) {
-        console.log('role', role)
+        this.$refs.menu.roleClick(role)
       }
     }
   }
