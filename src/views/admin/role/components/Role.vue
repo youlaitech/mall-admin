@@ -26,11 +26,11 @@
         </el-form-item>
         <el-form-item>
           <el-dropdown>
-            <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索<i
+            <el-button type="primary" plain icon="el-icon-search" @click="handleQuery">搜索<i
               class="el-icon-arrow-down el-icon--right"></i></el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+                <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -41,7 +41,7 @@
         v-loading="loading"
         :data="pageList"
         @selection-change="handleSelectionChange"
-        @row-click="rowClick"
+        @row-click="handleRowClick"
         border
         highlight-current-row
       >
@@ -193,7 +193,7 @@
           this.loading = false
         })
       },
-      resetQuery() {
+      handleReset() {
         this.pagination = {
           page: 1,
           limit: 10,
@@ -287,7 +287,7 @@
           visible: false
         }
       },
-      rowClick(row) {
+      handleRowClick(row) {
         this.$emit('roleClick', row)
       }
     }

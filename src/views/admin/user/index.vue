@@ -82,7 +82,7 @@
           </el-form-item>
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
+            <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
           </el-form-item>
         </el-form>
 
@@ -333,7 +333,7 @@
           this.loading = false
         })
       },
-      handleResetQuery() {
+      handleReset() {
         this.pagination = {
           page: 1,
           limit: 10,
@@ -461,7 +461,7 @@
         })
       },
       loadDeptOptions() {
-        deptList({queryMode: 'treeselect'}).then(response => {
+        deptList({queryMode: 'tree'}).then(response => {
           this.deptOptions = [{
             id: 0,
             label: '有来科技',

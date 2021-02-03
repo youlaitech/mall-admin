@@ -13,7 +13,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
+        <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="pageList" border @selection-change="handleSelectionChange">
@@ -243,7 +243,7 @@
           this.loading = false
         })
       },
-      handleResetQuery() {
+      handleReset() {
         this.pagination = {
           page: 1,
           limit: 10,

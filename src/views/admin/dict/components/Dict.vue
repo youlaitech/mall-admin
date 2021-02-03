@@ -21,7 +21,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+        <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -30,7 +30,7 @@
       ref="table"
       :data="pageList"
       v-loading="loading"
-      @row-click="rowClick"
+      @row-click="handleRowClick"
       @selection-change="handleSelectionChange"
       border
       size="mini"
@@ -166,7 +166,7 @@ export default {
         this.loading = false
       })
     },
-    resetQuery() {
+    handleReset() {
       this.pagination = {
         page: 1,
         limit: 10,
@@ -178,7 +178,7 @@ export default {
       }
       this.handleQuery()
     },
-    rowClick(row) {
+    handleRowClick(row) {
       this.$emit('dictClick', row)
     },
     handleSelectionChange(selection) {

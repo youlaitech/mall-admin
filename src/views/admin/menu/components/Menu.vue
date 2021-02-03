@@ -4,7 +4,9 @@
       <el-col :sm="12" :xs="24">
         <el-card class="box-card" shadow="always">
           <div class="clearfix" slot="header">
-            <b><svg-icon icon-class="menu"/> 菜单列表</b>
+            <b>
+              <svg-icon icon-class="menu"/>
+              菜单列表</b>
           </div>
           <!-- 搜索表单 -->
           <el-form
@@ -26,7 +28,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
-              <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+              <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
 
@@ -37,7 +39,7 @@
             row-key="id"
             highlight-current-row
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-            @row-click="rowClick"
+            @row-click="handleRowClick"
             border
             size="mini"
           >
@@ -89,7 +91,9 @@
       <el-col :sm="12" :xs="24">
         <el-card class="box-card" shadow="always">
           <div class="clearfix" slot="header">
-            <b> <svg-icon icon-class="form"></svg-icon> {{ title }}</b>
+            <b>
+              <svg-icon icon-class="form"></svg-icon>
+              {{ title }}</b>
           </div>
 
           <el-form
@@ -182,7 +186,7 @@
         multiple: true,
         queryParams: {
           name: undefined,
-          queryMode: 'tree'
+          queryMode: undefined
         },
         pagination: {
           page: 1,
@@ -229,13 +233,14 @@
         this.resetForm()
         this.queryParams.page = this.pagination.page
         this.queryParams.limit = this.pagination.limit
+        this.queryParams.queryMode = 'list'
         list(this.queryParams).then(response => {
           this.pageList = response.data
           this.pagination.total = response.total
           this.loading = false
         })
       },
-      resetQuery() {
+      handleReset() {
         this.pagination = {
           page: 1,
           limit: 10,
@@ -244,7 +249,7 @@
         this.queryParams.name = undefined
         this.handleQuery()
       },
-      rowClick(row) {
+      handleRowClick(row) {
         const currentRow = JSON.parse(JSON.stringify(row));
         this.currentRow = currentRow
         this.form = currentRow
@@ -338,7 +343,7 @@
       },
       loadMenuOptions() {
         this.menuOptions = []
-        list({queryMode: 'treeselect'}).then(response => {
+        list({queryMode: 'tree'}).then(response => {
           const menuOption = {id: 0, label: '顶级菜单', children: response.data}
           this.menuOptions.push(menuOption)
         })

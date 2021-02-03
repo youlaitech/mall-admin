@@ -31,7 +31,7 @@
           @click="handleQuery"
         >搜索
         </el-button>
-        <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
+        <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -195,13 +195,13 @@
     },
     methods: {
       handleQuery() {
-        this.queryParams.queryMode = 'tree'
+        this.queryParams.queryMode = 'list'
         list(this.queryParams).then(response => {
           this.pageList = response.data
           this.loading = false
         })
       },
-      handleResetQuery() {
+      handleReset() {
         this.queryParams = {
           name: undefined,
           status: undefined
@@ -284,7 +284,7 @@
         }
       },
       loadDeptOptions() {
-        this.queryParams.queryMode = 'treeselect'
+        this.queryParams.queryMode = 'tree'
         this.deptOptions = []
         list(this.queryParams).then(response => {
           const deptOption = {id: 0, label: '有来科技'}

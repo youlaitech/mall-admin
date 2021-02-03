@@ -5,19 +5,8 @@
         <menus @menuClick="menuClick" @resetPermission="resetPermission"></menus>
       </el-col>
       <el-col :sm="9" :xs="24">
-        <el-card class="box-card" shadow="always">
-          <div class="clearfix" slot="header">
-            <b><svg-icon icon-class="route" /> {{ menuName }}路由权限</b>
-          </div>
-          <permission ref="routingPermission"></permission>
-        </el-card>
-
-        <el-card class="box-card" shadow="always">
-          <div class="clearfix" slot="header">
-            <b><svg-icon icon-class="button" /> {{ menuName }}按钮权限</b>
-          </div>
-          <permission ref="buttonPermission"></permission>
-        </el-card>
+        <permission ref="routingPermission" type="1"></permission>
+        <permission ref="buttonPermission" type="2"></permission>
       </el-col>
     </el-row>
   </div>
@@ -32,12 +21,11 @@
     components: {Menus, Permission},
     data() {
       return {
-        menuName: undefined
+
       }
     },
     methods: {
       menuClick(row) {
-        this.menuName = '【' + row.name + '】'
         this.$refs.routingPermission.menuClick(row, 1)
         this.$refs.buttonPermission.menuClick(row, 2)
       },

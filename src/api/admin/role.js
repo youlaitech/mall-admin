@@ -53,3 +53,12 @@ export function roleMenuIds(id) {
     method: 'get'
   })
 }
+
+
+export function rolePermissionIds(id,params) {
+  return request({
+    url: '/youlai-admin/api.admin/v1/roles/' + id + '/permission_ids',
+    method: 'get',
+    params:params
+  })
+}

@@ -15,7 +15,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">查询</el-button>
-        <el-button icon="el-icon-refresh" @click="handleResetQuery">重置</el-button>
+        <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -166,7 +166,7 @@
           this.loading = false
         })
       },
-      handleResetQuery() {
+      handleReset() {
         this.pagination = {
           page: 1,
           limit: 10,
