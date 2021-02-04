@@ -41,6 +41,7 @@
       row-key="id"
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      border
     >
       <el-table-column prop="name" label="部门名称"/>
       <el-table-column prop="sort" label="显示排序" width="200"/>
@@ -48,26 +49,32 @@
       <el-table-column prop="leader" label="负责人" width="200"/>
       <el-table-column prop="mobile" label="联系电话" width="200"/>
       <el-table-column prop="email" label="邮箱" width="200"/>
-      <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="200">
         <template slot-scope="scope">
           <el-button
-            type="text"
+            type="primary"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改
-          </el-button>
+            size="mini"
+            circle
+            plain
+            @click.stop="handleUpdate(scope.row)"
+          />
           <el-button
-            type="text"
+            type="success"
             icon="el-icon-plus"
-            @click="handleAdd(scope.row)"
-          >新增
-          </el-button>
+            size="mini"
+            circle
+            plain
+            @click.stop="handleAdd(scope.row)"
+          />
           <el-button
-            type="text"
+            type="danger"
             icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除
-          </el-button>
+            size="mini"
+            circle
+            plain
+            @click.stop="handleDelete(scope.row)"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -255,7 +262,7 @@
         })
       },
       handleDelete(row) {
-        const ids = row.id || this.ids
+        const ids = [row.id || this.ids].join(',')
         this.$confirm('确认删除已选中的数据项?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

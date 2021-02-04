@@ -57,14 +57,16 @@
             icon="el-icon-edit"
             size="mini"
             circle
-            @click="handleUpdate(scope.row)"
+            plain
+            @click.stop="handleUpdate(scope.row)"
           />
           <el-button
             type="danger"
             icon="el-icon-delete"
             size="mini"
             circle
-            @click="handleDelete(scope.row)"
+            plain
+            @click.stop="handleDelete(scope.row)"
           />
         </template>
       </el-table-column>
