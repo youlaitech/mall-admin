@@ -44,8 +44,13 @@
       border
     >
       <el-table-column prop="name" label="部门名称"/>
+      <el-table-column prop="status" label="状态" width="100">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status==1" type="success">正常</el-tag>
+          <el-tag v-else type="info">禁用</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="sort" label="显示排序" width="200"/>
-      <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100"/>
       <el-table-column prop="leader" label="负责人" width="200"/>
       <el-table-column prop="mobile" label="联系电话" width="200"/>
       <el-table-column prop="email" label="邮箱" width="200"/>
@@ -91,50 +96,41 @@
         :rules="rules"
         label-width="80px"
       >
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="上级部门" prop="parentId">
-              <tree-select
-                v-model="form.parentId"
-                :options="deptOptions"
-                placeholder="选择上级部门"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="部门名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入部门名称"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="显示排序" prop="sort">
-              <el-input-number v-model="form.sort" controls-position="right" :min="0"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="负责人" prop="leader">
-              <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="联系电话" prop="mobile">
-              <el-input v-model="form.mobile" placeholder="请输入联系电话" maxlength="11"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="部门状态">
-              <el-radio-group v-model="form.status">
-                <el-radio :label="1">正常</el-radio>
-                <el-radio :label="0">禁用</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
+
+        <el-form-item label="上级部门" prop="parentId">
+          <tree-select
+            v-model="form.parentId"
+            :options="deptOptions"
+            placeholder="选择上级部门"
+          />
+        </el-form-item>
+
+        <el-form-item label="部门名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入部门名称"/>
+        </el-form-item>
+
+        <el-form-item label="显示排序" prop="sort">
+          <el-input-number v-model="form.sort" controls-position="right" :min="0"/>
+        </el-form-item>
+
+        <el-form-item label="负责人" prop="leader">
+          <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20"/>
+        </el-form-item>
+
+        <el-form-item label="联系电话" prop="mobile">
+          <el-input v-model="form.mobile" placeholder="请输入联系电话" maxlength="11"/>
+        </el-form-item>
+
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
+        </el-form-item>
+
+        <el-form-item label="部门状态">
+          <el-radio-group v-model="form.status">
+            <el-radio :label="1">正常</el-radio>
+            <el-radio :label="0">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleSubmit">确 定</el-button>
@@ -214,9 +210,6 @@
           status: undefined
         }
         this.handleQuery()
-      },
-      statusFormat(row) {
-        return row.status === 1 ? '正常' : '停用'
       },
       async handleAdd(row) {
         this.resetForm()
