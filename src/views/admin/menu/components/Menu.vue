@@ -139,7 +139,10 @@
             </el-form-item>
 
             <el-form-item label="组件">
-              <el-input v-model="form.component" placeholder="src/views/组件.vue，例如：admin/user/index"/>
+              <el-input v-model="form.component" placeholder="admin/user/index">
+                <template v-if="form.parentId!=0" slot="prepend">src/views/</template>
+                <template  v-if="form.parentId!=0"  slot="append">.vue</template>
+              </el-input>
             </el-form-item>
 
             <el-form-item label="状态">
