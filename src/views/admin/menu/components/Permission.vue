@@ -4,7 +4,7 @@
       <div class="clearfix" slot="header">
         <b>
           <svg-icon icon-class="route"/>
-          {{ menuName }}{{title}}</b>
+          {{ menuName }}{{type==1?'路由权限':'按钮权限'}}</b>
       </div>
 
       <!-- 搜索表单 -->
@@ -44,7 +44,7 @@
       >
         <el-table-column type="selection" width="40" align="center"/>
         <el-table-column label="权限名称" prop="name" width="80"/>
-        <el-table-column label="权限标识" prop="permission"/>
+        <el-table-column label="权限标识" prop="perms"/>
         <el-table-column label="类型" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.type==1" type="success">路由</el-tag>
@@ -153,10 +153,8 @@
           ]
         },
         disabled: true,
-        type: undefined,
         menu: {},
         menuName: undefined,
-        title: this.type == 1 ? '路由权限' : '按钮权限'
       }
     },
     methods: {
@@ -261,9 +259,8 @@
           this.$refs['form'].resetFields()
         }
       },
-      menuClick(row, type) {
+      menuClick(row) {
         this.disabled = false
-        this.type = type
         this.menu = row
         this.menuName = '【' + this.menu.name + '】'
         this.handleQuery()

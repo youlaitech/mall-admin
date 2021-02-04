@@ -26,8 +26,8 @@
     },
     methods: {
       menuClick(row) {
-        this.$refs.routingPermission.menuClick(row, 1)
-        this.$refs.buttonPermission.menuClick(row, 2)
+        this.$refs.routingPermission.menuClick(row)
+        this.$refs.buttonPermission.menuClick(row)
       },
       resetPermission() {
         this.menuName = undefined

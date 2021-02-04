@@ -55,10 +55,26 @@ export function roleMenuIds(id) {
 }
 
 
-export function rolePermissionIds(id,params) {
+export function rolePermissionIds(id, params) {
   return request({
     url: '/youlai-admin/api.admin/v1/roles/' + id + '/permission_ids',
     method: 'get',
-    params:params
+    params: params
+  })
+}
+
+export function updateRoleMenuIds(id, menuIds) {
+  return request({
+    url: '/youlai-admin/api.admin/v1/roles/' + id + '/menu_ids',
+    method: 'put',
+    data: {menuIds: menuIds}
+  })
+}
+
+export function updateRolePermissionIds(id, type, permissionIds) {
+  return request({
+    url: '/youlai-admin/api.admin/v1/roles/' + id + '/permission_ids',
+    method: 'put',
+    data: {type: type, permissionIds: permissionIds}
   })
 }
