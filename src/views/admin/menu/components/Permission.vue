@@ -45,7 +45,16 @@
         <el-table-column type="selection" width="40" align="center"/>
         <el-table-column label="权限名称" prop="name" width="80"/>
         <el-table-column label="权限标识" prop="perm"/>
-        <el-table-column label="类型" width="100">
+        <el-table-column label="请求方式" width="80">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.method=='*'" type="info">不限</el-tag>
+            <el-tag v-if="scope.row.method=='GET'" type="primary">GET</el-tag>
+            <el-tag v-if="scope.row.method=='POST'" type="success">POST</el-tag>
+            <el-tag v-if="scope.row.method=='PUT'" type="warning">PUT</el-tag>
+            <el-tag v-if="scope.row.method=='DELETE'" type="danger">DELETE</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="权限类型" width="80">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.type==1" type="success">路由</el-tag>
             <el-tag v-if="scope.row.type==2" type="primary">按钮</el-tag>
@@ -100,6 +109,16 @@
             <el-input v-model="form.name" placeholder="请输入权限名称"/>
           </el-form-item>
 
+          <el-form-item v-if="type==1" label="请求方式" prop="method">
+            <el-select v-model="form.method">
+              <el-option value="*" label="不限"/>
+              <el-option value="GET" label="GET"/>
+              <el-option value="POST" label="POST"/>
+              <el-option value="PUT" label="PUT"/>
+              <el-option value="DELETE" label="DELETE"/>
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="权限标识" prop="perm">
             <el-input v-model="form.perm" :placeholder="(type==1?'/system/users/**':'system:user:add')"/>
           </el-form-item>
@@ -120,7 +139,7 @@
 
   export default {
     name: "permission",
-    props: ["type"],
+    props: ["type"], //权限类型: 1-路由权限 2-按钮权限
     data() {
       return {
         loading: false,
@@ -130,7 +149,7 @@
         queryParams: {
           queryMode: 'page',
           name: undefined,
-          menuId: undefined,
+          moduleId: undefined,
           type: undefined
         },
         pagination: {
@@ -148,8 +167,11 @@
           name: [
             {required: true, message: '请输入权限名称', trigger: 'blur'}
           ],
-          perms: [
+          perm: [
             {required: true, message: '请输入权限标识', trigger: 'blur'}
+          ],
+          method: [
+            {required: true, message: '请选择请求方式', trigger: 'blur'}
           ]
         },
         disabled: true,
@@ -162,7 +184,7 @@
         this.queryParams.page = this.pagination.page
         this.queryParams.limit = this.pagination.limit
 
-        this.queryParams.menuId = this.menu.id
+        this.queryParams.moduleId = this.menu.id
         this.queryParams.type = this.type
 
         list(this.queryParams).then(response => {
@@ -188,7 +210,7 @@
       handleAdd() {
         this.resetForm()
         this.dialog = {
-          title: '新增权限',
+          title: '新增' + (this.type == 1 ? '路由' : '按钮') + '权限',
           visible: true
         }
       },
@@ -196,7 +218,7 @@
       handleUpdate(row) {
         this.resetForm()
         this.dialog = {
-          title: '修改权限',
+          title: '修改' + (this.type == 1 ? '路由' : '按钮') + '权限',
           visible: true
         }
         const id = row.id || this.ids
@@ -210,7 +232,7 @@
           if (valid) {
             const id = this.form.id
             this.form.type = this.type
-            this.form.menuId = this.menu.id
+            this.form.moduleId = this.menu.id
             if (id != undefined) {
               update(id, this.form).then(() => {
                 this.$message.success('修改成功')
@@ -253,7 +275,7 @@
       resetForm() {
         this.form = {
           type: this.type,
-          menuId: this.menu.id
+          moduleId: this.menu.id
         }
         if (this.$refs['form']) {
           this.$refs['form'].resetFields()
@@ -268,7 +290,7 @@
       resetPermission() {
         this.disabled = true
         this.pageList = []
-        this.queryParams.menuId = undefined
+        this.queryParams.moduleId = undefined
         this.menu = {}
         this.menuName = undefined
       }

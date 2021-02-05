@@ -76,7 +76,7 @@
           page: this.pagination.page,
           limit: this.pagination.limit,
           queryMode: 'page',
-          menuId: this.menu.id,
+          moduleId: this.menu.id,
           type: this.type
         }).then(response => {
           that.pageList = response.data
