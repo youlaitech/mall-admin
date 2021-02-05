@@ -138,8 +138,11 @@
               <el-input v-model="form.path" placeholder="父路由例如：/admin；子路由省略斜杠/，例如：user"/>
             </el-form-item>
 
-            <el-form-item label="组件">
-              <el-input v-model="form.component" placeholder="src/views/组件.vue，例如：admin/user/index"/>
+            <el-form-item label="组件路径">
+              <el-input v-model="form.component" placeholder="admin/user/index">
+                <template v-if="form.parentId!=0" slot="prepend">src/views/</template>
+                <template v-if="form.parentId!=0" slot="append">.vue</template>
+              </el-input>
             </el-form-item>
 
             <el-form-item label="状态">

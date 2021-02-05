@@ -54,7 +54,7 @@
       <el-table-column prop="leader" label="负责人" width="200"/>
       <el-table-column prop="mobile" label="联系电话" width="200"/>
       <el-table-column prop="email" label="邮箱" width="200"/>
-      <el-table-column label="操作" align="center" width="200">
+      <el-table-column label="操作" align="center" width="150">
         <template slot-scope="scope">
           <el-button
             type="primary"
@@ -110,7 +110,7 @@
         </el-form-item>
 
         <el-form-item label="显示排序" prop="sort">
-          <el-input-number v-model="form.sort" controls-position="right" :min="0"/>
+          <el-input-number v-model="form.sort" controls-position="right" style="width: 100px" :min="0"/>
         </el-form-item>
 
         <el-form-item label="负责人" prop="leader">

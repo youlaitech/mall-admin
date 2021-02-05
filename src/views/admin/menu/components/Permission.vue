@@ -44,7 +44,7 @@
       >
         <el-table-column type="selection" width="40" align="center"/>
         <el-table-column label="权限名称" prop="name" width="80"/>
-        <el-table-column label="权限标识" prop="perms"/>
+        <el-table-column label="权限标识" prop="perm"/>
         <el-table-column label="类型" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.type==1" type="success">路由</el-tag>
@@ -100,8 +100,8 @@
             <el-input v-model="form.name" placeholder="请输入权限名称"/>
           </el-form-item>
 
-          <el-form-item label="权限标识" prop="perms">
-            <el-input v-model="form.perms" :placeholder="(type==1?'/system/users/**':'system:user:add')"/>
+          <el-form-item label="权限标识" prop="perm">
+            <el-input v-model="form.perm" :placeholder="(type==1?'/system/users/**':'system:user:add')"/>
           </el-form-item>
 
         </el-form>
