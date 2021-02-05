@@ -29,7 +29,7 @@
       >
         <el-table-column type="selection" width="55" align="center"/>
         <el-table-column label="权限名称" prop="name" width="80"/>
-        <el-table-column label="权限标识" prop="perms"/>
+        <el-table-column label="权限标识" prop="perm"/>
       </el-table>
 
       <pagination
@@ -76,7 +76,7 @@
           page: this.pagination.page,
           limit: this.pagination.limit,
           queryMode: 'page',
-          menuId: this.menu.id,
+          moduleId: this.menu.id,
           type: this.type
         }).then(response => {
           that.pageList = response.data

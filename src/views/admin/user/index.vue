@@ -28,7 +28,12 @@
       <el-col :span="20" :xs="24">
         <el-form ref="queryForm" :inline="true" :model="queryParams" label-width="68px" size="small">
           <el-form-item>
-            <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增
+            <el-button
+              icon="el-icon-plus"
+              type="primary"
+              @click="handleAdd"
+              v-has-permission="['system:user:add']"
+            >新增
             </el-button>
             <el-button
               :disabled="single"
@@ -36,6 +41,7 @@
               type="success"
               style="margin-left:15px"
               @click="handleUpdate"
+              v-has-permission="['system:user:edit']"
             >修改
             </el-button>
             <el-button
@@ -43,8 +49,9 @@
               icon="el-icon-delete"
               type="danger"
               style="margin-left:15px"
-              @click="handleDelete">
-              删除
+              v-has-permission="['system:user:delete']"
+              @click="handleDelete"
+            >删除
             </el-button>
           </el-form-item>
 
@@ -119,28 +126,35 @@
             </template>
           </el-table-column>
 
-          <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="250">
+          <el-table-column align="center" label="操作" width="150">
             <template slot-scope="scope">
               <el-button
+                type="primary"
                 icon="el-icon-edit"
-                type="text"
-                @click="handleUpdate(scope.row)"
-              >修改
-              </el-button>
+                size="mini"
+                circle
+                plain
+                @click.stop="handleUpdate(scope.row)"
+                v-has-permission="['system:user:edit']"
+              />
               <el-button
-                v-if="scope.row.id !==1"
+                type="danger"
                 icon="el-icon-delete"
-                type="text"
-                @click="handleDelete(scope.row)"
-              >
-                删除
-              </el-button>
+                size="mini"
+                circle
+                plain
+                @click.stop="handleDelete(scope.row)"
+                v-has-permission="['system:user:delete']"
+              />
               <el-button
+                type="info"
                 icon="el-icon-key"
-                type="text"
-                @click="handleResetPassword(scope.row)"
-              >重置密码
-              </el-button>
+                size="mini"
+                circle
+                plain
+                @click.stop="handleResetPassword(scope.row)"
+                v-has-permission="['system:user:reset_password']"
+              />
             </template>
           </el-table-column>
         </el-table>
