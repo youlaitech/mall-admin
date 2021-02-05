@@ -4,7 +4,7 @@
       <div class="clearfix" slot="header">
         <b>
           <svg-icon icon-class="route"/>
-          {{ menuName }}{{type==1?'路由权限':'按钮权限'}}</b>
+          {{ menuName }}{{ type == 1 ? '路由权限' : '按钮权限' }}</b>
       </div>
 
       <!-- 搜索表单 -->
@@ -45,7 +45,7 @@
         <el-table-column type="selection" width="40" align="center"/>
         <el-table-column label="权限名称" prop="name" width="80"/>
         <el-table-column label="权限标识" prop="perm"/>
-        <el-table-column label="请求方式" width="80">
+        <el-table-column v-if="type==1" label="请求方式" width="80">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.method=='*'" type="info">不限</el-tag>
             <el-tag v-if="scope.row.method=='GET'" type="primary">GET</el-tag>
@@ -135,172 +135,172 @@
 </template>
 
 <script>
-  import {add, del, detail, list, update} from "@/api/admin/permission";
+import {add, del, detail, list, update} from "@/api/admin/permission";
 
-  export default {
-    name: "permission",
-    props: ["type"], //权限类型: 1-路由权限 2-按钮权限
-    data() {
-      return {
-        loading: false,
-        ids: [],
-        single: true,
-        multiple: true,
-        queryParams: {
-          queryMode: 'page',
-          name: undefined,
-          moduleId: undefined,
-          type: undefined
-        },
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        pageList: [],
-        dialog: {
-          title: undefined,
-          visible: false
-        },
-        form: {},
-        rules: {
-          name: [
-            {required: true, message: '请输入权限名称', trigger: 'blur'}
-          ],
-          perm: [
-            {required: true, message: '请输入权限标识', trigger: 'blur'}
-          ],
-          method: [
-            {required: true, message: '请选择请求方式', trigger: 'blur'}
-          ]
-        },
-        disabled: true,
-        menu: {},
-        menuName: undefined,
+export default {
+  name: "permission",
+  props: ["type"], //权限类型: 1-路由权限 2-按钮权限
+  data() {
+    return {
+      loading: false,
+      ids: [],
+      single: true,
+      multiple: true,
+      queryParams: {
+        queryMode: 'page',
+        name: undefined,
+        moduleId: undefined,
+        type: undefined
+      },
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
+      },
+      pageList: [],
+      dialog: {
+        title: undefined,
+        visible: false
+      },
+      form: {},
+      rules: {
+        name: [
+          {required: true, message: '请输入权限名称', trigger: 'blur'}
+        ],
+        perm: [
+          {required: true, message: '请输入权限标识', trigger: 'blur'}
+        ],
+        method: [
+          {required: true, message: '请选择请求方式', trigger: 'blur'}
+        ]
+      },
+      disabled: true,
+      menu: {},
+      menuName: undefined,
+    }
+  },
+  methods: {
+    handleQuery() {
+      this.queryParams.page = this.pagination.page
+      this.queryParams.limit = this.pagination.limit
+
+      this.queryParams.moduleId = this.menu.id
+      this.queryParams.type = this.type
+
+      list(this.queryParams).then(response => {
+        this.pageList = response.data
+        this.pagination.total = response.total
+        this.loading = false
+      })
+    },
+    handleReset() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
+      }
+      this.queryParams.name = undefined
+      this.handleQuery()
+    },
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length != 1
+      this.multiple = !selection.length
+    },
+    handleAdd() {
+      this.resetForm()
+      this.dialog = {
+        title: '新增' + (this.type == 1 ? '路由' : '按钮') + '权限',
+        visible: true
       }
     },
-    methods: {
-      handleQuery() {
-        this.queryParams.page = this.pagination.page
-        this.queryParams.limit = this.pagination.limit
 
-        this.queryParams.moduleId = this.menu.id
-        this.queryParams.type = this.type
-
-        list(this.queryParams).then(response => {
-          this.pageList = response.data
-          this.pagination.total = response.total
-          this.loading = false
-        })
-      },
-      handleReset() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams.name = undefined
-        this.handleQuery()
-      },
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
-      },
-      handleAdd() {
-        this.resetForm()
-        this.dialog = {
-          title: '新增' + (this.type == 1 ? '路由' : '按钮') + '权限',
-          visible: true
-        }
-      },
-
-      handleUpdate(row) {
-        this.resetForm()
-        this.dialog = {
-          title: '修改' + (this.type == 1 ? '路由' : '按钮') + '权限',
-          visible: true
-        }
-        const id = row.id || this.ids
-        detail(id).then(response => {
-          this.form = response.data
-        })
-      },
-
-      handleSubmit: function () {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            const id = this.form.id
-            this.form.type = this.type
-            this.form.moduleId = this.menu.id
-            if (id != undefined) {
-              update(id, this.form).then(() => {
-                this.$message.success('修改成功')
-                this.closeDialog()
-                this.handleQuery()
-              })
-            } else {
-              add(this.form).then(() => {
-                this.$message.success('新增成功')
-                this.closeDialog()
-                this.handleQuery()
-              })
-            }
-          }
-        })
-      },
-
-      handleDelete(row) {
-        const ids = [row.id || this.ids].join(',')
-        this.$confirm('确认删除已选中的数据项？', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          del(ids).then(() => {
-            this.$message.success('删除成功')
-            this.handleQuery()
-          })
-        }).catch(() =>
-          this.$message.info('已取消删除')
-        )
-      },
-      closeDialog() {
-        this.resetForm()
-        this.dialog = {
-          title: undefined,
-          visible: false
-        }
-      },
-      resetForm() {
-        this.form = {
-          type: this.type,
-          moduleId: this.menu.id
-        }
-        if (this.$refs['form']) {
-          this.$refs['form'].resetFields()
-        }
-      },
-      menuClick(row) {
-        this.disabled = false
-        this.menu = row
-        this.menuName = '【' + this.menu.name + '】'
-        this.handleQuery()
-      },
-      resetPermission() {
-        this.disabled = true
-        this.pageList = []
-        this.queryParams.moduleId = undefined
-        this.menu = {}
-        this.menuName = undefined
+    handleUpdate(row) {
+      this.resetForm()
+      this.dialog = {
+        title: '修改' + (this.type == 1 ? '路由' : '按钮') + '权限',
+        visible: true
       }
+      const id = row.id || this.ids
+      detail(id).then(response => {
+        this.form = response.data
+      })
+    },
+
+    handleSubmit: function () {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          const id = this.form.id
+          this.form.type = this.type
+          this.form.moduleId = this.menu.id
+          if (id != undefined) {
+            update(id, this.form).then(() => {
+              this.$message.success('修改成功')
+              this.closeDialog()
+              this.handleQuery()
+            })
+          } else {
+            add(this.form).then(() => {
+              this.$message.success('新增成功')
+              this.closeDialog()
+              this.handleQuery()
+            })
+          }
+        }
+      })
+    },
+
+    handleDelete(row) {
+      const ids = [row.id || this.ids].join(',')
+      this.$confirm('确认删除已选中的数据项？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del(ids).then(() => {
+          this.$message.success('删除成功')
+          this.handleQuery()
+        })
+      }).catch(() =>
+        this.$message.info('已取消删除')
+      )
+    },
+    closeDialog() {
+      this.resetForm()
+      this.dialog = {
+        title: undefined,
+        visible: false
+      }
+    },
+    resetForm() {
+      this.form = {
+        type: this.type,
+        moduleId: this.menu.id
+      }
+      if (this.$refs['form']) {
+        this.$refs['form'].resetFields()
+      }
+    },
+    menuClick(row) {
+      this.disabled = false
+      this.menu = row
+      this.menuName = '【' + this.menu.name + '】'
+      this.handleQuery()
+    },
+    resetPermission() {
+      this.disabled = true
+      this.pageList = []
+      this.queryParams.moduleId = undefined
+      this.menu = {}
+      this.menuName = undefined
     }
   }
+}
 </script>
 
 <style scoped>
-  .perm-container {
-    margin-bottom: 20px;
-  }
+.perm-container {
+  margin-bottom: 20px;
+}
 </style>
 
