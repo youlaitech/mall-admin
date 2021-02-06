@@ -3,7 +3,7 @@
     <el-form :inline="true" ref="queryForm">
       <el-form-item>
         <el-button type="primary" @click="handleAdd">新增</el-button>
-        <el-button type="success" @click="handleEdit" :disabled="single">修改</el-button>
+        <el-button type="success" @click="handleUpdate" :disabled="single">修改</el-button>
         <el-button type="danger" @click="handleDelete" :disabled="multiple">删除</el-button>
       </el-form-item>
       <el-form-item>
@@ -93,7 +93,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.row)">编辑
+            @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button
             size="mini"
@@ -134,7 +134,8 @@
         },
         queryParams: {
           name: undefined,
-          categoryId: undefined
+          categoryId: undefined,
+          queryMode:'page'
         },
         pageList: [],
         categoryOptions: [],
@@ -149,7 +150,6 @@
       loadData() {
         this.loadCategoryOptions()
         this.handleQuery()
-
       },
       loadCategoryOptions() {
         categoryList({queryMode: 'cascader'}).then(response => {
@@ -174,7 +174,8 @@
         }
         this.queryParams = {
           name: undefined,
-          categoryId: undefined
+          categoryId: undefined,
+          queryMode: 'page'
         }
         this.handleQuery()
       },
@@ -183,10 +184,10 @@
         this.dialogVisible = true
       },
       handleAdd() {
-        this.$router.push({name: 'ProductDetail'})
+        this.$router.push({path: 'product_add'})
       },
-      handleEdit(row) {
-        this.$router.push({path: 'productDetail', query: {id: row.id}})
+      handleUpdate(row) {
+        this.$router.push({path: 'product_add', query: {id: row.id}})
       },
       handleDelete(row) {
         const ids = row.id || this.ids.join(',')

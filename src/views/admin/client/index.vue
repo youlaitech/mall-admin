@@ -42,7 +42,7 @@
       <el-table-column label="授权方式" prop="authorizedGrantTypes" :formatter="authorizedGrantTypesFormat"/>
       <el-table-column label="认证令牌时效(单位：秒)" width="200" prop="accessTokenValidity"/>
       <el-table-column label="刷新令牌时效(单位：秒)" width="200" prop="refreshTokenValidity"/>
-      <el-table-column label="操作" align="center" width="120" >
+      <el-table-column label="操作" align="center" width="120">
         <template slot-scope="scope">
           <el-button
             type="primary"
@@ -226,7 +226,6 @@
             this.pagination.total = response.total
             this.loading = false
           })
-
         })
 
       },
@@ -271,7 +270,7 @@
         })
       },
       handleDelete(row) {
-        const ids = row.clientId || this.ids
+        const ids = [row.clientId || this.ids].join(',')
         this.$confirm('确认删除已选中的数据项?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -333,7 +332,10 @@
 
         let temp = []
         grantTypes.split(',').forEach(type => {
-          temp.push(this.authorizedGrantTypesOptions.filter(item => item.value == type)[0].name)
+          const types = this.authorizedGrantTypesOptions.filter(item => item.value == type)
+          if (types && types.length > 0) {
+            temp.push(types[0].name)
+          }
         })
         return temp.join(' | ')
       },

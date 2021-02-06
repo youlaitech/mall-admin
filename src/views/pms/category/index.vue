@@ -18,20 +18,20 @@
                           v-show="data.level == 3"
                           :src="data.iconUrl"/>
                 {{ data.name }}
-                <el-link
-                  v-show="data.children.length==0"
-                  style="margin-left:5px"
-                  type="primary"
-                  @click="showAttrDialog(data)">
-                  属性
+                 <el-link
+                   v-show="data.children.length==0"
+                   style="margin-left:5px"
+                   type="primary"
+                   @click="showSpecDialog(data)">
+                  规格
                 </el-link>
 
                 <el-link
                   v-show="data.children.length==0"
                   style="margin-left:5px"
                   type="primary"
-                  @click="showSpecDialog(data)">
-                  规格
+                  @click="showAttrDialog(data)">
+                  属性
                 </el-link>
               </span>
               <span>
