@@ -43,19 +43,19 @@
             border
             size="mini"
           >
-            <el-table-column label="菜单名称" min-width="11%">
+            <el-table-column label="菜单名称">
               <template slot-scope="scope">
                 <svg-icon :icon-class="scope.row.icon"/>
                 {{ scope.row.name }}
               </template>
             </el-table-column>
-            <el-table-column label="状态" width="80">
+            <el-table-column label="状态" width="60">
               <template slot-scope="scope">
                 <el-tag size="mini" v-if="scope.row.visible==1" type="success">显示</el-tag>
                 <el-tag size="mini" v-else type="info">隐藏</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" width="150">
+            <el-table-column label="操作" align="center" width="130">
               <template slot-scope="scope">
                 <el-button
                   type="primary"
