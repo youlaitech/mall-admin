@@ -33,9 +33,8 @@ export function update(id, data) {
 
 export function del(ids) {
   return request({
-    url: '/mall-pms/brands',
-    method: 'delete',
-    params: { ids: ids }
+    url: '/mall-pms/brands/'+ids,
+    method: 'delete'
   })
 }
 

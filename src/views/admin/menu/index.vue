@@ -5,7 +5,7 @@
         <menus @menuClick="menuClick" @resetPermission="resetPermission"></menus>
       </el-col>
       <el-col :sm="10" :xs="24">
-        <permission ref="routingPermission" type="1"></permission>
+        <permission ref="routePermission" type="1"></permission>
         <permission ref="buttonPermission" type="2"></permission>
       </el-col>
     </el-row>
@@ -26,12 +26,12 @@
     },
     methods: {
       menuClick(row) {
-        this.$refs.routingPermission.menuClick(row)
+        this.$refs.routePermission.menuClick(row)
         this.$refs.buttonPermission.menuClick(row)
       },
       resetPermission() {
         this.menuName = undefined
-        this.$refs.routingPermission.resetPermission()
+        this.$refs.routePermission.resetPermission()
         this.$refs.buttonPermission.resetPermission()
       }
     }

@@ -33,9 +33,8 @@ export function update(id, data) {
 
 export function del(ids) {
   return request({
-    url: '/youlai-admin/api.admin/v1/menus',
-    method: 'delete',
-    params: { ids: ids }
+    url: '/youlai-admin/api.admin/v1/menus/'+ids,
+    method: 'delete'
   })
 }
 

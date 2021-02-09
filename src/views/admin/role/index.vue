@@ -9,7 +9,7 @@
         <menus ref="menu" @menuClick="menuClick"></menus>
       </el-col>
       <el-col :sm="8" :xs="24">
-        <permission ref="routingPermission" type="1"></permission>
+        <permission ref="routePermission" type="1"></permission>
         <permission ref="buttonPermission" type="2"></permission>
       </el-col>
 
@@ -36,7 +36,7 @@
       roleClick(role) {
         this.role = role
         this.$refs.menu.roleClick(role)
-        this.$refs.routingPermission.menuClick(this.menu, this.role)
+        this.$refs.routePermission.menuClick(this.menu, this.role)
         this.$refs.buttonPermission.menuClick(this.menu, this.role)
       },
       menuClick(menu) {
@@ -45,7 +45,7 @@
           return
         }
         this.menu = menu
-        this.$refs.routingPermission.menuClick(menu, this.role)
+        this.$refs.routePermission.menuClick(menu, this.role)
         this.$refs.buttonPermission.menuClick(menu, this.role)
       }
     }
