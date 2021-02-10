@@ -71,10 +71,10 @@ export function updateRoleMenuIds(id, menuIds) {
   })
 }
 
-export function updateRolePermissionIds(id, type, permissionIds) {
+export function updateRolePermissionIds(menuId, roleId, type, permissionIds) {
   return request({
-    url: '/youlai-admin/api.admin/v1/roles/' + id + '/permission_ids',
+    url: '/youlai-admin/api.admin/v1/roles/' + roleId + '/permission_ids',
     method: 'put',
-    data: {type: type, permissionIds: permissionIds}
+    data: {moduleId: menuId, type: type, permissionIds: permissionIds}
   })
 }

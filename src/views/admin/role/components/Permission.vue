@@ -121,7 +121,7 @@
           return
         }
 
-        updateRolePermissionIds(this.role.id, this.type, checkedPermissionIds).then(response => {
+        updateRolePermissionIds(this.menu.id,this.role.id, this.type, checkedPermissionIds).then(response => {
           this.$message.success('提交成功')
         })
       }

@@ -14,7 +14,6 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-import permission from './directive/permission'
 
 import i18n from './lang' // internationalization
 import './icons' // icon
@@ -44,7 +43,8 @@ import { listByTypeCode } from "@/api/admin/dict"
 
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
-
+// 全局指令注册
+import permission from './directive/permission'
 Vue.use(permission)
 
 // 全局方法挂载
