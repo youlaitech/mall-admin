@@ -15,8 +15,6 @@ service.interceptors.request.use(
     if (store.getters.token) {
       config.headers['Authorization'] = 'Bearer ' + getToken()
     }
-    // 添加系统类型标识（1-管理系统，2-微信小程序）
-    config.headers['SystemType'] = 1
     return config
   },
   error => {
