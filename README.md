@@ -1,228 +1,210 @@
-<p align="center">
-  <img width="320" src="https://wpimg.wallstcn.com/ecc53a42-d79b-42e2-8852-5126b810a4c8.svg">
-</p>
+![](https://img.shields.io/badge/youlai--mall-v1.0.0-blue)
+[![](https://img.shields.io/github/stars/hxrui/youlai-mall.svg?style=social&label=Stars)](https://github.com/hxrui/youlai-mall/stargazers)
+[![](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/hxrui/youlai-mall/blob/master/LICENSE)
+![](https://img.shields.io/badge/SpringBoot-2.4.2-brightgreen.svg)
+![](https://img.shields.io/badge/SpringCloud-2020-green.svg)
+![](https://img.shields.io/badge/vue--element--admin-v4.4.0-orange)
 
-<p align="center">
-  <a href="https://github.com/vuejs/vue">
-    <img src="https://img.shields.io/badge/vue-2.6.10-brightgreen.svg" alt="vue">
-  </a>
-  <a href="https://github.com/ElemeFE/element">
-    <img src="https://img.shields.io/badge/element--ui-2.7.0-brightgreen.svg" alt="element-ui">
-  </a>
-  <a href="https://travis-ci.org/PanJiaChen/vue-element-admin" rel="nofollow">
-    <img src="https://travis-ci.org/PanJiaChen/vue-element-admin.svg?branch=master" alt="Build Status">
-  </a>
-  <a href="https://github.com/hxrui/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="license">
-  </a>
-  <a href="https://github.com/hxrui/releases">
-    <img src="https://img.shields.io/github/release/PanJiaChen/vue-element-admin.svg" alt="GitHub release">
-  </a>
-  <a href="https://gitter.im/vue-element-admin/discuss">
-    <img src="https://badges.gitter.im/Join%20Chat.svg" alt="gitter">
-  </a>
-  <a href="https://panjiachen.github.io/vue-element-admin-site/donate">
-    <img src="https://img.shields.io/badge/%24-donate-ff69b4.svg" alt="donate">
-  </a>
-</p>
 
-English | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md) | [Spanish](./README.es.md)
+## 项目介绍
 
-## Introduction
+`youlai-mall` 是基于Spring Boot 2.4、Spring Cloud 2020 & Alibaba、Vue、element-ui、uni-app快速构建的一套**全栈**开源商城平台，包括微服务应用、管理平台、微信小程序及APP应用
 
-[vue-element-admin](https://panjiachen.github.io/vue-element-admin) is a production-ready front-end solution for admin interfaces. It is based on [vue](https://github.com/vuejs/vue) and uses the UI Toolkit [element-ui](https://github.com/ElemeFE/element).
+## 项目特色
 
-[vue-element-admin](https://panjiachen.github.io/vue-element-admin) is based on the newest development stack of vue and it has a built-in i18n solution, typical templates for enterprise applications, and lots of awesome features. It helps you build large and complex Single-Page Applications. I believe whatever your needs are, this project will help you.
+- 项目使用都是最新主流的**开源**框架，无过度自定义封装的逻辑，易理解上手和方便扩展
 
-- [Preview](https://panjiachen.github.io/vue-element-admin)
+- 基于Spring Boot 2.4、Spring Cloud 2020 & Alibaba 一站式微服务解决方案快速开发分布式服务
 
-- [Documentation](https://panjiachen.github.io/vue-element-admin-site/)
+- 实现Spring Cloud OAuth2、Spring Cloud Gateway、JWT分布式统一认证鉴权和`RBAC` 权限系统设计
 
-- [Gitter](https://gitter.im/vue-element-admin/discuss)
+- 使用vue-element-admin的后台前端解决方案，基于Vue和element-ui快速搭建**前后端分离**的商城管理平台
 
-- [Donate](https://panjiachen.github.io/vue-element-admin-site/donate/)
+- 通过`uni-app`使用Vue开发实现跨所有前端的应用，包含微信小程序、APP应用
 
-- [Wiki](https://github.com/hxrui/wiki)
+- 使用Docker快速构建项目环境和一键打包部署微服务项目
 
-- [Gitee](https://panjiachen.gitee.io/vue-element-admin/) 国内用户可访问该地址在线预览
+## 项目愿景
 
-- Base template recommends using: [vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)
-- Desktop: [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)
-- Typescript: [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
-- [awesome-project](https://github.com/hxrui/issues/2312)
+项目从`0`到`1`的构建过程已无保留的在项目文章中说明，真正的开源不图利益。
 
-**After the `v4.1.0+` version, the default master branch will not support i18n. Please use [i18n Branch](https://github.com/hxrui/tree/i18n), it will keep up with the master update**
+项目慢慢成型的路上离不开支持还有默默点star的那些小伙伴，在这里抱拳谢过各位道友了。
 
-**The current version is `v4.0+` build on `vue-cli`. If you find a problem, please put [issue](https://github.com/hxrui/issues/new). If you want to use the old version , you can switch branch to [tag/3.11.0](https://github.com/hxrui/tree/tag/3.11.0), it does not rely on `vue-cli`**
+## 项目地址
 
-**This project does not support low version browsers (e.g. IE). Please add polyfill by yourself.**
+### 1. 体验
+**商城管理平台访问地址:** [http://www.youlai.store](https://www.youlai.store/)
 
-## Preparation
+【有来小店】微信小程序体验码，扫描后申请体验看到直接通过
 
-You need to install [node](https://nodejs.org/) and [git](https://git-scm.com/) locally. The project is based on [ES2015+](https://es6.ruanyifeng.com/), [vue](https://cn.vuejs.org/index.html), [vuex](https://vuex.vuejs.org/zh-cn/), [vue-router](https://router.vuejs.org/zh-cn/), [vue-cli](https://github.com/vuejs/vue-cli) , [axios](https://github.com/axios/axios) and [element-ui](https://github.com/ElemeFE/element), all request data is simulated using [Mock.js](https://github.com/nuysoft/Mock).
-Understanding and learning this knowledge in advance will greatly help the use of this project.
+交流群二维码过期，加我微信我直接拉你进群
 
-[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/PanJiaChen/vue-element-admin/tree/CodeSandbox)
+![](https://gitee.com/haoxr/image/raw/master/default/initpintu_%E5%89%AF%E6%9C%AC.jpg)
 
-<p align="center">
-  <img width="900" src="https://wpimg.wallstcn.com/a5894c1b-f6af-456e-82df-1151da0839bf.png">
-</p>
+### 2. 源码
+项目名称 | Github | 码云
+ ---|---|---
+微服务后台 |[youlai-mall](https://github.com/hxrui/youlai-mall) |[youlai-mall](https://gitee.com/youlaitech/youlai-mall)
+管理前端 |  [youlai-mall-admin](https://github.com/hxrui/youlai-mall-admin)| [youlai-mall-admin](https://gitee.com/youlaitech/youlai-mall-admin)
+微信小程序 | [youlai-mall-weapp](https://github.com/hxrui/youlai-mall-weapp)| [youlai-mall-weapp](https://gitee.com/youlaitech/youlai-mall-weapp)
+APP应用 | [youlai-mall-app](https://github.com/hxrui/youlai-mall-app)| [youlai-mall-app](https://gitee.com/youlaitech/youlai-mall-app)
 
-## Sponsors
+## 项目预览
 
-Become a sponsor and get your logo on our README on GitHub with a link to your site. [[Become a sponsor]](https://www.patreon.com/panjiachen)
+### 1. 商城管理平台
 
-### Akveo
+#### 1.1 系统管理
+![](https://gitee.com/haoxr/image/raw/master/default/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E5%8E%8B%E7%BC%A9.jpg)
+#### 1.2 商品管理
+![](https://gitee.com/haoxr/image/raw/master/default/%E5%95%86%E5%9F%8E%E7%AE%A1%E7%90%86.jpg)
 
-<a href="https://store.akveo.com/products/vue-java-admin-dashboard-spring?utm_campaign=akveo_store-Vue-Vue_demo%2Fgithub&utm_source=vue_admin&utm_medium=referral&utm_content=github_banner"><img width="500px" src="https://raw.githubusercontent.com/PanJiaChen/vue-element-admin-site/master/docs/.vuepress/public/images/vue-java-banner.png" /></a><p>Java backend integration</p>
+### 2. 微信小程序
 
-### Flatlogic
+![](https://gitee.com/haoxr/image/raw/master/default/DGAf84rIWwNFqJE.jpg)
 
-<a href="https://flatlogic.com/admin-dashboards?from=vue-element-admin"><img width="150px" src="https://wpimg.wallstcn.com/9c0b719b-5551-4c1e-b776-63994632d94a.png" /></a><p>Admin Dashboard Templates made with Vue, React and Angular.</p>
+## 项目结构
 
-## Features
-
-```
-- Login / Logout
-
-- Permission Authentication
-  - Page permission
-  - Directive permission
-  - Permission configuration page
-  - Two-step login
-
-- Multi-environment build
-  - Develop (dev)
-  - sit
-  - Stage Test (stage)
-  - Production (prod)
-
-- Global Features
-  - I18n
-  - Multiple dynamic themes
-  - Dynamic sidebar (supports multi-level routing)
-  - Dynamic breadcrumb
-  - Tags-view (Tab page Support right-click operation)
-  - Svg Sprite
-  - Mock data
-  - Screenfull
-  - Responsive Sidebar
-
-- Editor
-  - Rich Text Editor
-  - Markdown Editor
-  - JSON Editor
-
-- Excel
-  - Export Excel
-  - Upload Excel
-  - Visualization Excel
-  - Export zip
-
-- Table
-  - Dynamic Table
-  - Drag And Drop Table
-  - Inline Edit Table
-
-- Error Page
-  - 401
-  - 404
-
-- Components
-  - Avatar Upload
-  - Back To Top
-  - Drag Dialog
-  - Drag Select
-  - Drag Kanban
-  - Drag List
-  - SplitPane
-  - Dropzone
-  - Sticky
-  - CountTo
-
-- Advanced Example
-- Error Log
-- Dashboard
-- Guide Page
-- ECharts
-- Clipboard
-- Markdown to html
+``` lua
+youlai-mall
+├── document
+    ├── nacos -- Nacos配置文件
+    ├── sql   -- mysql数据库脚本
+├── mall-oms
+    ├── oms-api -- 订单微服务的远程调用客户端
+    ├── oms-biz -- 订单微服务
+├── mall-pms
+    ├── pms-api -- 商品微服务的远程调用客户端
+    ├── pms-biz -- 商品微服务
+    ├── pms-search -- 商品搜索微服务
+├── mall-sms
+    ├── sms-api -- 营销微服务的远程调用客户端
+    ├── sms-biz -- 营销微服务
+├── mall-ums
+    ├── ums-api -- 会员微服务的远程调用客户端
+    ├── ums-biz -- 会员微服务
+├── youlai-admin 
+    ├── admin-api -- 系统管理微服务的远程调用客户端
+    ├── admin-biz -- 系统管理微服务
+├── youlai-auth     -- 认证中心【Oauth2认证服务器】
+├── youlai-common   -- 公共模块
+└── youlai-gateway  -- Gateway网关【Oauth2资源服务器】
+└── youlai-registry -- Nacos应用
 ```
 
-## Getting started
+## 核心技术栈
+| 后端技术 |  版本号
+| -------------------- |  -------------------- |                             
+| SpringBoot|2.4.2
+| Spring Cloud|2020.0.1
+| Spring Cloud Alibaba|  2.2.5.RELEASE
+| MyBatis-Plus|3.4.0
+| Lombok |1.18.18
+| Hutool |5.5.8
+| Knife4j | 2.0.5
+| MinIO | 7.1.0
 
-```bash
-# clone the project
-git clone -b i18n git@github.com:PanJiaChen/vue-element-admin.git
+| 后台前端 |  版本号 | 微信小程序 |  版本号| APP |  版本号
+|---- |  ---- | ---- | ----  |---- | ----
+| element-ui | 2.13.2 | uni-app | 2.8.11| vant | 2.5.4
 
-# enter the project directory
-cd vue-element-admin
+## 项目启动
 
-# install dependency
-npm install
+### 1. 后台微服务启动
 
-# develop
-npm run dev
-```
+####  云环境项目启动
 
-This will automatically open http://localhost:9527
+项目依赖环境（MySQL8、Redis、MinIO、Nacos）默认均使用`有来技术`云环境，项目启动极其方便，步骤如下：
 
-## Build
+1. **启动`Nacos`服务**
 
-```bash
-# build for test environment
-npm run build:stage
+   IDEA下方工具栏点击Terminal终端命令行，执行`cd youlai-registry/nacos/bin`命令切换到Nacos的启动脚本文件夹下，然后执行`startup -m standalone`命令启动Nacos服务；
 
-# build for production environment
-npm run build:prod
-```
+2. **启动平台基础服务**
 
-## Advanced
+   分别启动`youlai-gateway`、`youlai-auth`、 `youlai-admin`模块，
+   启动类分别对应的是GatewayApplication、AuthApplication以及`youlai-admin`的子模块`admin-biz`的AdminApplication类，至此完成整个项目的启动；
 
-```bash
-# preview the release environment effect
-npm run preview
+3. 至此后台服务启动完毕，如需商城服务，启动对应模块的子模块biz的启动类即可。
 
-# preview the release environment effect + static resource analysis
-npm run preview -- --report
+**注**： 云环境是无条件的提供给大家，但千万不要改动云环境的数据和配置，因为改动会导致整个项目无法运行，考虑下开发人员和其他小伙伴，手下留情。
 
-# code format check
-npm run lint
 
-# code format check and auto fix
-npm run lint -- --fix
-```
+####  本地环境项目启动
 
-Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/guide/essentials/deploy.html) for more information
+云环境不能改动数据和配置，如需修改，建议本地环境搭建启动，步骤如下：
 
-## Changelog
+1. **安装环境**
 
-Detailed changes for each release are documented in the [release notes](https://github.com/hxrui/releases).
+   安装`MySQL8`、`Redis`、`MinIO`，其中`MinIO`按需选装
 
-## Online Demo
+2. **创建数据库**
 
-[Preview](https://panjiachen.github.io/vue-element-admin)
+  - 新建平台数据库，执行项目`document/sql`下的SQL脚本完成数据库创建，基础sql脚本为`youlai.sql`，商城脚本为`mall-*`，商城数据库按需创建
 
-## Donate
+  - 创建`Nacos`数据库，执行脚本`youlai-registry/nacos/conf/nacos-mysql.sql`完成`Nacos`数据库的初始化
 
-If you find this project useful, you can buy author a glass of juice :tropical_drink:
+3. **Nacos配置**
 
-![donate](https://wpimg.wallstcn.com/bd273f0d-83a0-4ef2-92e1-9ac8ed3746b9.png)
+  - 修改`Nacos`数据源，进入配置`youlai-registry/nacos/conf/application.properties`将数据源修改为自己的环境连接
 
-[Paypal Me](https://www.paypal.me/panfree23)
+  - 导入`Nacos`配置，在启动`Nacos`服务进入控制台导入`document/nacos/DEFAULT_GROUP.zip`配置，然后分别进入各个微服务配置修改Redis、MySQL、MinIO以及微服务的注册IP
 
-[Buy me a coffee](https://www.buymeacoffee.com/Pan)
+4. 至此环境配置准备完毕，接下来按照云环境`启动平台基础服务`步骤启动服务即可。
 
-## Browsers support
+### 2. 后台前端启动
 
-Modern browsers and Internet Explorer 10+.
+1. 本机安装Python和Node环境
+2. npm install
+3. npm run dev
+4. 访问 http://localhost:9527
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Safari |
-| --------- | --------- | --------- | --------- |
-| IE10, IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
+### 3. 微信小程序启动
 
-## License
+1. 下载`HBuilder X`和`微信开发者工具`
+2. 微信公众平台申请小程序，获得小程序的AppID
+3. `微信开发者工具`微信扫码登录，开启服务端口，点击工具栏`设置`->`安全设置`->`安全`->`服务端口`选择打开
+4. `Hbuilder X`替换项目AppID成自己的，点击`manifest.json`文件->微信小程序配置
+5. `Hbuilder X`工具栏点击 `运行`->`运行到小程序模拟器`->`微信开发者工具`
 
-[MIT](https://github.com/hxrui/blob/master/LICENSE)
+## 项目文档
 
-Copyright (c) 2017-present PanJiaChen
+> 后台微服务
+
+1. [Spring Cloud实战 | 第一篇：Windows搭建Nacos服务 ](https://www.cnblogs.com/haoxianrui/p/13581881.html)
+2. [Spring Cloud实战 | 第二篇：Spring Cloud整合Nacos实现注册中心](https://www.cnblogs.com/haoxianrui/p/13584204.html)
+3. [Spring Cloud实战 | 第三篇：Spring Cloud整合Nacos实现配置中心](https://www.cnblogs.com/haoxianrui/p/13585125.html)
+4. [Spring Cloud实战 | 第四篇：Spring Cloud整合Gateway实现API网关](https://www.cnblogs.com/haoxianrui/p/13608650.html)
+5. [Spring Cloud实战 | 第五篇：Spring Cloud整合OpenFeign实现微服务之间的调用](https://www.cnblogs.com/haoxianrui/p/13615592.html)
+6. [Spring Cloud实战 | 第六篇：Spring Cloud Gateway+Spring Security OAuth2+JWT实现微服务统一认证授权](https://www.cnblogs.com/haoxianrui/p/13719356.html)
+7. [Spring Cloud实战 | 最七篇：Spring Cloud Gateway+Spring Security OAuth2集成统一认证授权平台下实现注销使JWT失效方案](https://www.cnblogs.com/haoxianrui/p/13740264.html)
+8. [Spring Cloud实战 | 最八篇：Spring Cloud +Spring Security OAuth2+ Vue前后端分离模式下无感知刷新实现JWT续期](https://www.cnblogs.com/haoxianrui/p/14022632.html)
+9. [Spring Cloud实战 | 最九篇：Spring Security OAuth2认证服务器统一认证自定义异常处理](https://www.cnblogs.com/haoxianrui/p/14028366.html)
+10. [Spring Cloud实战 | 第十篇 ：Spring Cloud + Nacos整合Seata 1.4.1最新版本实现微服务架构中的分布式事务，进阶之路必须要迈过的槛](https://www.cnblogs.com/haoxianrui/p/14280184.html)
+11. [Spring Cloud实战 | 第十一篇 ：Spring Cloud Gateway网关实现对RESTful接口权限和按钮权限细粒度控制
+    ](https://www.cnblogs.com/haoxianrui/p/14396990.html)
+
+> 后台管理前端
+
+1. [vue-element-admin实战 | 第一篇： 移除mock接入微服务接口，搭建SpringCloud+Vue前后端分离管理平台](https://www.cnblogs.com/haoxianrui/p/13624548.html)
+2. [vue-element-admin实战 | 第二篇： 最小改动接入后台实现根据权限动态加载菜单](https://www.cnblogs.com/haoxianrui/p/13676619.html)
+
+> 微信小程序
+
+1. [vue+uni-app商城实战 | 第一篇：从0到1快速开发一个商城微信小程序，无缝接入Spring Cloud OAuth2认证授权登录](https://www.cnblogs.com/haoxianrui/p/13882310.html)
+
+> 应用部署
+
+1. [Docker实战 | 第一篇：Linux 安装 Docker](https://www.cnblogs.com/haoxianrui/p/14067423.html)
+2. [Docker实战 | 第二篇：Docker部署nacos-server:1.4.0](https://www.cnblogs.com/haoxianrui/p/14059009.html)
+3. [Docker实战 | 第三篇：IDEA集成Docker插件实现一键自动打包部署微服务项目，一劳永逸的技术手段值得一试](https://www.cnblogs.com/haoxianrui/p/14088400.html)
+4. [Docker实战 | 第四篇：Docker安装Nginx，实现基于vue-element-admin框架构建的项目线上部署](https://www.cnblogs.com/haoxianrui/p/14091762.html)
+5. [Docker实战 | 第五篇：Docker启用TLS加密解决暴露2375端口引发的安全漏洞，被黑掉三台云主机的教训总结](https://www.cnblogs.com/haoxianrui/p/14095306.html)
+
+## 其他说明
+
+- 如果github拉取失败请移步至码云[https://gitee.com/haoxr](https://gitee.com/haoxr),代码是同步的
+
+- 项目在搭建的过程中如您遇到任何问题，可加我微信(haoxianrui)或者微信群，也可在github提issue
+
+- 演示环境禁止修改、删除重要数据，请本地部署后操作
+
