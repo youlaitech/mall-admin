@@ -190,7 +190,7 @@ youlai-mall
 
 > 微信小程序
 
-1. [vue+uni-app商城实战 | 第一篇：从0到1快速开发一个商城微信小程序，无缝接入Spring Cloud OAuth2认证授权登录](https://www.cnblogs.com/haoxianrui/p/13882310.html)
+1. [vue+uni-app商城实战 | 第一篇：从0到1快捷开发一个商城微信小程序，无缝接入OAuth2实现一键授权登录](https://www.cnblogs.com/haoxianrui/p/13882310.html)
 
 > 应用部署
 
