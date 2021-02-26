@@ -5,7 +5,10 @@ export function login(data) {
     // url: '/vue-element-admin/user/login',
     url: '/youlai-auth/oauth/token',
     method: 'post',
-    params: data
+    params: data,
+    headers: {
+      'Authorization': 'Basic eW91bGFpLWFkbWluOjEyMzQ1Ng==' // 客户端信息加密摘要认证，明文：youlai-admin:123456
+    }
   })
 }
 

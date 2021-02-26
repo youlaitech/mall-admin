@@ -39,14 +39,13 @@ const actions = {
       login({
         username: username,
         password: password,
-        grant_type: 'password',
-        client_id: 'youlai-admin',
-        client_secret: '123456'
+        grant_type: 'password'
       }).then(response => {
-        const {token, refreshToken} = response.data
-        commit('SET_TOKEN', token)
+        const {access_token, refresh_token, token_type} = response
+        const token = token_type + " " + access_token
+        commit('SET_TOKEN',token)
         setToken(token)
-        setRefreshToken(refreshToken)
+        setRefreshToken(refresh_token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -59,13 +58,12 @@ const actions = {
       login({
         grant_type: 'refresh_token',
         refresh_token: refreshToken,
-        client_id: 'youlai-admin',
-        client_secret: '123456'
       }).then(response => {
-        const {token, refreshToken} = response.data
+        const {access_token, refresh_token,token_type} = response
+        const token = token_type + " " + access_token
         commit('SET_TOKEN', token)
         setToken(token)
-        setRefreshToken(refreshToken)
+        setRefreshToken(refresh_token)
         resolve(token)
       }).catch(error => {
         reject(error)
