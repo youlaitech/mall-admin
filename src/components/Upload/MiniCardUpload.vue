@@ -49,7 +49,7 @@
     },
     data() {
       return {
-        headers: {authorization:'Bearer '+ getToken()},
+        headers: {authorization:getToken()},
         uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/api.admin/v1/files',
         dialogVisible: false,
       }

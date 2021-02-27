@@ -103,19 +103,19 @@
         >
           <el-table-column align="center" type="selection" width="50"/>
           <el-table-column align="center" label="用户编号" prop="id" width="100"/>
-          <el-table-column align="center" label="用户名" prop="username" width="126"/>
-          <el-table-column align="center" label="用户昵称" prop="nickname" width="126"/>
-          <el-table-column align="center" label="性别" prop="gender" width="126">
+          <el-table-column align="center" label="用户名" prop="username" width="150"/>
+          <el-table-column align="center" label="用户昵称" prop="nickname" width="150"/>
+          <el-table-column align="center" label="性别" prop="gender" width="150">
             <template slot-scope="scope">
               <span v-if="scope.row.gender===1">男</span>
               <span v-if="scope.row.gender===2">女</span>
               <span v-if="scope.row.gender===0">未知</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="部门" prop="deptName" width="126"/>
-          <el-table-column align="center" label="角色名称" prop="roleNames"/>
-          <el-table-column align="center" label="手机号码" prop="mobile" width="126"/>
-          <el-table-column align="center" label="状态" width="125">
+          <el-table-column align="center" label="部门" prop="deptName" width="150"/>
+          <el-table-column align="center" label="角色名称" prop="roleNames" />
+          <el-table-column align="center" label="手机号码" prop="mobile" width="150"/>
+          <el-table-column align="center" label="状态" width="150">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -126,7 +126,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column align="center" label="操作" width="150">
+          <el-table-column align="center" label="操作" width="200">
             <template slot-scope="scope">
               <el-button
                 type="primary"

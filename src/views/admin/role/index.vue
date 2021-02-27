@@ -1,5 +1,4 @@
 <template>
-
   <div class="app-container">
     <el-row :gutter="10">
       <el-col :sm="10" :xs="24">
@@ -12,7 +11,6 @@
         <permission ref="routePermission" type="1"></permission>
         <permission ref="buttonPermission" type="2"></permission>
       </el-col>
-
     </el-row>
   </div>
 

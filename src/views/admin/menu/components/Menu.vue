@@ -84,8 +84,6 @@
               </template>
             </el-table-column>
           </el-table>
-
-
         </el-card>
       </el-col>
       <el-col :sm="12" :xs="24">
@@ -100,15 +98,13 @@
             ref="form"
             :model="form"
             :rules="rules"
-            label-width="80px"
-          >
+            label-width="80px">
 
             <el-form-item label="上级菜单" prop="parentId">
               <tree-select
                 v-model="form.parentId"
                 :options="menuOptions"
-                placeholder="选择上级菜单"
-              />
+                placeholder="选择上级菜单"/>
             </el-form-item>
 
             <el-form-item label="菜单名称" prop="name">
@@ -298,7 +294,6 @@ export default {
       this.title = '修改菜单'
       this.form = JSON.parse(JSON.stringify(row))
     },
-
     handleSubmit: function () {
       this.$refs['form'].validate(valid => {
         if (valid) {

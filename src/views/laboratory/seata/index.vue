@@ -62,7 +62,7 @@
 
 <script>
 import {orderDetail, submit, update as updateOrder} from '@/api/oms/order'
-import {detail as skuDetail, update as updateSku} from '@/api/pms/sku'
+import {detail as inventoryDetail, update as updateInventory} from '@/api/pms/inventory'
 import {detail as userDetail, update as updateUser} from '@/api/ums/user'
 
 export default {
@@ -95,7 +95,7 @@ export default {
         this.orderLoading = false
         this.orderData.push(response.data)
       })
-      skuDetail(1).then(response => {
+      inventoryDetail(1).then(response => {
         console.log('库存信息', response.data)
         this.skuLoading = false
         this.skuData.push(response.data)
@@ -109,7 +109,7 @@ export default {
     // 数据重置
     handleReset() {
       updateOrder(1, {id: 1, status: 101}).then(r1 => {
-        updateSku(1, {id: 1, stock: 9999}).then(r2 => {
+        updateInventory(1, {id: 1, stock: 9999}).then(r2 => {
           updateUser(1, {id: 1, point: 0}).then(r3 => {
             this.$message.success("重置数据成功")
             this.handleQuery()
