@@ -39,15 +39,21 @@
           <el-input v-model="form.spu.unit"/>
         </el-form-item>
 
-        <el-form-item label="所属类目" prop="spu.categoryId">
-          <el-cascader v-model="form.spu.categoryId"
-                       :options="categoryOptions"
-                       expand-trigger="hover"
-                       clearable
-                       @change="handleCategoryChange"/>
+        <el-form-item label="商品分类" prop="spu.categoryId">
+          <el-cascader
+            v-model="form.spu.categoryId"
+            :options="categoryOptions"
+            expand-trigger="hover"
+            clearable
+            @change="handleCategoryChange"
+            style="width:400px"
+          />
         </el-form-item>
-        <el-form-item label="所属品牌" prop="spu.categoryId">
-          <el-select v-model="form.spu.brandId" clearable>
+        <el-form-item label="商品品牌" prop="spu.categoryId">
+          <el-select
+            v-model="form.spu.brandId"
+            clearable
+            style="width:400px" >
             <el-option v-for="item in brandOptions" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>
@@ -67,15 +73,15 @@
     <el-card class="box-card">
       <div slot="header">
         <span>商品参数</span>
-
-        <el-button style="float: right;" type="primary" size="mini" @click="handleAddAttr">添加参数</el-button>
+        <el-button style="float: right;" type="primary" size="mini" @click="handleAttrAdd">添加参数</el-button>
       </div>
 
-      <el-form size="mini"
-               ref="attrForm"
-               :model="form"
-               :inline="true"
-      >
+      <el-form
+        :disabled="!form.spu.categoryId"
+        size="mini"
+        ref="attrForm"
+        :model="form"
+        :inline="true">
         <el-table
           :data="form.attrs"
           highlight-current-row
@@ -99,11 +105,10 @@
           <el-table-column label="操作" width="150">
             <template slot-scope="scope">
               <el-form-item>
-                <el-button type="danger" icon="el-icon-minus" circle @click="handleRemoveAttr(scope.$index)"/>
+                <el-button type="danger" icon="el-icon-minus" circle @click="handleAttrRemove(scope.$index)"/>
               </el-form-item>
             </template>
           </el-table-column>
-
         </el-table>
       </el-form>
     </el-card>
@@ -112,10 +117,13 @@
     <el-card class="box-card">
       <div slot="header">
         <span>商品规格</span>
+        <el-tag v-if="!form.spu.categoryId" style="float: right;" type="warning">请选择商品分类</el-tag>
       </div>
-      <el-form size="mini"
-               :model="form"
-               :inline="true">
+      <el-form
+        :disabled="!form.spu.categoryId"
+        size="mini"
+        :model="form"
+        :inline="true">
         <el-table
           :data="form.specs"
           highlight-current-row
@@ -158,10 +166,12 @@
       <div slot="header">
         <span>商品库存</span>
       </div>
-      <el-form size="mini"
-               ref="skuForm"
-               :model="form"
-               :inline="true">
+      <el-form
+        size="mini"
+        ref="skuForm"
+        :model="form"
+        :inline="true">
+
         <el-table
           :data="form.skuList"
           highlight-current-row
@@ -208,7 +218,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column property="pic" label="SKU图片" width="80">
+          <el-table-column property="pic" label="规格图片" width="80">
             <template slot-scope="scope">
               <el-form-item :prop="'skuList[' + scope.$index + '].pic'">
                 <mini-card-upload v-model="scope.row.picUrl"></mini-card-upload>
@@ -241,7 +251,9 @@
 <script>
 
 import {add, update, detail} from '@/api/pms/product'
-import {list as categoryList, attrList, specList} from '@/api/pms/category'
+import {list as categoryList} from '@/api/pms/category'
+import {list as attrList} from '@/api/pms/attribute'
+import {list as specList} from '@/api/pms/specification'
 import {list as brandList} from '@/api/pms/brand'
 
 
@@ -494,10 +506,14 @@ export default {
       })
 
     },
-    handleAddAttr() {
+    handleAttrAdd() {
+      if (!this.form.spu.categoryId) {
+        this.$message.warning("请选择商品分类")
+        return
+      }
       this.form.attrs.push({})
     },
-    handleRemoveAttr(index) {
+    handleAttrRemove(index) {
       this.form.attrs.splice(index, 1)
     },
     close() {

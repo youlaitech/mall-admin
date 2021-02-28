@@ -4,7 +4,7 @@
       <div class="clearfix" slot="header">
         <b>
           <svg-icon icon-class="menu"/>
-          商品分类属性</b>
+          商品属性</b>
       </div>
       <el-row>
         <el-col :span="12">
@@ -18,7 +18,7 @@
 
       <el-row style="margin-top: 10px">
         <el-form
-          :disabled="!category"
+          :disabled="!category||category.children.length!==0"
           label-width="100"
           :model="form"
           ref="form">

@@ -37,7 +37,7 @@
                   icon="el-icon-plus"
                   circle
                   plain
-                  @click="handleAdd(data)"/>
+                  @click.stop="handleAdd(data)"/>
                 <el-button
                   v-show="data.id !== 0"
                   type="warning"
@@ -45,7 +45,7 @@
                   size="mini"
                   circle
                   plain
-                  @click="handleUpdate(data)"/>
+                  @click.stop="handleUpdate(data)"/>
                 <el-button
                   v-show="data.id && (!data.children || data.children.length <= 0)"
                   type="danger"
@@ -53,7 +53,7 @@
                   icon="el-icon-delete"
                   circle
                   plain
-                  @click="handleDelete(node, data)"/>
+                  @click.stop="handleDelete(node, data)"/>
               </span>
             </span>
               </el-tree>
@@ -70,24 +70,24 @@
               {{ title }}</b>
           </div>
 
-          <el-form  label-width="120px" :model="form" :rules="rules" ref="form">
+          <el-form label-width="120px" :model="form" :rules="rules" ref="form">
             <el-form-item label="上级分类" prop="parentId">
-              <el-input v-model="currentRow.name"  readonly/>
+              <el-input v-model="parent.name" readonly/>
             </el-form-item>
-            <el-form-item label="类目名称" prop="name">
-              <el-input v-model="form.name" />
+            <el-form-item label="分类名称" prop="name">
+              <el-input v-model="form.name"/>
             </el-form-item>
-            <el-form-item label="排序" prop="sort">
-              <el-input v-model="form.sort" ></el-input>
-            </el-form-item>
-            <el-form-item label="类目图标" prop="icon">
+            <el-form-item label="分类图标" prop="icon">
               <single-upload v-model="form.iconUrl"></single-upload>
             </el-form-item>
-            <el-form-item label="是否显示" prop="status">
+            <el-form-item label="显示状态" prop="status">
               <el-radio-group v-model="form.status">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
+                <el-radio :label="1">显示</el-radio>
+                <el-radio :label="0">隐藏</el-radio>
               </el-radio-group>
+            </el-form-item>
+            <el-form-item label="排序" prop="sort">
+              <el-input v-model="form.sort"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleSubmit">保存</el-button>
@@ -138,8 +138,9 @@ export default {
       queryParams: {
         queryMode: 'tree'
       },
-      title:'新增商品分类',
-      currentRow:{id:0,name:'顶级分类'}
+      title: '新增商品分类',
+      parent: {},
+      current: {}
     }
   },
   created() {
@@ -167,7 +168,7 @@ export default {
         status: 1,
         sort: undefined
       }
-      this.currentRow={id:0,name:'顶级分类'}
+      this.parent = {id: 0, name: '顶级分类'}
       if (this.$refs['form']) {
         this.$refs['form'].resetFields()
       }
@@ -176,8 +177,8 @@ export default {
       if (row.id) { // 行点击新增
         this.form.parentId = row.id
       } else { // 工具栏点击新增
-        if (this.currentRow) {
-          this.form.parentId = this.currentRow.id
+        if (this.current) {
+          this.form.parentId = this.current.id
         } else {
           this.form.parentId = 0
           this.form.component = 'Layout'
@@ -187,7 +188,7 @@ export default {
     },
     handleUpdate(row) {
       this.resetForm()
-      this.title='修改商品分类'
+      this.title = '修改商品分类'
       this.form = JSON.parse(JSON.stringify(row))
     },
     handleDelete(node, row) {
@@ -229,9 +230,15 @@ export default {
       }
     },
     handleNodeClick(row) {
-      const currentRow = JSON.parse(JSON.stringify(row));
-      this.currentRow = currentRow
-      this.form = currentRow
+      const parentNode = this.$refs.category.getNode(row.parentId)
+      this.parent = {
+        id: parentNode.key,
+        name: parentNode.label
+      }
+
+      const current = JSON.parse(JSON.stringify(row));
+      this.current = current
+      this.form = current
       this.title = '修改商品分类'
       this.$emit('categoryClick', row)
     }
