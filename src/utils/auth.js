@@ -1,5 +1,5 @@
-const accessTokenKey = 'YOULAI_ACCESS_TOKEN'
-const refreshTokenKey = 'YOULAI_REFRESH_TOKEN'
+const accessTokenKey = 'YL_ACCESS_TOKEN'
+const refreshTokenKey = 'YL_REFRESH_TOKEN'
 
 export function getToken() {
   return window.localStorage.getItem(accessTokenKey)

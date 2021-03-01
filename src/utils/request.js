@@ -29,13 +29,13 @@ service.interceptors.response.use(
   response => {
     const {code, msg} = response.data
     if (code && code !== '00000') {
-      if (code === 'A0230') { // access_token过期 使用refresh_token换取access_token
+      if (code === 'A0230') { //A0230 access_token过期 使用refresh_token换取access_token
         const config = response.config
         if (refreshing == false) {
           refreshing = true
           const refreshToken = getRefreshToken()
           return store.dispatch('user/refreshToken', refreshToken).then((token) => {
-            config.headers['Authorization'] = 'Bearer ' + token
+            config.headers['Authorization'] = token
             config.baseURL = '' // 请求重试时，url已包含baseURL
             waitQueue.forEach(callback => callback(token)) // 已刷新token，所有队列中的请求重试
             waitQueue = []
@@ -57,7 +57,7 @@ service.interceptors.response.use(
           // 正在刷新token，返回未执行resolve的Promise,刷新token执行回调
           return new Promise((resolve => {
             waitQueue.push((token) => {
-              config.headers['Authorization'] = 'Bearer ' + token
+              config.headers['Authorization'] =token
               config.baseURL = '' // 请求重试时，url已包含baseURL
               resolve(service(config))
             })
