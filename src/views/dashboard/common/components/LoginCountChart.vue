@@ -67,7 +67,7 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ xData,yourVisits, totalVisits} = {}) {
+    setOptions({ xData,myCount, totalCount} = {}) {
       this.chart.setOption({
         title:{
           left:'left',
@@ -91,14 +91,14 @@ export default {
         },
         yAxis: {},
         legend: {
-          data: ['您', '总数']
+          data: ['自己', '总数']
         },
         series: [{
-          name: '您',
+          name: '自己',
           type: 'bar',
           barWidth: "10%",
           color: '#FF005A',
-          data: yourVisits,
+          data: myCount,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         },
@@ -107,7 +107,7 @@ export default {
           type: 'bar',
           barWidth: "10%",
           color: '#3888fa',
-          data: totalVisits,
+          data: totalCount,
           animationDuration: 2800,
           animationEasing: 'quadraticOut'
         }]
