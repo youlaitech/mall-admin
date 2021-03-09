@@ -12,9 +12,9 @@
         <el-button type="success" icon="el-icon-edit" :disabled="single" @click="handleUpdate">修改</el-button>
         <el-button type="danger" icon="el-icon-delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
-      <el-form-item prop="clientId">
+      <el-form-item prop="clientIP">
         <el-input
-          v-model="queryParams.clientId"
+          v-model="queryParams.clientIP"
           placeholder="客户端ID"
           clearable
           style="width: 240px"
@@ -35,7 +35,7 @@
     >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="序号" type="index" width="55" align="center"/>
-      <el-table-column label="客户端ID" prop="clientId" width="200"/>
+      <el-table-column label="客户端ID" prop="clientIP" width="200"/>
       <el-table-column label="客户端密钥" prop="clientSecret" width="100"/>
       <el-table-column label="域" width="100" prop="scope"/>
       <el-table-column label="自动放行" prop="autoapprove" :formatter="autoapproveFormat" width="100"/>
@@ -78,8 +78,8 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="客户端ID" prop="clientId">
-              <el-input v-model="form.clientId" placeholder="请输入客户端ID"/>
+            <el-form-item label="客户端ID" prop="clientIP">
+              <el-input v-model="form.clientIP" placeholder="请输入客户端ID"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -165,7 +165,7 @@
         // 非多个禁用
         multiple: true,
         queryParams: {
-          clientId: undefined
+          clientIP: undefined
         },
         pagination: {
           page: 1,
@@ -186,7 +186,7 @@
         form: {
           authorizedGrantTypes: [],
           clientSecret: undefined,
-          clientId: undefined,
+          clientIP: undefined,
           accessTokenValidity: undefined,
           refreshTokenValidity: undefined,
           webServerRedirectUri: undefined,
@@ -196,7 +196,7 @@
         },
         // 表单校验
         rules: {
-          clientId: [
+          clientIP: [
             {required: true, message: '客户端ID不能为空', trigger: 'blur'}
           ],
           clientSecret: [
@@ -236,12 +236,12 @@
           total: 0
         }
         this.queryParams = {
-          clientId: undefined
+          clientIP: undefined
         }
         this.handleQuery()
       },
       handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.clientId)
+        this.ids = selection.map(item => item.clientIP)
         this.single = selection.length != 1
         this.multiple = !selection.length
       },
@@ -260,7 +260,7 @@
           visible: true,
           type: 'edit'
         }
-        const id = row.clientId || this.ids
+        const id = row.clientIP || this.ids
         detail(id).then(response => {
           const {data} = response
           this.form = data
@@ -270,7 +270,7 @@
         })
       },
       handleDelete(row) {
-        const ids = [row.clientId || this.ids].join(',')
+        const ids = [row.clientIP || this.ids].join(',')
         this.$confirm('确认删除已选中的数据项?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -290,7 +290,7 @@
             this.form.authorizedGrantTypes = this.form.authorizedGrantTypes.join(',')
             // 因为客户端ID是可以修改的，所以这里不能拿id作为新增还是修改的判断依据
             if (this.dialog.type == 'edit') {
-              update(this.form.clientId, this.form).then(() => {
+              update(this.form.clientIP, this.form).then(() => {
                 this.$message.success('修改成功')
                 this.closeDialog()
                 this.handleQuery()
@@ -309,7 +309,7 @@
         this.form = {
           authorizedGrantTypes: [],
           clientSecret: undefined,
-          clientId: undefined,
+          clientIP: undefined,
           accessTokenValidity: undefined,
           refreshTokenValidity: undefined,
           webServerRedirectUri: undefined,

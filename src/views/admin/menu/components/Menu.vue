@@ -57,14 +57,14 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="130">
               <template slot-scope="scope">
-                <el-button
+               <!-- <el-button
                   type="primary"
                   icon="el-icon-edit"
                   size="mini"
                   circle
                   plain
                   @click.stop="handleUpdate(scope.row)"
-                />
+                />-->
                 <el-button
                   type="success"
                   icon="el-icon-plus"
@@ -131,7 +131,7 @@
             </el-form-item>
 
             <el-form-item label="路由路径" prop="path">
-              <el-input v-model="form.path" placeholder="父路由例如：/admin；子路由省略斜杠/，例如：user"/>
+              <el-input v-model="form.path" placeholder="一级：/admin；其余层级子路由：user"/>
             </el-form-item>
 
             <el-form-item label="组件">
@@ -252,7 +252,7 @@ export default {
       const currentRow = JSON.parse(JSON.stringify(row));
       this.currentRow = currentRow
       this.form = currentRow
-      this.title = '【' + currentRow.name + '】' + '菜单修改'
+      this.title = '修改菜单'
       this.$emit('menuClick', row)
     },
     handleSelectionChange(selection) {
@@ -279,9 +279,11 @@ export default {
       this.resetForm()
       if (row.id) { // 行点击新增
         this.form.parentId = row.id
+        this.form.component = undefined
       } else { // 工具栏点击新增
         if (this.currentRow) {
           this.form.parentId = this.currentRow.id
+          this.form.component = undefined
         } else {
           this.form.parentId = 0
           this.form.component = 'Layout'
