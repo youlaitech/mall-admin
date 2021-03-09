@@ -57,8 +57,7 @@
       <el-table-column label="客户端IP" prop="clientIP" width="200"/>
       <el-table-column label="所属地区" prop="region" width="200"/>
       <el-table-column label="请求耗时(ms)" prop="elapsedTime" width="150"/>
-      <el-table-column label="访问令牌" prop="token" :show-overflow-tooltip="true" />
-
+      <el-table-column label="访问令牌" prop="token" :show-overflow-tooltip="true"/>
       <el-table-column label="描述" prop="description" width="150"/>
       <el-table-column label="操作" align="center" width="250">
         <template slot-scope="scope">
@@ -94,96 +93,107 @@
 </template>
 
 <script>
-  import {list, del} from '@/api/admin/record/login'
-  import {invalidToken} from "@/api/admin/token";
+import {list, del} from '@/api/admin/record/login'
+import {invalidToken} from "@/api/admin/token";
 
-  export default {
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        queryParams: {
-          clientIP: undefined
-        },
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        pageList: [],
-        dateRange: [],
+export default {
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      docs: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      queryParams: {
+        clientIP: undefined
+      },
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
+      },
+      pageList: [],
+      dateRange: [],
+    }
+  },
+  async created() {
+    this.handleQuery()
+  },
+  methods: {
+    handleQuery() {
+      if (this.dateRange.length === 2) {
+        this.queryParams.startDate = this.dateRange[0]
+        this.queryParams.endDate = this.dateRange[1]
       }
+      this.queryParams.page = this.pagination.page
+      this.queryParams.limit = this.pagination.limit
+      list(this.queryParams).then(response => {
+        this.pageList = response.data
+        this.pagination.total = response.total
+        this.loading = false
+      })
     },
-    async created() {
+    handleReset() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
+      }
+      this.queryParams = {
+        clientIP: undefined,
+        dateRange: []
+      }
       this.handleQuery()
     },
-    methods: {
-      handleQuery() {
-        if (this.dateRange.length === 2) {
-          this.queryParams.startDate = this.dateRange[0]
-          this.queryParams.endDate = this.dateRange[1]
+    handleSelectionChange(selection) {
+      this.docs = selection.map(item => {
+        return {
+          id: item.id,
+          index: item.index
         }
-        this.queryParams.page = this.pagination.page
-        this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
-          this.pageList = response.data
-          this.pagination.total = response.total
-          this.loading = false
-        })
-      },
-      handleReset() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams = {
-          clientIP: undefined,
-          dateRange: []
-        }
-        this.handleQuery()
-      },
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item._id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
-      },
-      handleDelete(row) {
-        const ids = [row._id || this.ids].join(',')
-        this.$confirm('确认删除已选中的数据项?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          del(ids).then(() => {
-            this.$message.success('删除成功')
-            this.handleQuery()
-          })
-        }).catch(() =>
-          this.$message.info('已取消删除')
-        )
-      },
-      handleForcedOffline(row) {
-        const token = row.token
-        this.$confirm('确认强制下线?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          invalidToken(token).then(() => {
-            this.$message.success('强制下线成功')
-            this.handleQuery()
-          })
-        }).catch(() =>
-          this.$message.info('已取消强制下线')
-        )
+      })
+
+      console.log(this.docs)
+      this.single = selection.length != 1
+      this.multiple = !selection.length
+    },
+    handleDelete(row) {
+      if (row.id) {
+        this.docs.push({id: row.id, index: row.index})
       }
+      this.$confirm('确认删除已选中的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del(this.docs).then(() => {
+          this.$message.success('删除成功')
+          setTimeout(function () {
+            this.handleQuery()
+          }, 5000)
+        })
+      }).catch(() =>
+        this.$message.info('已取消删除')
+      )
+    },
+    handleForcedOffline(row) {
+      const token = row.token
+      this.$confirm('确认强制下线?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        invalidToken(token).then(() => {
+          this.$message.success('强制下线成功')
+          this.handleQuery()
+        })
+      }).catch(() =>
+        this.$message.info('已取消强制下线')
+      )
     }
   }
+}
 </script>

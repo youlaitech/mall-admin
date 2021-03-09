@@ -5,17 +5,18 @@ import request from '@/utils/request'
 
 export function list(queryParams) {
   return request({
-    url: '/youlai-admin/api.admin/v1/records/login',
+    url: '/youlai-admin/api.admin/v1/login_records',
     method: 'get',
     params: queryParams
   })
 }
 
 
-export function del(ids) {
+export function del(data) {
   return request({
-    url: '/youlai-admin/api.admin/v1/records/login/' + ids,
-    method: 'delete'
+    url: '/youlai-admin/api.admin/v1/login_records',
+    method: 'delete',
+    data:data
   })
 }
 
