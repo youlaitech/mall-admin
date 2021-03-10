@@ -2,15 +2,11 @@
   <div class="dashboard-editor-container">
     <github-corner class="github-corner"/>
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData"/>
+    <panel-group :count-data="countData"/>
 
     <!-- 登录次数统计 -->
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <login-count-chart :chart-data="loginCountData"></login-count-chart>
-    </el-row>
-
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData"/>
     </el-row>
 
     <el-row :gutter="32">
@@ -61,7 +57,7 @@
 
   import LoginCountChart from './components/LoginCountChart'
 
-  import {getLoginCounts} from '@/api/admin/dashboard'
+  import {getData} from '@/api/admin/dashboard'
 
   const lineChartData = {
     newVisitis: {
@@ -87,7 +83,6 @@
     components: {
       GithubCorner,
       PanelGroup,
-      LineChart,
       RaddarChart,
       PieChart,
       BarChart,
@@ -98,8 +93,8 @@
     },
     data() {
       return {
-        lineChartData: lineChartData.newVisitis,
-        loginCountData: {}
+        loginCountData: {},// 登录计数数据
+        countData: {} // IP等计数数据
       }
     },
     created() {
@@ -107,13 +102,15 @@
     },
     methods: {
       loadData() {
-        console.log("loadData")
-        getLoginCounts().then(response => {
-          this.loginCountData = response.data
+        getData().then(response => {
+          const {todayIpCount, totalIpCount, loginCount} = response.data
+          this.loginCountData = loginCount
+
+          this.countData = {
+            todayIpCount: todayIpCount,
+            totalIpCount: totalIpCount
+          }
         })
-      },
-      handleSetLineChartData(type) {
-        this.lineChartData = lineChartData[type]
       }
     }
   }
