@@ -31,14 +31,14 @@
       <el-table-column type="expand" width="100" label="库存信息">
         <template slot-scope="props">
           <el-table
-            :data="props.row.skuList"
+            :data="props.row.skus"
             size="small"
             border>
             <el-table-column align="center" label="商品条码" prop="code"/>
             <el-table-column align="center" label="商品规格" prop="name"/>
             <el-table-column label="图片" prop="pic">
               <template slot-scope="scope">
-                <img :src="scope.row.picUrl" width="40">
+                <img :src="scope.row.pic" width="40">
               </template>
             </el-table-column>
             <el-table-column align="center" label="原价" prop="originalPrice">
@@ -47,22 +47,22 @@
             <el-table-column align="center" label="现价" prop="price">
               <template slot-scope="scope">{{ scope.row.price | moneyFormatter }}</template>
             </el-table-column>
-            <el-table-column align="center" label="库存" prop="stock"/>
+            <el-table-column align="center" label="库存" prop="inventory"/>
           </el-table>
         </template>
       </el-table-column>
       <el-table-column label="商品名称" prop="name" min-width="140"/>
       <el-table-column label="商品图片">
         <template slot-scope="scope">
-          <img :src="picFormat(scope.row.picUrls)" width="40">
+          <img :src="picFormat(scope.row.pics)" width="40">
         </template>
       </el-table-column>
       <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
       <el-table-column label="商品品牌" prop="brandName" min-width="100"/>
-      <el-table-column align="center" label="原价" prop="originalPrice">
+      <el-table-column align="center" label="原价【起】" prop="originalPrice">
         <template slot-scope="scope">{{ scope.row.originPrice | moneyFormatter }}</template>
       </el-table-column>
-      <el-table-column align="center" label="现价" prop="price">
+      <el-table-column align="center" label="现价【起】" prop="price">
         <template slot-scope="scope">{{ scope.row.price | moneyFormatter }}</template>
       </el-table-column>
       <el-table-column label="销量" prop="sales" min-width="100"/>
@@ -113,7 +113,7 @@
 </template>
 
 <script>
-  import {list, del, patch} from '@/api/pms/product'
+  import {list, del, patch} from '@/api/pms/spu'
   import {list as categoryList} from '@/api/pms/category'
 
   export default {
@@ -229,9 +229,9 @@
         })
       },
       picFormat(val) {
-        const picUrls = JSON.parse(val);
-        if (picUrls && picUrls.length > 0) {
-          return picUrls[0]
+        const pics = JSON.parse(val);
+        if (pics && pics.length > 0) {
+          return pics[0]
         }
         return
       }

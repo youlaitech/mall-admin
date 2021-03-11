@@ -26,7 +26,7 @@
               <span>
                 <el-image style="width: 30px; height: 30px;vertical-align: middle"
                           v-show="data.level == 3"
-                          :src="data.iconUrl"/>
+                          :src="data.icon"/>
                 {{ data.name }}
               </span>
               <span>
@@ -78,7 +78,7 @@
               <el-input v-model="form.name"/>
             </el-form-item>
             <el-form-item label="分类图标" prop="icon">
-              <single-upload v-model="form.iconUrl"></single-upload>
+              <single-upload v-model="form.icon"></single-upload>
             </el-form-item>
             <el-form-item label="显示状态" prop="status">
               <el-radio-group v-model="form.status">

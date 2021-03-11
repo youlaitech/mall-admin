@@ -41,8 +41,8 @@
       >
       </el-table-column>
       <el-table-column
-        prop="logoUrl"
-        label="logoUrl"
+        prop="logo"
+        label="logo"
         min-width="10"
       >
         <template slot-scope="scope">
@@ -50,10 +50,10 @@
             placement="right"
             trigger="click"
           >
-            <img :src="scope.row.logoUrl">
+            <img :src="scope.row.logo">
             <img slot="reference"
-                 :src="scope.row.logoUrl"
-                 :alt="scope.row.logoUrl"
+                 :src="scope.row.logo"
+                 :alt="scope.row.logo"
                  style="max-height: 60px;max-width: 60px"
             />
           </el-popover>
@@ -117,8 +117,8 @@
         <el-form-item label="检索首字母" prop="firstLetter">
           <el-input v-model="form.firstLetter" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="logoUrl" prop="logoUrl" label-width="120px">
-          <single-upload v-model="form.logoUrl"></single-upload>
+        <el-form-item label="logo" prop="logo" label-width="120px">
+          <single-upload v-model="form.logo"></single-upload>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="form.sort" auto-complete="off" style="width: 180px"></el-input>
@@ -170,7 +170,7 @@
         form: {
           name: undefined,
           firstLetter: undefined,
-          logoUrl: undefined,
+          logo: undefined,
           status: 1,
           sort: undefined
         },
@@ -218,7 +218,7 @@
         this.form = {
           name: undefined,
           firstLetter: undefined,
-          logoUrl: undefined,
+          logo: undefined,
           status: 1,
           sort: undefined
         }

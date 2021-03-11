@@ -62,7 +62,7 @@
 
 <script>
 import {orderDetail, submit, update as updateOrder} from '@/api/oms/order'
-import {detail as inventoryDetail, update as updateInventory} from '@/api/pms/inventory'
+import {detail as inventoryDetail, update as updateInventory} from '@/api/pms/sku'
 import {detail as userDetail, update as updateUser} from '@/api/ums/user'
 
 export default {

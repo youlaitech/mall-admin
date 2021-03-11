@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import {list, saveBatch} from "@/api/pms/specification";
+import {list, saveBatch} from "@/api/pms/spec";
 
 export default {
   name: "Specification",
