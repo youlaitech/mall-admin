@@ -25,7 +25,7 @@ import Pagination from '@/components/Pagination'
 
 import 'default-passive-events' // 移除浏览器提示 Added non-passive event listener to a scroll-blocking...
 
-import { listByTypeCode } from "@/api/admin/dict"
+import { listByDictCode } from "@/api/admin/dict_item"
 
 /**
  * If you don't want to use mock-server
@@ -48,7 +48,7 @@ import permission from './directive/permission'
 Vue.use(permission)
 
 // 全局方法挂载
-Vue.prototype.getDicts = listByTypeCode
+Vue.prototype.listByDictCode = listByDictCode
 
 
 Vue.use(Element, {

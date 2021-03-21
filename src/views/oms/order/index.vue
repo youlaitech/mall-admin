@@ -27,13 +27,38 @@
 
     <el-table id="dataTable" ref="multipleTable" :data="pageList" border>
 
-      <el-table-column align="center" label="订单编号" prop="orderSn"/>
+      <el-table-column type="expand" width="100" label="订单商品">
+        <template slot-scope="props">
+          <el-table
+            :data="props.row.orderItems"
+            size="small"
+            border>
+            <el-table-column label="序号" type="index" width="100"/>
+            <el-table-column label="商品编号" align="center" prop="skuCode"/>
+            <el-table-column label="商品规格" align="center" prop="skuName"/>
+            <el-table-column label="图片" prop="skuPic">
+              <template slot-scope="scope">
+                <img :src="scope.row.skuPic" width="40">
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="单价" prop="skuPrice">
+              <template slot-scope="scope">{{ scope.row.skuPrice | moneyFormatter }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="数量" prop="skuQuantity">
+              <template slot-scope="scope">{{ scope.row.skuQuantity }}</template>
+            </el-table-column>
+          </el-table>
+        </template>
+
+      </el-table-column>
+
+      <el-table-column align="center" prop="orderSn" label="订单编号"/>
 
       <el-table-column align="center" prop="memberId" label="会员ID"/>
 
       <el-table-column align="center" label="订单来源">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.source | orderSourceFilter }}</el-tag>
+          <el-tag>{{ scope.row.sourceType | orderSourceFilter }}</el-tag>
         </template>
       </el-table-column>
 
@@ -45,43 +70,40 @@
 
       <el-table-column align="center" prop="orderPrice" label="订单金额">
         <template slot-scope="scope">
-          {{ scope.row.orderPrice | moneyFormatter}}
+          {{ scope.row.totalAmount | moneyFormatter }}
         </template>
       </el-table-column>
 
       <el-table-column align="center" prop="payPrice" label="支付金额">
         <template slot-scope="scope">
-          {{ scope.row.orderPrice | moneyFormatter}}
+          {{ scope.row.payAmount | moneyFormatter }}
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="支付方式">
         <template slot-scope="scope">
-          <el-tag>{{scope.row.payChannel | payChannelFilter}}</el-tag>
+          <el-tag>{{ scope.row.payType | payTypeFilter }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="物流渠道" prop="logisticsChannel" :formatter="logisticsChannelFormatter"/>
-
-      <el-table-column align="center" prop="logisticsNo" label="物流单号"/>
+      <el-table-column align="center" prop="gmtCreate" label="创建时间"/>
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleDetail(scope.row)">查看</el-button>
-          <el-button size="mini" @click="handleDelete(scope.row)" type="danger">删除</el-button>
+          <!-- <el-button size="mini" @click="handleDelete(scope.row)" type="danger">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="pagination.total>0"
-      :total="pagination.total"
-      :page.sync="pagination.page"
-      :limit.sync="pagination.limit"
-      @pagination="handleQuery"/>
 
     <!-- 订单详情对话框 -->
-    <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
+    <el-dialog
+      :visible.sync="orderDialogVisible"
+      title="订单详情"
+      width="800"
+      top="5vh"
+    >
       <section ref="print">
         <el-form :data="orderDetail" label-position="left">
           <el-form-item label="订单编号">
@@ -124,7 +146,7 @@
             </span>
           </el-form-item>
           <el-form-item label="支付信息">
-            <span>（支付渠道）{{ orderDetail.order.payChannel | payChannelFilter}}</span>
+            <span>（支付渠道）{{ orderDetail.order.payChannel | payTypeFilter }}</span>
             <span>（支付时间）{{ orderDetail.order.gmtPay }}</span>
           </el-form-item>
           <el-form-item label="快递信息">
@@ -148,167 +170,177 @@
       </span>
     </el-dialog>
 
+    <pagination
+      v-show="pagination.total>0"
+      :total="pagination.total"
+      :page.sync="pagination.page"
+      :limit.sync="pagination.limit"
+      @pagination="handleQuery"/>
   </div>
 </template>
 
 <script>
 
-  import {list, detail, update, add, del, patch} from '@/api/oms/order'
+import {list, detail, del} from '@/api/oms/order'
 
-  const orderSourceMap = {
-    1: '微信小程序',
-    2: 'APP',
-    3: 'PC'
-  }
+const orderSourceMap = {
+  1: '微信小程序',
+  2: 'APP',
+  3: 'PC'
+}
 
-  const orderStatusMap = {
-    11: '未付款',
-    12: '用户取消',
-    13: '系统取消',
-    21: '已付款',
-    22: '申请退款',
-    23: '已退款',
-    31: '已发货',
-    41: '用户收货',
-    42: '系统收货'
-  }
+const orderStatusMap = {
+  101: '待付款',
+  102: '用户取消',
+  103: '系统取消',
+  201: '已付款',
+  202: '申请退款',
+  203: '已退款',
+  301: '待发货',
+  401: '已发货',
+  501: '用户收货',
+  502: '系统收货',
+  901: '已完成'
+}
 
 
-  const payChannelMap = {
-    0: '未支付',
-    1: '支付宝',
-    2: '微信'
-  }
+const payTypeMap = {
+  1: '支付宝',
+  2: '微信',
+  3: '会员余额'
+}
 
-  export default {
-    filters: {
-      orderSourceFilter(source) {
-        return orderSourceMap[source]
+export default {
+  filters: {
+    orderSourceFilter(source) {
+      return orderSourceMap[source]
+    },
+    orderStatusFilter(status) {
+      return orderStatusMap[status]
+    },
+    payTypeFilter(val) {
+      return payTypeMap[val] ? payTypeMap[val] : '未支付'
+    }
+  },
+  data() {
+    return {
+      orderSourceMap,
+      orderStatusMap,
+      payTypeMap,
+      ids: [],
+      single: true,
+      multiple: true,
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
       },
-      orderStatusFilter(status) {
-        return orderStatusMap[status]
+      queryParams: {
+        orderSn: undefined,
+        status: undefined
       },
-      payChannelFilter(val) {
-        return payChannelMap[val]
+      dateRange: [],
+      pageList: [],
+      dialog: {
+        title: undefined,
+        visible: false
+      },
+      form: {
+        status: 1
+      },
+      rules: {
+        logisticsChannel: [{
+          required: true, message: '请选择物流渠道', trigger: 'blur'
+        }],
+        logisticsNo: [{
+          required: true, message: '请输入物流单号', trigger: 'blur'
+        }]
+      },
+      logisticsChannelOptions: [],
+      orderDialogVisible: false,
+      orderDetail: {
+        order: {},
+        member: {},
+        orderItems: []
+      },
+    }
+  },
+  created() {
+    this.loadData()
+  },
+  methods: {
+    async loadData() {
+      await this.listByDictCode("logistics_channel").then(response => {
+        this.logisticsChannelOptions = response.data
+      })
+      await this.handleQuery()
+    },
+    logisticsChannelFormatter(row) {
+      const arr = this.logisticsChannelOptions.filter(item => item.value == row.logisticsChannel)
+      if (arr.length > 0) {
+        return arr[0].name
+      }
+      return
+    },
+
+    handleQuery() {
+      if (this.dateRange.length === 2) {
+        this.queryParams.startDate = this.dateRange[0]
+        this.queryParams.endDate = this.dateRange[1]
+      }
+      list(this.queryParams).then(response => {
+        const {data, total} = response
+        this.pageList = data
+        this.pagination.total = total
+      });
+    },
+    handleReset() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
+      }
+      this.queryParams = {
+        orderSn: undefined,
+        status: undefined
+      }
+      this.dateRange = []
+      this.resetForm()
+      this.handleQuery()
+    },
+    resetForm() {
+      this.form = {}
+      if (this.$refs['form']) {
+        this.$refs['form'].resetFields()
       }
     },
-    data() {
-      return {
-        orderSourceMap,
-        orderStatusMap,
-        payChannelMap,
-        ids: [],
-        single: true,
-        multiple: true,
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        queryParams: {
-          orderSn: undefined
-        },
-        dateRange: [],
-        pageList: [],
-        dialog: {
-          title: undefined,
-          visible: false
-        },
-        form: {
-          status: 1
-        },
-        rules: {
-          logisticsChannel: [{
-            required: true, message: '请选择物流渠道', trigger: 'blur'
-          }],
-          logisticsNo: [{
-            required: true, message: '请输入物流单号', trigger: 'blur'
-          }]
-        },
-        logisticsChannelOptions: [],
-        orderDialogVisible: false,
-        orderDetail: {
-          order: {},
-          member: {},
-          orderItems: []
-        },
-      }
+    handleDetail(row) {
+      this.orderDialogVisible = true
+      detail(row.id).then(response => {
+        this.orderDetail = response.data
+      })
     },
-    created() {
-      this.loadData()
+    handleDelete(row) {
+      this.$confirm('是否确认删除选中的数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+          del(row.id).then(() => {
+            this.$message.success("删除成功")
+            this.handleQuery()
+          })
+        }
+      ).catch(() =>
+        this.$message.info("已取消删除")
+      )
     },
-    methods: {
-      async loadData() {
-        await this.getDicts("logistics_channel").then(response => {
-          this.logisticsChannelOptions = response.data
-        })
-        await this.handleQuery()
-      },
-      logisticsChannelFormatter(row) {
-        const arr = this.logisticsChannelOptions.filter(item => item.value == row.logisticsChannel)
-        if (arr.length > 0) {
-          return arr[0].name
-        }
-        return
-      },
-
-      handleQuery() {
-        if (this.dateRange.length === 2) {
-          this.queryParams.startDate = this.dateRange[0]
-          this.queryParams.endDate = this.dateRange[1]
-        }
-        list(this.queryParams).then(response => {
-          const {data, total} = response
-          this.pageList = data
-          this.total = total
-        });
-      },
-      handleReset() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams = {
-          orderSn: undefined
-        }
-        this.dateRange = []
-        this.resetForm()
-        this.handleQuery()
-      },
-      resetForm() {
-        this.form = {}
-        if (this.$refs['form']) {
-          this.$refs['form'].resetFields()
-        }
-      },
-      handleDetail(row) {
-        this.orderDialogVisible = true
-        detail(row.id).then(response => {
-          this.orderDetail = response.data
-        })
-      },
-      handleDelete(row) {
-        this.$confirm('是否确认删除选中的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-            del(row.id).then(() => {
-              this.$message.success("删除成功")
-              this.handleQuery()
-            })
-          }
-        ).catch(() =>
-          this.$message.info("已取消删除")
-        )
-      },
-      cancel() {
-        this.resetForm()
-        this.orderDialogVisible.visible = false;
-      }
+    cancel() {
+      this.resetForm()
+      this.orderDialogVisible.visible = false;
     }
   }
+}
 </script>
 
 <style scoped>

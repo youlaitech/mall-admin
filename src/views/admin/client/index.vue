@@ -35,7 +35,7 @@
     >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="序号" type="index" width="55" align="center"/>
-      <el-table-column label="客户端ID" prop="clientIP" width="200"/>
+      <el-table-column label="客户端ID" prop="clientId" width="200"/>
       <el-table-column label="客户端密钥" prop="clientSecret" width="100"/>
       <el-table-column label="域" width="100" prop="scope"/>
       <el-table-column label="自动放行" prop="autoapprove" :formatter="autoapproveFormat" width="100"/>
@@ -151,7 +151,7 @@
 
 <script>
   import {list, detail, update, add, del} from '@/api/admin/client'
-  import {list as dictList} from '@/api/admin/dict-item'
+  import {list as dictList} from '@/api/admin/dict_item'
 
   export default {
     data() {

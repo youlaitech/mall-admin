@@ -29,6 +29,7 @@
       border>
       <el-table-column type="selection" min-width="5%" center/>
       <el-table-column type="expand" width="100" label="库存信息">
+
         <template slot-scope="props">
           <el-table
             :data="props.row.skus"
@@ -50,6 +51,8 @@
             <el-table-column align="center" label="库存" prop="inventory"/>
           </el-table>
         </template>
+
+
       </el-table-column>
       <el-table-column label="商品名称" prop="name" min-width="140"/>
       <el-table-column label="商品图片">

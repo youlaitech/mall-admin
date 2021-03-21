@@ -39,11 +39,12 @@ service.interceptors.response.use(({config, data}) => {
             waitQueue = []
             return service(config)
           }).catch(() => {  // token续期失败
-            MessageBox.confirm('当前页面已失效，请重新登录', '确认退出', {
-              confirmButtonText: '重新登录',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
+            MessageBox.confirm(
+              '当前页面已失效，请重新登录', '确认退出', {
+                confirmButtonText: '重新登录',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
               store.dispatch('user/resetToken').then(() => {
                 location.reload()
               })

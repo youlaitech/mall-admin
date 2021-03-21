@@ -155,7 +155,6 @@
           }
         })
 
-        console.log(this.docs)
         this.single = selection.length != 1
         this.multiple = !selection.length
       },

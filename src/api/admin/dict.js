@@ -8,13 +8,7 @@ export function list(queryParams) {
   })
 }
 
-export function listByTypeCode(typeCode) {
-  return request({
-    url: '/youlai-admin/api.admin/v1/dicts',
-    method: 'get',
-    params: {'typeCode': typeCode}
-  })
-}
+
 
 
 export function detail(id) {

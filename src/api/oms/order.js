@@ -49,7 +49,6 @@ export function patch(id, data) {
 
 
 // Seata实验室
-
 export function submit(params) {
   return request({
     url: '/mall-oms/api.admin/v1/orders/submit',
