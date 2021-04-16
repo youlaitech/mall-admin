@@ -57,14 +57,14 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="130">
               <template slot-scope="scope">
-               <!-- <el-button
-                  type="primary"
-                  icon="el-icon-edit"
-                  size="mini"
-                  circle
-                  plain
-                  @click.stop="handleUpdate(scope.row)"
-                />-->
+                <!-- <el-button
+                   type="primary"
+                   icon="el-icon-edit"
+                   size="mini"
+                   circle
+                   plain
+                   @click.stop="handleUpdate(scope.row)"
+                 />-->
                 <el-button
                   type="success"
                   icon="el-icon-plus"
@@ -111,6 +111,17 @@
               <el-input v-model="form.name" placeholder="请输入菜单名称"/>
             </el-form-item>
 
+            <el-form-item label="路由路径" prop="path">
+              <el-input v-model="form.path" :placeholder="form.parentId==0?'/admin':'user'"/>
+            </el-form-item>
+
+            <el-form-item label="组件路径" prop="component">
+              <el-input v-model="form.component" :readonly="form.parentId==0?true:false" placeholder="admin/user/index">
+                <template v-if="form.parentId!=0" slot="prepend">src/views/</template>
+                <template v-if="form.parentId!=0" slot="append">.vue</template>
+              </el-input>
+            </el-form-item>
+
             <el-form-item label="菜单图标">
               <el-popover
                 placement="bottom-start"
@@ -128,17 +139,6 @@
                   <i v-else slot="prefix" class="el-icon-search el-input__icon"/>
                 </el-input>
               </el-popover>
-            </el-form-item>
-
-            <el-form-item label="路由路径" prop="path">
-              <el-input v-model="form.path" placeholder="一级：/admin；其余层级子路由：user"/>
-            </el-form-item>
-
-            <el-form-item label="组件">
-              <el-input v-model="form.component" placeholder="admin/user/index">
-                <template v-if="form.parentId!=0" slot="prepend">src/views/</template>
-                <template v-if="form.parentId!=0" slot="append">.vue</template>
-              </el-input>
             </el-form-item>
 
             <el-form-item label="状态">
