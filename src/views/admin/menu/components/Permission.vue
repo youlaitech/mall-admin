@@ -4,7 +4,7 @@
       <div class="clearfix" slot="header">
         <b>
           <svg-icon icon-class="route"/>
-          {{ menuName }}{{ type == 1 ? '路由权限' : '按钮权限' }}</b>
+          {{ menuName }}{{ type == 1 ? '接口权限' : '按钮权限' }}</b>
       </div>
 
       <!-- 搜索表单 -->
@@ -21,7 +21,7 @@
         <el-form-item>
           <el-input
             v-model="queryParams.name"
-            placeholder="权限名称"
+            :placeholder="(type==1?'接口':'按钮')+'名称'"
             clearable
             @keyup.enter.native="handleQuery"
           />
@@ -43,8 +43,8 @@
         size="mini"
       >
         <el-table-column type="selection" width="40" align="center"/>
-        <el-table-column label="权限名称" prop="name" width="80"/>
-        <el-table-column label="权限标识" prop="perm"/>
+        <el-table-column :label="(type==1?'接口':'按钮')+'名称'" prop="name" width="80"/>
+        <el-table-column :label="(type==1?'接口':'按钮')+'权限标识'" prop="perm"/>
         <el-table-column v-if="type==1" label="请求方式" width="80">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.method=='*'" type="info">不限</el-tag>
@@ -52,12 +52,6 @@
             <el-tag v-if="scope.row.method=='POST'" type="success">POST</el-tag>
             <el-tag v-if="scope.row.method=='PUT'" type="warning">PUT</el-tag>
             <el-tag v-if="scope.row.method=='DELETE'" type="danger">DELETE</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="权限类型" width="80">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.type==1" type="success">路由</el-tag>
-            <el-tag v-if="scope.row.type==2" type="primary">按钮</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="90">
@@ -99,14 +93,14 @@
           ref="form"
           :model="form"
           :rules="rules"
-          label-width="80px"
+          label-width="120px"
         >
           <el-form-item label="所属模块">
             <el-input v-model="menu.name" readonly></el-input>
           </el-form-item>
 
-          <el-form-item label="权限名称" prop="name">
-            <el-input v-model="form.name" placeholder="请输入权限名称"/>
+          <el-form-item :label="(type==1?'接口':'按钮')+'名称'" prop="name">
+            <el-input v-model="form.name" :placeholder="'请输入'+(type==1?'接口':'按钮')+'名称'"/>
           </el-form-item>
 
           <el-form-item v-if="type==1" label="请求方式" prop="method">
@@ -119,7 +113,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="权限标识" prop="perm">
+          <el-form-item :label="(type==1?'接口':'按钮')+'权限标识'" prop="perm">
             <el-input v-model="form.perm" :placeholder="(type==1?'/system/users/**':'system:user:add')"/>
           </el-form-item>
 
@@ -162,7 +156,9 @@ export default {
         title: undefined,
         visible: false
       },
-      form: {},
+      form: {
+        method:'*'
+      },
       rules: {
         name: [
           {required: true, message: '请输入权限名称', trigger: 'blur'}
@@ -275,7 +271,8 @@ export default {
     resetForm() {
       this.form = {
         type: this.type,
-        moduleId: this.menu.id
+        moduleId: this.menu.id,
+        method: '*'
       }
       if (this.$refs['form']) {
         this.$refs['form'].resetFields()
