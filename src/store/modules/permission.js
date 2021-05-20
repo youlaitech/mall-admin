@@ -37,6 +37,7 @@ export function filterAsyncRoutes(routes, roles) {
         }
       }
       res.push(tmp)
+      console.log('动态路由',res)
     }
   })
   return res

@@ -350,6 +350,7 @@ export default {
     },
     handleIconSelected(name) {
       this.form.icon = name
+      this.$forceUpdate()
     }
   }
 }
