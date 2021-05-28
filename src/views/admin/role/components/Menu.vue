@@ -35,55 +35,55 @@
 </template>
 
 <script>
-  import {list as menuList} from "@/api/admin/menu";
-  import {roleMenuIds, updateRoleMenuIds} from "@/api/admin/role"
+import {list as menuList} from "@/api/system/menu";
+import {roleMenuIds, updateRoleMenuIds} from "@/api/system/role"
 
-  export default {
-    name: "Menu",
-    data() {
-      return {
-        menuOptions: [],
-        expandedKeys: [],
-        role: undefined,
-        initialCheckedMenuIds: []
-      }
+export default {
+  name: "Menu",
+  data() {
+    return {
+      menuOptions: [],
+      expandedKeys: [],
+      role: undefined,
+      initialCheckedMenuIds: []
+    }
+  },
+  created() {
+    this.loadMenus()
+  },
+  methods: {
+    loadMenus() {
+      menuList({queryMode: 'tree'}).then(response => {
+        this.menuOptions = response.data
+        this.expandedKeys = this.menuOptions.map(node => node.id) //展开所有节点
+      })
     },
-    created() {
-      this.loadMenus()
+    nodeClick(data) {
+      this.$emit("menuClick", data)
     },
-    methods: {
-      loadMenus() {
-        menuList({queryMode: 'tree'}).then(response => {
-          this.menuOptions = response.data
-          this.expandedKeys = this.menuOptions.map(node => node.id) //展开所有节点
-        })
-      },
-      nodeClick(data) {
-        this.$emit("menuClick", data)
-      },
-      handleSubmit() {
-        const menuIds = this.$refs.menu.getCheckedKeys().sort()
-        // 判断选中菜单ID是否变动
-        if (this.initialCheckedMenuIds.length == menuIds.length &&
-          this.initialCheckedMenuIds.sort().every(function (v, i) {
-            return v == menuIds[i]
-          })) {
-          this.$message.warning('数据未变动，无需提交保存')
-          return
-        }
-        updateRoleMenuIds(this.role.id, menuIds).then(() => {
-          this.$message.success('提交成功')
-        })
-      },
-      roleClick(role) {
-        this.role = role
-        roleMenuIds(role.id).then(response => {
-          this.initialCheckedMenuIds = response.data
-          this.$refs.menu.setCheckedKeys(this.initialCheckedMenuIds)
-        })
+    handleSubmit() {
+      const menuIds = this.$refs.menu.getCheckedKeys().sort()
+      // 判断选中菜单ID是否变动
+      if (this.initialCheckedMenuIds.length == menuIds.length &&
+        this.initialCheckedMenuIds.sort().every(function (v, i) {
+          return v == menuIds[i]
+        })) {
+        this.$message.warning('数据未变动，无需提交保存')
+        return
       }
+      updateRoleMenuIds(this.role.id, menuIds).then(() => {
+        this.$message.success('提交成功')
+      })
+    },
+    roleClick(role) {
+      this.role = role
+      roleMenuIds(role.id).then(response => {
+        this.initialCheckedMenuIds = response.data
+        this.$refs.menu.setCheckedKeys(this.initialCheckedMenuIds)
+      })
     }
   }
+}
 </script>
 
 <style scoped>

@@ -48,6 +48,7 @@
         <el-table-column type="selection" width="40" align="center"/>
         <el-table-column label="序号" type="index" align="center" width="60"/>
         <el-table-column label="角色名称" prop="name"/>
+        <el-table-column label="角色编码" prop="code"/>
         <el-table-column label="排序" prop="sort" width="60"/>
         <el-table-column label="状态" align="center" width="80">
           <template slot-scope="scope">
@@ -67,7 +68,7 @@
               size="mini"
               circle
               plain
-              @click.stop="handleUpdate(scope.row)"
+              @click.stop="handleEdit(scope.row)"
             />
             <el-button
               type="danger"
@@ -106,6 +107,10 @@
             <el-input v-model="form.name" placeholder="请输入角色名称"/>
           </el-form-item>
 
+          <el-form-item label="角色编码" prop="code">
+            <el-input v-model="form.code" placeholder="请输入角色编码"/>
+          </el-form-item>
+
           <el-form-item label="排序" prop="sort">
             <el-input-number v-model="form.sort" controls-position="right" :min="0" style="width: 100px"/>
           </el-form-item>
@@ -128,168 +133,171 @@
 </template>
 
 <script>
-  import {list, update, add, del, patch} from '@/api/admin/role'
+import {list, update, add, del, patch} from '@/api/system/role'
 
-  export default {
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        queryParams: {
-          queryMode: 'page',
-          name: undefined
-        },
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
-        },
-        pageList: [],
-        dialog: {
-          title: undefined,
-          visible: false
-        },
-        // 菜单列表
-        menuOptions: [],
-        // 表单参数
-        form: {
-          sort: 1,
-          status: 1
-        },
-        // 表单校验
-        rules: {
-          name: [
-            {required: true, message: '角色名称不能为空', trigger: 'blur'}
-          ]
-        },
-        permissionDialog: {
-          visible: false
-        },
-        permissionForm: {
-          id: undefined,
-          name: undefined,
-          permissionIds: []
-        },
-        permissionRule: {},
-        permissionOptions: []
+export default {
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      queryParams: {
+        queryMode: 'page',
+        name: undefined
+      },
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0
+      },
+      pageList: [],
+      dialog: {
+        title: undefined,
+        visible: false
+      },
+      // 菜单列表
+      menuOptions: [],
+      // 表单参数
+      form: {
+        sort: 1,
+        status: 1
+      },
+      // 表单校验
+      rules: {
+        name: [
+          {required: true, message: '角色名称不能为空', trigger: 'blur'}
+        ],
+        code: [
+          {required: true, message: '角色编码不能为空', trigger: 'blur'}
+        ]
+      },
+      permissionDialog: {
+        visible: false
+      },
+      permissionForm: {
+        id: undefined,
+        name: undefined,
+        permissionIds: []
+      },
+      permissionRule: {},
+      permissionOptions: []
+    }
+  },
+  created() {
+    this.handleQuery()
+  },
+  methods: {
+    handleQuery() {
+      this.queryParams.page = this.pagination.page
+      this.queryParams.limit = this.pagination.limit
+      list(this.queryParams).then(response => {
+        this.pageList = response.data
+        this.pagination.total = response.total
+        this.loading = false
+      })
+    },
+    handleReset() {
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        total: 0
+      }
+      this.queryParams.name = undefined,
+        this.handleQuery()
+    },
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length != 1
+      this.multiple = !selection.length
+    },
+    handleStatusChange(row) {
+      const text = row.status === 1 ? '启用' : '禁用'
+      this.$confirm('确认要' + text +'"'+ row.name + '"吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function () {
+        return patch(row.id, {status: row.status})
+      }).then(() => {
+        this.$message.success(text + '成功')
+      }).catch(function () {
+        row.status = row.status === 1 ? 0 : 1
+      })
+    },
+    handleAdd() {
+      this.resetForm()
+      this.dialog = {
+        title: '新增角色',
+        visible: true
       }
     },
-    created() {
-      this.handleQuery()
+    handleEdit(row) {
+      this.resetForm()
+      this.dialog = {
+        title: '修改角色',
+        visible: true
+      }
+      this.form = row
     },
-    methods: {
-      handleQuery() {
-        this.queryParams.page = this.pagination.page
-        this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
-          this.pageList = response.data
-          this.pagination.total = response.total
-          this.loading = false
-        })
-      },
-      handleReset() {
-        this.pagination = {
-          page: 1,
-          limit: 10,
-          total: 0
-        }
-        this.queryParams.name = undefined,
+    handleDelete(row) {
+      const ids = [row.id || this.ids].join(',')
+      this.$confirm('确认删除已选中的数据项？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        del(ids).then(() => {
+          this.$message.success('删除成功')
           this.handleQuery()
-      },
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
-      },
-      handleStatusChange(row) {
-        const text = row.status === 1 ? '启用' : '禁用'
-        this.$confirm('确认要' + text +'"'+ row.name + '"吗?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function () {
-          return patch(row.id, {status: row.status})
-        }).then(() => {
-          this.$message.success(text + '成功')
-        }).catch(function () {
-          row.status = row.status === 1 ? 0 : 1
         })
-      },
-      handleAdd() {
-        this.resetForm()
-        this.dialog = {
-          title: '新增角色',
-          visible: true
-        }
-      },
-      handleUpdate(row) {
-        this.resetForm()
-        this.dialog = {
-          title: '修改角色',
-          visible: true
-        }
-        this.form = row
-      },
-      handleDelete(row) {
-        const ids = [row.id || this.ids].join(',')
-        this.$confirm('确认删除已选中的数据项？', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          del(ids).then(() => {
-            this.$message.success('删除成功')
-            this.handleQuery()
-          })
-        }).catch(() =>
-          this.$message.info('已取消删除')
-        )
-      },
-      handleSubmit: function () {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            const id = this.form.id
-            if (id != undefined) {
-              update(id, this.form).then(() => {
-                this.$message.success('修改成功')
-                this.dialog.visible = false
-                this.handleQuery()
-              })
-            } else {
-              add(this.form).then(() => {
-                this.$message.success('新增成功')
-                this.dialog.visible = false
-                this.handleQuery()
-              })
-            }
+      }).catch(() =>
+        this.$message.info('已取消删除')
+      )
+    },
+    handleSubmit: function () {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          const id = this.form.id
+          if (id != undefined) {
+            update(id, this.form).then(() => {
+              this.$message.success('修改成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
+          } else {
+            add(this.form).then(() => {
+              this.$message.success('新增成功')
+              this.dialog.visible = false
+              this.handleQuery()
+            })
           }
-        })
-      },
-      resetForm() {
-        this.form = {
-          sort: 1,
-          status: 1,
         }
-        if (this.$refs['form']) {
-          this.$refs['form'].resetFields()
-        }
-      },
-      closeDialog() {
-        this.resetForm()
-        this.dialog = {
-          title: undefined,
-          visible: false
-        }
-      },
-      handleRowClick(row) {
-        this.$emit('roleClick', row)
+      })
+    },
+    resetForm() {
+      this.form = {
+        sort: 1,
+        status: 1,
       }
+      if (this.$refs['form']) {
+        this.$refs['form'].resetFields()
+      }
+    },
+    closeDialog() {
+      this.resetForm()
+      this.dialog = {
+        title: undefined,
+        visible: false
+      }
+    },
+    handleRowClick(row) {
+      this.$emit('roleClick', row)
     }
   }
+}
 </script>
