@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import {list as menuList} from "@/api/system/menu";
-import {roleMenuIds, updateRoleMenuIds} from "@/api/system/role"
+import {list as menuList} from "@/api/admin/menu";
+import {roleMenuIds, updateRoleMenuIds} from "@/api/admin/role"
 
 export default {
   name: "Menu",

@@ -127,7 +127,8 @@
 </template>
 
 <script>
-import {add, del, detail, list, update} from "@/api/system/permission";
+import {add, del, detail, list, update} from "@/api/admin/permission";
+import request from "@/utils/request";
 
 export default {
   name: "permission",

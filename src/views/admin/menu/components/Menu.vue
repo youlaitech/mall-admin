@@ -162,11 +162,11 @@
 </template>
 
 <script>
-import {add, del, list, patch, update} from "@/api/system/menu";
+import {add, del, list, patch, update} from "@/api/admin/menu";
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TreeSelect from '@riophae/vue-treeselect'
 import IconSelect from '@/components/IconSelect'
-import {list as dictList} from '@/api/system/dict_item'
+import {list as dictList} from '@/api/admin/dict_item'
 
 export default {
   name: "Menu",

@@ -46,8 +46,8 @@
 
 <script>
 
-import {list} from '@/api/system/permission'
-import {rolePermissionIds, updateRolePermissionIds} from '@/api/system/role'
+import {list} from '@/api/admin/permission'
+import {rolePermissionIds, updateRolePermissionIds} from '@/api/admin/role'
 
 export default {
   name: "Permission",
