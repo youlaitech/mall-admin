@@ -91,13 +91,15 @@
           </el-form-item>
 
           <el-form-item label="URL权限标识" prop="urlPerm">
-            <el-input placeholder="例：/system/users" v-model="form.urlPerm" class="input-with-select">
-              <el-select v-model="urlPerm.serviceName" style="width: 130px;" slot="prepend" placeholder="所属服务" clearable>
-                <el-option value="saas-auth" label="认证中心服务"/>
+            <el-input placeholder="例：/system/users" v-model="urlPerm.requestPath" class="input-with-select">
+              <el-select v-model="urlPerm.serviceName" style="width: 130px;" slot="prepend" placeholder="所属服务"
+                         clearable>
+                <el-option value="erp-auth" label="认证中心服务"/>
                 <el-option value="saas-ecommerce" label="电商服务"/>
                 <el-option value="saas-system" label="系统服务"/>
               </el-select>
-              <el-select v-model="urlPerm.requestMethod" style="width: 120px;margin-left: 20px" slot="prepend" placeholder="请求方式" clearable>
+              <el-select v-model="urlPerm.requestMethod" style="width: 120px;margin-left: 20px" slot="prepend"
+                         placeholder="请求方式" clearable>
                 <el-option value="*" label="不限"/>
                 <el-option value="GET" label="GET"/>
                 <el-option value="POST" label="POST"/>
@@ -105,6 +107,9 @@
                 <el-option value="DELETE" label="DELETE"/>
               </el-select>
             </el-input>
+            <el-link type="primary" v-show="urlPerm.requestMethod">
+              {{ urlPerm.requestMethod }}_/{{ urlPerm.serviceName }}{{ urlPerm.requestPath }}
+            </el-link>
           </el-form-item>
 
           <el-form-item label="按钮权限标识" prop="btnPerm">
@@ -123,7 +128,6 @@
 
 <script>
 import {add, del, detail, list, update} from "@/api/system/permission";
-import request from "@/utils/request";
 
 export default {
   name: "permission",
@@ -137,7 +141,7 @@ export default {
       queryParams: {
         queryMode: 'page',
         name: undefined,
-        moduleId: undefined,
+        menuId: undefined,
         type: undefined
       },
       pagination: {
@@ -169,9 +173,11 @@ export default {
       disabled: true,
       menu: {},
       menuName: undefined,
-      urlPerm:{
-        requestMethod:undefined,
-        serviceName:undefined
+      urlPerm: {
+        requestMethod: undefined,
+        serviceName: undefined,
+        requestPath: undefined
+
       }
     }
   },
@@ -180,7 +186,7 @@ export default {
       this.queryParams.page = this.pagination.page
       this.queryParams.limit = this.pagination.limit
 
-      this.queryParams.moduleId = this.menu.id
+      this.queryParams.menuId = this.menu.id
       this.queryParams.type = this.type
 
       list(this.queryParams).then(response => {
@@ -217,31 +223,48 @@ export default {
         title: this.menuName + '编辑权限',
         visible: true
       }
-      const id = row.id || this.ids
+      const id = row.id
       detail(id).then(response => {
-        this.form = response.data
+        const {data} = response
+        // 处理URL权限
+        const urlPerm = data.urlPerm
+        this.form = data
+        if (urlPerm) {
+          const permArr = urlPerm.split('_')
+          const requestMethod = permArr[0]
+          const serviceName = permArr[1].substring(1, permArr[1].substr(1).indexOf('/') + 1)
+          const requestPath = permArr[1].substring(permArr[1].substr(1).indexOf('/') + 1)
+          this.urlPerm = {
+            requestMethod: requestMethod,
+            serviceName: serviceName,
+            requestPath: requestPath
+          }
+        }
       })
     },
-
     handleSubmit: function () {
       this.$refs['form'].validate(valid => {
         if (valid) {
           // 两个权限必选一个
-          if (!this.form.urlPerm && !this.form.btnPerm) {
+          if (!this.form.requestPath && !this.form.btnPerm) {
             this.$message.warning('请至少填写一种权限')
             return false
           }
 
-
-
-
-
-
-          const id = this.form.id
-          this.form.type = this.type
-          this.form.moduleId = this.menu.id
-          if (id != undefined) {
-            update(id, this.form).then(() => {
+          if (!this.form.requestPath) {
+            if (!this.urlPerm.requestMethod) {
+              this.$message.warning('URL权限的请求方式不能为空')
+              return false
+            }
+            if (!this.urlPerm.serviceName) {
+              this.$message.warning('URL权限的所属服务不能为空')
+              return false
+            }
+          }
+          this.form.urlPerm = this.urlPerm.requestMethod + '_/' + this.urlPerm.serviceName + this.urlPerm.requestPath;
+          this.form.menuId = this.menu.id
+          if (this.form.id != undefined) {
+            update(this.form.id, this.form).then(() => {
               this.$message.success('修改成功')
               this.closeDialog()
               this.handleQuery()
@@ -281,10 +304,9 @@ export default {
     },
     resetForm() {
       this.form = {
-        type: this.type,
-        moduleId: this.menu.id,
-        method: undefined
+        menuId: this.menu.id,
       }
+      this.urlPerm = {}
       if (this.$refs['form']) {
         this.$refs['form'].resetFields()
       }
@@ -298,7 +320,7 @@ export default {
     resetPermission() {
       this.disabled = true
       this.pageList = []
-      this.queryParams.moduleId = undefined
+      this.queryParams.menuId = undefined
       this.menu = {}
       this.menuName = undefined
     }
