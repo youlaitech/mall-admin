@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import {list, update, add, del, patch} from '@/api/system/role'
+import {list, update, add, del, patch} from '@/api/admin/role'
 
 export default {
   data() {
