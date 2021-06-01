@@ -41,7 +41,7 @@ const actions = {
         password: password,
         grant_type: 'password'
       }).then(response => {
-        const {access_token, refresh_token, token_type} = response
+        const {access_token, refresh_token, token_type} = response.data
         const token = token_type + " " + access_token
         commit('SET_TOKEN',token)
         setToken(token)

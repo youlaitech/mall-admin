@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import {add, del, detail, list, patch, update} from "@/api/admin/dict_item";
+import {add, del, detail, list, patch, update} from "@/api/admin/dict-item";
 
 export default {
   name: "DictItem",

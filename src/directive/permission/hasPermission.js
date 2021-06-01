@@ -8,6 +8,9 @@ function hasPermission(el, binding) {
     if (value.length > 0) {
       const requiredPerms = value
       const hasPermission = perms.some(perm => {
+        if (perm == "*:*:*") {
+          return true
+        }
         return requiredPerms.includes(perm)
       })
       if (!hasPermission) {
@@ -21,9 +24,9 @@ function hasPermission(el, binding) {
 
 export default {
   inserted(el, binding) {
-    hasPermission(el,binding)
+    hasPermission(el, binding)
   },
   update(el, binding) {
-    hasPermission(el,binding)
+    hasPermission(el, binding)
   }
 }

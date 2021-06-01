@@ -27,7 +27,7 @@ let refreshing = false,// 正在刷新标识，避免重复刷新
 
 service.interceptors.response.use(({config, data}) => {
     const {code, msg} = data
-    if (code && code !== '00000') {
+    if ( code !== '00000') {
       if (code === 'A0230') { // access_token过期，尝试续期token
         if (refreshing == false) {
           refreshing = true  // 切换正在刷新标识，其他请求先进请求等待队列中

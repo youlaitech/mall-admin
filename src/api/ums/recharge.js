@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function recharge(data) {
   return request({
-    url: '/mall-ums/api.admin/v1/recharge_orders',
+    url: '/mall-ums/recharge_orders',
     method: 'post',
     data: data
   })
@@ -11,7 +11,7 @@ export function recharge(data) {
 
 export function rechargeResult(id) {
   return request({
-    url: '/mall-ums/api.admin/v1/recharge_orders/' + id,
+    url: '/mall-ums/recharge_orders/' + id,
     method: 'get'
   })
 }

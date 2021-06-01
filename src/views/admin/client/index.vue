@@ -151,7 +151,7 @@
 
 <script>
   import {list, detail, update, add, del} from '@/api/admin/client'
-  import {list as dictList} from '@/api/admin/dict_item'
+  import {list as dictList} from '@/api/admin/dict-item'
 
   export default {
     data() {

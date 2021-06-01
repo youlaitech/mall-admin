@@ -14,7 +14,6 @@
       >
         <el-form-item>
           <el-button type="success" icon="el-icon-plus" @click="handleAdd">新增</el-button>
-          <el-button type="danger" icon="el-icon-delete" :disabled="multiple" @click="handleDelete">删除</el-button>
         </el-form-item>
         <el-form-item prop="name">
           <el-input
@@ -25,41 +24,27 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-dropdown>
-            <el-button type="primary" plain icon="el-icon-search" @click="handleQuery">搜索<i
-              class="el-icon-arrow-down el-icon--right"></i></el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>
-                <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          <el-button type="primary" plain icon="el-icon-search" @click="handleQuery">搜索
+          </el-button>
         </el-form-item>
       </el-form>
 
       <el-table
+        ref="roleTable"
         v-loading="loading"
         :data="pageList"
         @selection-change="handleSelectionChange"
         @row-click="handleRowClick"
         border
-        highlight-current-row
-      >
-        <el-table-column type="selection" width="40" align="center"/>
-        <el-table-column label="序号" type="index" align="center" width="60"/>
-        <el-table-column label="角色名称" prop="name"/>
-        <el-table-column label="角色编码" prop="code"/>
-        <el-table-column label="排序" prop="sort" width="60"/>
-        <el-table-column label="状态" align="center" width="80">
+        highlight-current-row>
+        <el-table-column width="55" align="center">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.status"
-              :active-value="1"
-              :inactive-value="0"
-              @change="handleStatusChange(scope.row)"
-            />
+            <el-radio v-model="checkedRoleId" :label="scope.row.id"><span></span></el-radio>
           </template>
         </el-table-column>
+
+        <el-table-column label="角色名称" prop="name"/>
+        <el-table-column label="角色编码" prop="code"/>
         <el-table-column label="操作" align="center" width="100">
           <template slot-scope="scope">
             <el-button
@@ -133,11 +118,13 @@
 </template>
 
 <script>
-import {list, update, add, del, patch} from '@/api/admin/role'
+import {list, update, add, del} from '@/api/admin/role'
 
 export default {
   data() {
     return {
+      checkedRoleId: undefined,
+      forbidden: true,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -160,8 +147,6 @@ export default {
         title: undefined,
         visible: false
       },
-      // 菜单列表
-      menuOptions: [],
       // 表单参数
       form: {
         sort: 1,
@@ -175,17 +160,7 @@ export default {
         code: [
           {required: true, message: '角色编码不能为空', trigger: 'blur'}
         ]
-      },
-      permissionDialog: {
-        visible: false
-      },
-      permissionForm: {
-        id: undefined,
-        name: undefined,
-        permissionIds: []
-      },
-      permissionRule: {},
-      permissionOptions: []
+      }
     }
   },
   created() {
@@ -214,20 +189,6 @@ export default {
       this.ids = selection.map(item => item.id)
       this.single = selection.length != 1
       this.multiple = !selection.length
-    },
-    handleStatusChange(row) {
-      const text = row.status === 1 ? '启用' : '禁用'
-      this.$confirm('确认要' + text +'"'+ row.name + '"吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function () {
-        return patch(row.id, {status: row.status})
-      }).then(() => {
-        this.$message.success(text + '成功')
-      }).catch(function () {
-        row.status = row.status === 1 ? 0 : 1
-      })
     },
     handleAdd() {
       this.resetForm()
@@ -282,10 +243,7 @@ export default {
     resetForm() {
       this.form = {
         sort: 1,
-        status: 1,
-      }
-      if (this.$refs['form']) {
-        this.$refs['form'].resetFields()
+        status: 1
       }
     },
     closeDialog() {
@@ -296,7 +254,9 @@ export default {
       }
     },
     handleRowClick(row) {
-      this.$emit('roleClick', row)
+      this.checkedRoleId = row.id // 勾选行
+      const currentRow = JSON.parse(JSON.stringify(row));
+      this.$emit('roleClick', currentRow)
     }
   }
 }

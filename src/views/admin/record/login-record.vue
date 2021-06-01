@@ -92,7 +92,7 @@
 </template>
 
 <script>
-  import {list, del} from '@/api/admin/record/login'
+  import {listLoginRecord, del} from '@/api/admin/login-record'
   import {invalidToken} from "@/api/admin/token";
 
   export default {
@@ -129,7 +129,7 @@
         }
         this.queryParams.page = this.pagination.page
         this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
+        listLoginRecord(this.queryParams).then(response => {
           this.pageList = response.data
           this.pagination.total = response.total
           this.loading = false

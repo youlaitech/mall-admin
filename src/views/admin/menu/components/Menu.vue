@@ -166,7 +166,7 @@ import {add, del, list, patch, update} from "@/api/admin/menu";
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TreeSelect from '@riophae/vue-treeselect'
 import IconSelect from '@/components/IconSelect'
-import {list as dictList} from '@/api/admin/dict_item'
+import {list as dictList} from '@/api/admin/dict-item'
 
 export default {
   name: "Menu",
