@@ -2,7 +2,7 @@ import request from "@/utils/request";
 
 export function listLoginRecord(queryParams) {
   return request({
-    url: '/youlai-admin/login-records',
+    url: '/youlai-admin/v1/login-records',
     method: 'get',
     params: queryParams
   })
@@ -11,7 +11,7 @@ export function listLoginRecord(queryParams) {
 
 export function del(data) {
   return request({
-    url: '/youlai-admin/login-records',
+    url: '/youlai-admin/v1/login-records',
     method: 'delete',
     data:data
   })

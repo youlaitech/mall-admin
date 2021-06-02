@@ -94,9 +94,9 @@
             <el-input placeholder="例：/system/users" v-model="urlPerm.requestPath" class="input-with-select">
               <el-select v-model="urlPerm.serviceName" style="width: 130px;" slot="prepend" placeholder="所属服务"
                          clearable>
-                <el-option value="erp-auth" label="认证中心服务"/>
-                <el-option value="saas-ecommerce" label="电商服务"/>
-                <el-option value="saas-system" label="系统服务"/>
+                <el-option value="youlai-auth" label="认证中心"/>
+                <el-option value="youlai-admin" label="系统服务"/>
+                <el-option value="mall-pms" label="商品服务"/>
               </el-select>
               <el-select v-model="urlPerm.requestMethod" style="width: 120px;margin-left: 20px" slot="prepend"
                          placeholder="请求方式" clearable>

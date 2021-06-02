@@ -50,7 +50,7 @@
     data() {
       return {
         headers: {authorization:getToken()},
-        uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/files',
+        uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/v1/files',
         dialogVisible: false,
       }
     },

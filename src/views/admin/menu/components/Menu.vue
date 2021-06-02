@@ -87,12 +87,6 @@
         :model="form"
         :rules="rules"
         label-width="80px">
-        <el-form-item label="菜单类型" prop="menuType">
-          <el-select v-model="form.type">
-            <el-option v-for="item in menuTypes" :label="item.name" :value="parseInt(item.value)"/>
-          </el-select>
-        </el-form-item>
-
         <el-form-item label="上级菜单" prop="parentId">
           <tree-select
             v-model="form.parentId"
@@ -200,26 +194,16 @@ export default {
         type: 1
       },
       rules: {
-        type: [
-          {required: true, message: '请选择菜单类型', trigger: 'blur'}
-        ],
         parentId: [
           {required: true, message: '请选择顶级菜单', trigger: 'blur'}
         ],
         name: [
           {required: true, message: '请输入菜单名称', trigger: 'blur'}
         ],
-        /*  path: [
-            {required: true, message: '请输入路由路径', trigger: 'blur'}
-          ],
-          component: [
-            {required: true, message: '请输入组件', trigger: 'blur'}
-          ]*/
       },
       title: '新增菜单',
       menuOptions: [],
-      currentRow: undefined,
-      menuTypes: []
+      currentRow: undefined
     }
   },
   created() {
@@ -229,16 +213,13 @@ export default {
   methods: {
     handleQuery() {
       this.resetForm()
-      dictList({dictCode: 'menu_type', queryMode: 'list'}).then(res => {
-        this.menuTypes = res.data
-        this.queryParams.page = this.pagination.page
-        this.queryParams.limit = this.pagination.limit
-        this.queryParams.queryMode = 'list'
-        list(this.queryParams).then(response => {
-          this.pageList = response.data
-          this.pagination.total = response.total
-          this.loading = false
-        })
+      this.queryParams.page = this.pagination.page
+      this.queryParams.limit = this.pagination.limit
+      this.queryParams.queryMode = 'list'
+      list(this.queryParams).then(response => {
+        this.pageList = response.data
+        this.pagination.total = response.total
+        this.loading = false
       })
     },
     handleReset() {

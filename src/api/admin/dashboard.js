@@ -9,7 +9,7 @@ import request from '@/utils/request'
  */
 export function getData() {
   return request({
-    url: '/youlai-admin/dashboard',
+    url: '/youlai-admin/v1/dashboard',
     method: 'get'
   })
 }

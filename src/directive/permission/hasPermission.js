@@ -4,6 +4,7 @@ import store from '@/store'
 function hasPermission(el, binding) {
   const {value} = binding
   const perms = store.getters && store.getters.perms
+
   if (value && value instanceof Array) {
     if (value.length > 0) {
       const requiredPerms = value

@@ -178,11 +178,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="dialog.flag===0" label="用户密码" prop="password">
-              <el-input v-model="form.password" type="text" placeholder="请输入用户密码"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="用户昵称" prop="nickname">
               <el-input v-model="form.nickname" placeholder="请输入用户昵称"/>
             </el-form-item>
@@ -279,8 +274,7 @@
         pageList: [],
         dialog: {
           title: undefined,
-          visible: false,
-          flag: 0
+          visible: false
         },
         // 部门名称
         deptName: undefined,
@@ -396,8 +390,7 @@
         this.resetForm()
         this.dialog = {
           title: '新增用户',
-          visible: true,
-          flag: 0
+          visible: true
         }
         await this.loadRoleOptions()
         await this.loadDeptOptions()
@@ -406,8 +399,7 @@
         this.resetForm()
         this.dialog = {
           title: '修改用户',
-          visible: true,
-          flag: 1
+          visible: true
         }
         await this.loadRoleOptions()
         await this.loadDeptOptions()
@@ -452,7 +444,7 @@
         )
       },
       handleResetPassword(row) {
-        this.$prompt('请输入"' + row.username + '"的新密码', '提示', {
+        this.$prompt('请输入' + row.username + '"的新密码', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           inputValidator: (value) => {
@@ -476,11 +468,7 @@
       },
       loadDeptOptions() {
         deptList({queryMode: 'tree'}).then(response => {
-          this.deptOptions = [{
-            id: 0,
-            label: '有来科技',
-            children: response.data
-          }]
+          this.deptOptions = response.data
         })
       },
       // 表单重置

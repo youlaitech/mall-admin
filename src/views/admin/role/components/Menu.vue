@@ -79,7 +79,7 @@ export default {
     roleClick(role) {
       this.role = role
       this.$refs.menu.setCurrentKey(null) // 取消菜单高亮
-      if (role.code == this.ROOT_ROLE_CODE) {  // 如果是超级管理员默认勾选全部且不可编辑
+      if (role.code == 'ROOT') {  // 如果是超级管理员默认勾选全部且不可编辑
         this.isRoot = true
         this.$refs.menu.setCheckedNodes(this.menuOptions);
       } else {
