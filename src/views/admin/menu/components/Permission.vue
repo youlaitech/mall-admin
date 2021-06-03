@@ -132,7 +132,6 @@ import request from "@/utils/request";
 
 export default {
   name: "permission",
-  props: ["type"], //权限类型: 1-接口权限 2-操作权限
   data() {
     return {
       loading: false,
@@ -247,12 +246,13 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           // 两个权限必选一个
-          if (!this.form.requestPath && !this.form.btnPerm) {
+          console.log(this.urlPerm.requestPath,this.form.btnPerm)
+          if (!(this.urlPerm.requestPath || this.form.btnPerm)) {
             this.$message.warning('请至少填写一种权限')
             return false
           }
 
-          if (!this.form.requestPath) {
+          if (!this.urlPerm.requestPath) {
             if (!this.urlPerm.requestMethod) {
               this.$message.warning('URL权限的请求方式不能为空')
               return false

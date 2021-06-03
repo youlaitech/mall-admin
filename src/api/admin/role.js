@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function list(queryParams) {
   return request({
-    url: '/youlai-admin/v1/roles',
+    url: '/youlai-admin/api/v1/roles',
     method: 'get',
     params: queryParams
   })
@@ -10,14 +10,14 @@ export function list(queryParams) {
 
 export function detail(id) {
   return request({
-    url: '/youlai-admin/v1/roles/' + id,
+    url: '/youlai-admin/api/v1/roles/' + id,
     method: 'get'
   })
 }
 
 export function add(data) {
   return request({
-    url: '/youlai-admin/v1/roles',
+    url: '/youlai-admin/api/v1/roles',
     method: 'post',
     data: data
   })
@@ -25,7 +25,7 @@ export function add(data) {
 
 export function update(id, data) {
   return request({
-    url: '/youlai-admin/v1/roles/' + id,
+    url: '/youlai-admin/api/v1/roles/' + id,
     method: 'put',
     data: data
   })
@@ -33,14 +33,14 @@ export function update(id, data) {
 
 export function del(ids) {
   return request({
-    url: '/youlai-admin/v1/roles/' + ids,
+    url: '/youlai-admin/api/v1/roles/' + ids,
     method: 'delete'
   })
 }
 
 export function patch(id, data) {
   return request({
-    url: '/youlai-admin/v1/roles/' + id,
+    url: '/youlai-admin/api/v1/roles/' + id,
     method: 'patch',
     data: data
   })
@@ -49,7 +49,7 @@ export function patch(id, data) {
 
 export function listRoleMenu(id) {
   return request({
-    url: '/youlai-admin/v1/roles/' + id + '/menus',
+    url: '/youlai-admin/api/v1/roles/' + id + '/menus',
     method: 'get'
   })
 }
@@ -57,7 +57,7 @@ export function listRoleMenu(id) {
 
 export function listRolePermission(id, params) {
   return request({
-    url: '/youlai-admin/v1/roles/' + id + '/permissions',
+    url: '/youlai-admin/api/v1/roles/' + id + '/permissions',
     method: 'get',
     params: params
   })
@@ -65,7 +65,7 @@ export function listRolePermission(id, params) {
 
 export function updateRoleMenu(id, menuIds) {
   return request({
-    url: '/youlai-admin/v1/roles/' + id + '/menus',
+    url: '/youlai-admin/api/v1/roles/' + id + '/menus',
     method: 'put',
     data: {menuIds: menuIds}
   })
@@ -73,7 +73,7 @@ export function updateRoleMenu(id, menuIds) {
 
 export function updateRolePermission(menuId, roleId, permissionIds) {
   return request({
-    url: '/youlai-admin/v1/roles/' + roleId + '/permissions',
+    url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
     method: 'put',
     data: {moduleId: menuId, permissionIds: permissionIds}
   })

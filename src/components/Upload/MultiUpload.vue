@@ -38,7 +38,7 @@
     data() {
       return {
         headers: {authorization:  getToken()},
-        uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/v1/files',
+        uploadAction: process.env.VUE_APP_BASE_API + '/youlai-admin/api/v1/files',
         dialogVisible: false,
         dialogImageUrl: null,
       };
