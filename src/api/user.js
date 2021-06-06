@@ -12,7 +12,7 @@ export function login(data) {
   })
 }
 
-export function getInfo() {
+export function getUserInfo() {
   return request({
     // url: '/vue-element-admin/user/info',
     url: '/youlai-admin/api/v1/users/me',

@@ -26,7 +26,7 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done() // hack: https://github.com/hxrui/pull/2939
     } else {
-      // determine whether the user has obtained his permission roles through getInfo
+      // determine whether the user has obtained his permission roles through getUserInfo
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
         next()
@@ -34,7 +34,7 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roles } = await store.dispatch('user/getInfo')
+          const { roles } = await store.dispatch('user/getUserInfo')
 
 
 

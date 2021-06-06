@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :sm="16" :xs="24">
+      <el-col :span="16" :xs="24">
         <category ref="category" @categoryClick="categoryClick"></category>
       </el-col>
-      <el-col :sm="8" :xs="24">
+      <el-col :span="8" :xs="24">
         <attribute ref="attribute"></attribute>
         <specification ref="specification"></specification>
       </el-col>

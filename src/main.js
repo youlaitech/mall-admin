@@ -49,7 +49,8 @@ Vue.use(permission)
 
 // 全局方法挂载
 Vue.prototype.listByDictCode = listByDictCode
-
+import global from "@/utils/global";
+Vue.use(global)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size

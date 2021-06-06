@@ -29,9 +29,6 @@
       <el-table-column type="selection" min-width="5%"/>
       <el-table-column label="字典项名称" prop="name"/>
       <el-table-column label="字典项值" prop="value"/>
-      <el-table-column label="字典名称">
-        {{ dict.name }}
-      </el-table-column>
       <el-table-column label="状态" align="center">
         <template slot-scope="scope">
           <el-switch

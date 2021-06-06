@@ -63,7 +63,7 @@ export default {
       this.$emit("menuClick", data)
     },
     handleSubmit() {
-      const checkedMenuIds = this.$refs.menu.getCheckedKeys().sort()
+      const checkedMenuIds= this.$refs.menu.getCheckedNodes(false,true).map(node=>node.id)
       // 判断选中菜单ID是否变动
       if (this.initialCheckedMenuIds.length == checkedMenuIds.length &&
         this.initialCheckedMenuIds.sort().every(function (v, i) {

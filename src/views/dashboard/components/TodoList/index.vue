@@ -46,15 +46,25 @@ const filters = {
   active: todos => todos.filter(todo => !todo.done),
   completed: todos => todos.filter(todo => todo.done)
 }
-const defalutList = [
-  { text: 'star this repository', done: false },
-  { text: 'fork this repository', done: false },
-  { text: 'follow author', done: false },
-  { text: 'vue-element-admin', done: true },
-  { text: 'vue', done: true },
-  { text: 'element-ui', done: true },
-  { text: 'axios', done: true },
-  { text: 'webpack', done: true }
+const defaultList = [
+  { text: 'Vue2升级Vue3', done: false },
+  { text: 'Element-UI升级Element-Plus', done: false },
+  { text: '商城应用Android、IOS端适配开发', done: false },
+  { text: 'IM即时通讯(Netty/ZooKeeper/Redis)', done: false },
+  { text: 'ElasticSearch商品搜索', done: false },
+  { text: '分库分表实践', done: false },
+  { text: 'Seata-TCC模式', done: false },
+  { text: '微服务链路追踪', done: false },
+  { text: '多租户', done: false },
+  { text: 'ELK日志收集->EFK日志收集', done: false },
+  { text: '微服务流控Sentinel', done: true },
+  { text: 'ELK日志搜集', done: true },
+  { text: 'RabbitMQ死信队列-订单超时取消', done: true },
+  { text: 'Redission分布式锁', done: true },
+  { text: 'Seata-AT模式', done: true },
+  { text: '微服务基础设施', done: true },
+  { text: 'OAuth2 + JWT统一认证鉴权', done: true },
+  { text: 'RBAC权限设计', done: true }
 ]
 export default {
   components: { Todo },
@@ -66,8 +76,7 @@ export default {
     return {
       visibility: 'all',
       filters,
-      // todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || defalutList
-      todos: defalutList
+      todos: defaultList
     }
   },
   computed: {

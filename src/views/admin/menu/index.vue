@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :sm="8" :xs="24">
+      <el-col :span="10" :xs="24">
         <menus @menuClick="menuClick" @resetPermission="resetPermission"></menus>
       </el-col>
-      <el-col :sm="16" :xs="24">
+      <el-col :span="14" :xs="24">
         <permission ref="permission"></permission>
       </el-col>
     </el-row>

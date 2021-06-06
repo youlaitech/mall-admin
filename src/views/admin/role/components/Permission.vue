@@ -44,7 +44,8 @@
       <div style="text-align: center" v-else>
         <svg-icon icon-class="nodata" style="width: 150px;height:150px"/>
         <el-row>
-          <el-link :underline="false" type="info">暂无数据，您可在【菜单管理】配置权限数据</el-link>
+          <el-link :underline="false" type="info">{{ !role ? "请选择角色" : (!menu ? "请选择菜单" : "暂无数据，您可在【菜单管理】配置权限数据") }}
+          </el-link>
         </el-row>
       </div>
 
@@ -82,9 +83,9 @@ export default {
         menuId: this.menu.id,
       }).then(response => {
         that.permissionList = response.data
-        if (this.role.code == 'ROOT') {  // 如果是超级管理员默认勾选全部且不可编辑
+        if (this.role.code == this.ROOT_ROLE_CODE) {  // 如果是超级管理员默认勾选全部且不可编辑
           this.isRoot = true
-          that.permissionList.map(item => this.$set(item,'checked',true))
+          that.permissionList.map(item => this.$set(item, 'checked', true))
           this.loading = false
         } else {
           this.isRoot = false

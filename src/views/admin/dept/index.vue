@@ -14,16 +14,6 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-select
-          v-model="queryParams.status"
-          placeholder="部门状态"
-          clearable
-        >
-          <el-option label="正常" value="1"/>
-          <el-option label="禁用" value="0"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
         <el-button
           class="filter-item"
           type="primary"
@@ -157,20 +147,20 @@ export default {
         name: [
           {required: true, message: '部门名称不能为空', trigger: 'blur'}
         ],
-/*        mobile: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: '请输入正确的手机号码',
-            trigger: 'blur'
-          }
-        ],
-        email: [
-          {
-            type: 'email',
-            message: "'请输入正确的邮箱地址",
-            trigger: ['blur', 'change']
-          }
-        ]*/
+        /*        mobile: [
+                  {
+                    pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+                    message: '请输入正确的手机号码',
+                    trigger: 'blur'
+                  }
+                ],
+                email: [
+                  {
+                    type: 'email',
+                    message: "'请输入正确的邮箱地址",
+                    trigger: ['blur', 'change']
+                  }
+                ]*/
       }
     }
   },
@@ -261,7 +251,11 @@ export default {
     loadDeptOptions() {
       this.queryParams.queryMode = 'tree'
       list(this.queryParams).then(response => {
-        this.deptOptions = response.data
+        this.deptOptions = [{
+          id: 0,
+          label: '无',
+          children: response.data
+        }]
       })
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :sm="10" :xs="24">
+      <el-col :span="12" :xs="24">
         <el-card class="box-card">
           <div class="clearfix" slot="header">
             <span>字典列表</span>
@@ -11,7 +11,7 @@
         </el-card>
       </el-col>
 
-      <el-col :sm="14" :xs="24">
+      <el-col :span="12" :xs="24">
         <el-card class="box-card">
           <div class="clearfix" slot="header">
             <span>{{ dict.name }}数据项</span>

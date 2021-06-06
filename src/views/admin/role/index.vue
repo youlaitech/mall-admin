@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :sm="10" :xs="24">
+      <el-col :span="10" :xs="24">
         <role ref="role" @roleClick="roleClick"></role>
       </el-col>
-      <el-col :sm="6" :xs="24">
+      <el-col :span="6" :xs="24">
         <menus ref="menu" @menuClick="menuClick"></menus>
       </el-col>
-      <el-col :sm="8" :xs="24">
+      <el-col :span="8" :xs="24">
         <permission ref="permission"></permission>
       </el-col>
     </el-row>

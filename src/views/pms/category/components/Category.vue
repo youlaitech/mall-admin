@@ -2,7 +2,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :sm="12" :xs="24">
+      <el-col :span="12" :xs="24">
         <el-card>
           <div class="clearfix" slot="header">
             <b>
@@ -62,7 +62,7 @@
         </el-card>
       </el-col>
 
-      <el-col :sm="12" :xs="24">
+      <el-col :span="12" :xs="24">
         <el-card class="box-card" shadow="always">
           <div class="clearfix" slot="header">
             <b>

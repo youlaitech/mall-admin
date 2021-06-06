@@ -100,8 +100,20 @@
           <el-input v-model="form.name" placeholder="请输入菜单名称"/>
         </el-form-item>
 
-        <el-form-item label="路由路径" prop="path">
-          <el-input v-model="form.path" :placeholder="form.parentId==0?'/system':'user'"/>
+        <el-form-item label="路由名称" prop="routeName">
+          <el-input v-model="form.routeName" placeholder="system_user" style="width: 95%"/>
+          <el-tooltip  effect="dark" content="vue-router编程式路由跳转方式之一，例：this.$router.push({name:'system_user',params:{id:1}})" placement="right">
+            <i class="el-icon-info" style="margin-left: 5px;color:darkseagreen"></i>
+          </el-tooltip>
+        </el-form-item>
+
+        <el-form-item label="路由路径" prop="routePath">
+          <el-input v-model="form.routePath" :placeholder="form.parentId==0?'/system':'user'"  style="width: 95%"/>
+          <el-tooltip  effect="dark"
+                       content="vue-router编程式路由跳转方式之一，例：this.$router.push({path:'/system/user',query:{id:1}})"
+                       placement="right">
+            <i class="el-icon-info" style="margin-left: 5px;color:darkseagreen"></i>
+          </el-tooltip>
         </el-form-item>
 
         <el-form-item label="组件路径" prop="component">
@@ -191,7 +203,8 @@ export default {
         icon: undefined,
         sort: 1,
         component: 'Layout',
-        type: 1
+        routeName: undefined,
+        routePath: undefined
       },
       rules: {
         parentId: [
@@ -296,12 +309,14 @@ export default {
               this.$message.success('修改成功')
               this.handleQuery()
               this.loadMenuOptions()
+              this.closeDialog()
             })
           } else {
             add(this.form).then(() => {
               this.$message.success('新增成功')
               this.handleQuery()
               this.loadMenuOptions()
+              this.closeDialog()
             })
           }
         }
@@ -330,7 +345,8 @@ export default {
         icon: undefined,
         sort: 1,
         component: 'Layout',
-        type: 1
+        routeName: undefined,
+        routePath: undefined
       }
       if (this.$refs['form']) {
         this.$refs['form'].resetFields()

@@ -135,8 +135,7 @@
                 circle
                 plain
                 @click.stop="handleUpdate(scope.row)"
-                v-has-permission="['system:user:edit']"
-              />
+                v-has-permission="['system:user:edit']" />
               <el-button
                 type="danger"
                 icon="el-icon-delete"
@@ -144,8 +143,7 @@
                 circle
                 plain
                 @click.stop="handleDelete(scope.row)"
-                v-has-permission="['system:user:delete']"
-              />
+                v-has-permission="['system:user:delete']"/>
               <el-button
                 type="info"
                 icon="el-icon-key"
@@ -153,8 +151,7 @@
                 circle
                 plain
                 @click.stop="handleResetPassword(scope.row)"
-                v-has-permission="['system:user:reset_password']"
-              />
+                v-has-permission="['system:user:reset_password']"/>
             </template>
           </el-table-column>
         </el-table>
@@ -171,69 +168,44 @@
     <!-- 新增或修改参数配置对话框 -->
     <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="800px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="用户名" prop="username">
-              <el-input v-model="form.username" :disabled="form.id !== undefined" placeholder="请输入用户名"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="用户昵称" prop="nickname">
-              <el-input v-model="form.nickname" placeholder="请输入用户昵称"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="性别">
-              <el-select v-model="form.gender" placeholder="请选择">
-                <el-option label="未知" :value="0"/>
-                <el-option label="男" :value="1"/>
-                <el-option label="女" :value="2"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="角色" prop="roleIds">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 250px">
-                <el-option
-                  v-for="item in roleOptions"
-                  :label="item.name"
-                  :value="item.id.toString()"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="手机号码" prop="mobile">
-              <el-input v-model="form.mobile" maxlength="11" placeholder="请输入手机号码"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" maxlength="50" placeholder="请输入邮箱"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <tree-select v-model="form.deptId" :options="deptOptions" placeholder="请选择归属部门"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="状态">
-              <el-radio-group v-model="form.status">
-                <el-radio-group v-model="form.status">
-                  <el-radio :label="1">正常</el-radio>
-                  <el-radio :label="0">停用</el-radio>
-                </el-radio-group>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="备注">
-              <el-input v-model="form.remark" placeholder="请输入内容" type="textarea"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="form.username" :disabled="form.id !== undefined" placeholder="请输入用户名"/>
+        </el-form-item>
+        <el-form-item label="用户昵称" prop="nickname">
+          <el-input v-model="form.nickname" placeholder="请输入用户昵称"/>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-select v-model="form.gender" placeholder="请选择">
+            <el-option label="未知" :value="0"/>
+            <el-option label="男" :value="1"/>
+            <el-option label="女" :value="2"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="角色" prop="roleIds">
+        <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 250px">
+          <el-option
+            v-for="item in roleOptions"
+            :label="item.name"
+            :value="item.id.toString()"/>
+        </el-select>
+        </el-form-item>
+        <el-form-item label="手机号码" prop="mobile">
+          <el-input v-model="form.mobile" maxlength="11" placeholder="请输入手机号码"/>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form.email" maxlength="50" placeholder="请输入邮箱"/>
+        </el-form-item>
+        <el-form-item label="所属部门" prop="deptId">
+          <tree-select v-model="form.deptId" :options="deptOptions" placeholder="请选择所属部门"/>
+        </el-form-item>
+        <el-form-item label="状态">
+        <el-radio-group v-model="form.status">
+          <el-radio-group v-model="form.status">
+            <el-radio :label="1">正常</el-radio>
+            <el-radio :label="0">停用</el-radio>
+          </el-radio-group>
+        </el-radio-group>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleSubmit">确 定</el-button>
