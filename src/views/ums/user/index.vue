@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-input
-          v-model="queryParams.nickname"
+          v-model="queryParams.nickName"
           placeholder="会员昵称"
           clearable
           @keyup.enter.native="handleQuery"/>
@@ -44,7 +44,7 @@
       </el-table-column>
 
       <el-table-column type="index" label="序号" width="50" align="center"/>
-      <el-table-column prop="nickname" label="昵称"/>
+      <el-table-column prop="nickName" label="昵称"/>
       <el-table-column label="性别" width="80">
         <template slot-scope="scope">
           <span v-if="scope.row.gender===0">未知</span>
@@ -57,8 +57,8 @@
           <el-popover
             placement="right"
             trigger="hover">
-            <img :src="scope.row.avatar"/>
-            <img slot="reference" :src="scope.row.avatar" :alt="scope.row.avatar"
+            <img :src="scope.row.avatarUrl"/>
+            <img slot="reference" :src="scope.row.avatarUrl" :alt="scope.row.avatarUrl"
                  style="max-height: 60px;max-width: 60px">
           </el-popover>
         </template>
@@ -140,7 +140,7 @@
               <b>订单名称：</b>{{ recharge.name }}
             </el-row>
             <el-row style="text-align: left">
-              <b>会员昵称：</b>{{ nickname }}
+              <b>会员昵称：</b>{{ nickName }}
             </el-row>
             <el-row style="text-align: left">
               <b>充值金额：</b>{{recharge.price}}
@@ -196,7 +196,7 @@
         multiple: true,
         queryParams: {
           queryMode: 'page',
-          nickname: undefined
+          nickName: undefined
         },
         pagination: {
           page: 1,
@@ -213,7 +213,7 @@
           price: 1,
           thirduid: undefined
         },
-        nickname: undefined,
+        nickName: undefined,
         wxPayImgUrl: require('../../../assets/images/zfbpay.png'),
         zfbPayImgUrl: require('../../../assets/images/wxpay.png'),
         countdown: {
@@ -251,7 +251,7 @@
         }
         this.queryParams = {
           queryMode: 'page',
-          nickname: undefined
+          nickName: undefined
         }
         this.handleQuery()
       },
@@ -278,7 +278,7 @@
       // 会员状态修改
       handleStatusChange(row) {
         const text = row.status === 1 ? '激活' : '禁用'
-        this.$confirm('确认要' + text + row.nickname + '吗?', '警告', {
+        this.$confirm('确认要' + text + row.nickName + '吗?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -293,7 +293,7 @@
       // 充值
       handleRecharge(row) {
         this.recharge.thirduid = row.id
-        this.nickname = row.nickname
+        this.nickName = row.nickName
         this.dialog.visible = true
         this.handleCreateRechargeOrder()
       },

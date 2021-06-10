@@ -312,7 +312,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="40">
-      <el-col :span="6">
+      <el-col :span="6" :xs="24">
         <el-card class="technology-stack">
           <div slot="header" class="clearfix">
             <span>更新日志</span>
@@ -349,7 +349,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="6" :xs="24">
         <el-card class="technology-stack">
           <div slot="header" class="clearfix">
             <span>计划事项</span>
@@ -359,7 +359,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="12" :xs="24">
         <el-card class="technology-stack">
           <div slot="header" class="clearfix">
             <span>项目文档</span>
