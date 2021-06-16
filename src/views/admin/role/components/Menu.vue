@@ -25,6 +25,7 @@
           show-checkbox
           node-key="id"
           empty-text="加载中，请稍后"
+          :check-strictly="checkStrictly"
           highlight-current
           @node-click="nodeClick"
         />
@@ -46,7 +47,8 @@ export default {
       expandedKeys: [],
       role: {},
       initialCheckedMenuIds: [],  //初始选中值
-      isRoot: false // 是否是超级管理员账户
+      isRoot: false, // 是否是超级管理员账户
+      checkStrictly: true
     }
   },
   created() {
@@ -63,7 +65,7 @@ export default {
       this.$emit("menuClick", data)
     },
     handleSubmit() {
-      const checkedMenuIds= this.$refs.menu.getCheckedNodes(false,true).map(node=>node.id)
+      const checkedMenuIds = this.$refs.menu.getCheckedNodes(false, true).map(node => node.id)
       // 判断选中菜单ID是否变动
       if (this.initialCheckedMenuIds.length == checkedMenuIds.length &&
         this.initialCheckedMenuIds.sort().every(function (v, i) {
@@ -86,7 +88,9 @@ export default {
         this.isRoot = false
         listRoleMenu(role.id).then(response => {
           this.initialCheckedMenuIds = response.data
+          this.checkStrictly = true
           this.$refs.menu.setCheckedKeys(this.initialCheckedMenuIds)
+          this.checkStrictly = false
         })
       }
     }
