@@ -8,7 +8,7 @@ export function list(queryParams) {
   })
 }
 
-export function listByDictCode(dictCode) {
+export function listDictItemByCode(dictCode) {
   return request({
     url: '/youlai-admin/api/v1/dict-items',
     method: 'get',

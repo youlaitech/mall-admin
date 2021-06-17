@@ -47,6 +47,7 @@ export default {
       this.$refs.dictItem.dictClick(row)
     },
     resetItem() {
+      this.dict.name = undefined
       this.$refs.dictItem.dictClick()
     }
   }

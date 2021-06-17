@@ -91,25 +91,18 @@
           </el-form-item>
 
           <el-form-item label="URL权限标识" prop="urlPerm">
-            <el-input placeholder="例：/system/users" v-model="urlPerm.requestPath" class="input-with-select">
-              <el-select v-model="urlPerm.serviceName" style="width: 130px;" slot="prepend" placeholder="所属服务" clearable>
-                <el-option value="youlai-admin" label="系统服务"/>
-                <el-option value="mall-ums" label="会员服务"/>
-                <el-option value="mall-pms" label="商品服务"/>
-                <el-option value="mall-oms" label="订单服务"/>
-                <el-option value="mall-sms" label="营销服务"/>
+            <el-input placeholder="例：GET:/system/users" v-model="urlPerm.requestPath" class="input-with-select">
+              <el-select v-model="urlPerm.serviceName" style="width: 130px;" slot="prepend" placeholder="所属服务"
+                         clearable>
+                <el-option v-for="item in microServiceList" :value="item.value" :label="item.name"/>
               </el-select>
               <el-select v-model="urlPerm.requestMethod" style="width: 120px;margin-left: 20px" slot="prepend"
                          placeholder="请求方式" clearable>
-                <el-option value="*" label="不限"/>
-                <el-option value="GET" label="GET"/>
-                <el-option value="POST" label="POST"/>
-                <el-option value="PUT" label="PUT"/>
-                <el-option value="DELETE" label="DELETE"/>
+                <el-option v-for="item in requestMethodList" :value="item.value" :label="item.name"/>
               </el-select>
             </el-input>
             <el-link type="primary" v-show="urlPerm.requestMethod">
-              {{ urlPerm.requestMethod }}_/{{ urlPerm.serviceName }}{{ urlPerm.requestPath }}
+              {{ urlPerm.requestMethod }}:/{{ urlPerm.serviceName }}{{ urlPerm.requestPath }}
             </el-link>
           </el-form-item>
 
@@ -178,8 +171,9 @@ export default {
         requestMethod: undefined,
         serviceName: undefined,
         requestPath: undefined
-
-      }
+      },
+      microServiceList: [],
+      requestMethodList: []
     }
   },
   methods: {
@@ -210,15 +204,29 @@ export default {
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
-    handleAdd() {
+    async handleAdd() {
+      await this.loadMicroServices()
+      await this.loadRequestMethods()
       this.resetForm()
       this.dialog = {
         title: this.menuName + '新增权限',
         visible: true
       }
     },
+    loadMicroServices() {
+      this.listDictItemByCode('micro_service').then(response => {
+        this.microServiceList = response.data
+      })
+    },
+    loadRequestMethods() {
+      this.listDictItemByCode('request_method').then(response => {
+        this.requestMethodList = response.data
+      })
+    },
+    async handleEdit(row) {
+      await this.loadMicroServices();
+      await this.loadRequestMethods();
 
-    handleEdit(row) {
       this.resetForm()
       this.dialog = {
         title: this.menuName + '编辑权限',
@@ -231,7 +239,8 @@ export default {
         const urlPerm = data.urlPerm
         this.form = data
         if (urlPerm) {
-          const permArr = urlPerm.split('_')
+          // GET:/youlai-admin/api/v1/users
+          const permArr = urlPerm.split(':')
           const requestMethod = permArr[0]
           const serviceName = permArr[1].substring(1, permArr[1].substr(1).indexOf('/') + 1)
           const requestPath = permArr[1].substring(permArr[1].substr(1).indexOf('/') + 1)
@@ -247,7 +256,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           // 两个权限必选一个
-          console.log(this.urlPerm.requestPath,this.form.btnPerm)
+          console.log(this.urlPerm.requestPath, this.form.btnPerm)
           if (!(this.urlPerm.requestPath || this.form.btnPerm)) {
             this.$message.warning('请至少填写一种权限')
             return false
@@ -263,7 +272,7 @@ export default {
               return false
             }
           }
-          this.form.urlPerm = this.urlPerm.requestMethod + '_/' + this.urlPerm.serviceName + this.urlPerm.requestPath;
+          this.form.urlPerm = this.urlPerm.requestMethod + ':/' + this.urlPerm.serviceName + this.urlPerm.requestPath;
           this.form.menuId = this.menu.id
           if (this.form.id != undefined) {
             update(this.form.id, this.form).then(() => {

@@ -4,7 +4,7 @@
     <el-form :model="queryParams" ref="queryForm" :inline="true" size="mini">
       <el-form-item>
         <el-button type="success" icon="el-icon-plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" icon="el-icon-delete" :disabled="multiple" click="handleDelete">删除</el-button>
+        <el-button type="danger" icon="el-icon-delete" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-form-item>
       <el-form-item prop="name">
         <el-input
@@ -133,7 +133,10 @@ export default {
         title: undefined,
         visible: false
       },
-      form: {},
+      form: {
+        sort: 1,
+        status: 1
+      },
       rules: {
         name: [
           {required: true, message: '请输入字典项名称', trigger: 'blur'}
@@ -257,9 +260,9 @@ export default {
       }
     },
     resetForm() {
-      this.form = {}
-      if (this.$refs['form']) {
-        this.$refs['form'].resetFields()
+      this.form = {
+        sort: 1,
+        status: 1
       }
     },
     dictClick(dict) {

@@ -27,7 +27,7 @@
           empty-text="加载中，请稍后"
           :check-strictly="checkStrictly"
           highlight-current
-          @node-click="nodeClick"
+          @node-click="handleMenuNodeClick"
         />
       </el-row>
 
@@ -48,7 +48,7 @@ export default {
       role: {},
       initialCheckedMenuIds: [],  //初始选中值
       isRoot: false, // 是否是超级管理员账户
-      checkStrictly: true
+      checkStrictly: false
     }
   },
   created() {
@@ -61,7 +61,7 @@ export default {
         this.expandedKeys = this.menuOptions.map(node => node.id) //展开所有节点
       })
     },
-    nodeClick(data) {
+    handleMenuNodeClick(data) {
       this.$emit("menuClick", data)
     },
     handleSubmit() {
@@ -86,9 +86,9 @@ export default {
         this.$refs.menu.setCheckedNodes(this.menuOptions);
       } else {
         this.isRoot = false
+        this.checkStrictly = true
         listRoleMenu(role.id).then(response => {
           this.initialCheckedMenuIds = response.data
-          this.checkStrictly = true
           this.$refs.menu.setCheckedKeys(this.initialCheckedMenuIds)
           this.checkStrictly = false
         })

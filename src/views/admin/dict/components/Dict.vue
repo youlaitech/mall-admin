@@ -84,14 +84,12 @@
       :title="dialog.title"
       :visible.sync="dialog.visible"
       width="500px"
-      @close="closeDialog"
-    >
+      @close="closeDialog" >
       <el-form
         ref="form"
         :model="form"
         :rules="rules"
-        label-width="80px"
-      >
+        label-width="80px">
         <el-form-item label="字典名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入字典名称"/>
         </el-form-item>
@@ -254,6 +252,7 @@ export default {
         del(ids).then(() => {
           this.$message.success('删除成功')
           this.handleQuery()
+          this.$emit('resetItem')
         })
       }).catch(() =>
         this.$message.info('已取消删除')
