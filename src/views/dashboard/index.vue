@@ -64,7 +64,7 @@
 
     <el-row :gutter="40">
       <el-col :span="12" :xs="24">
-        <el-card class="project-brief-introduction">
+        <el-card class="project-brief-introduction" style="height: 400px;">
           <div slot="header" class="clearfix">
             <span>有来项目简介</span>
           </div>
@@ -119,7 +119,7 @@
                 后端技术栈
               </el-col>
               <el-col :span="16">
-                Spring Boot、Spring Cloud、Spring Cloud Alibaba、Spring Security OAuth2、JWT、Mybatis-Plus
+                Spring Boot、Spring Cloud、Spring Cloud Alibaba、Spring Security OAuth2、JWT、Mybatis-Plus、Seata、Sentinel、ELK、Redis
               </el-col>
             </el-row>
             <el-divider/>
@@ -136,7 +136,7 @@
       </el-col>
 
       <el-col :span="12" :xs="24">
-        <el-card class="technology-stack">
+        <el-card class="technology-stack" style="height: 400px;">
           <div slot="header" class="clearfix">
             <span>联系信息</span>
           </div>
@@ -445,7 +445,6 @@ export default {
   position: relative;
 
   .project-brief-introduction {
-    height: 400px;
     .el-divider--horizontal {
       margin: 16px 0;
     }
@@ -458,7 +457,6 @@ export default {
   }
 
   .technology-stack {
-    height: 400px;
     margin-bottom: 24px;
   }
 
