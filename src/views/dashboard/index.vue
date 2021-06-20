@@ -63,7 +63,7 @@
     </el-row>
 
     <el-row :gutter="40">
-      <el-col :span="6" :xs="24">
+      <el-col :span="12" :xs="24">
         <el-card class="project-brief-introduction">
           <div slot="header" class="clearfix">
             <span>有来项目简介</span>
@@ -89,130 +89,53 @@
             </div>
             <el-divider/>
             <el-row :gutter="10">
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-badge value="免费开源" style="font-weight: bold">
                   项目源码地址
                 </el-badge>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                  <el-link  target="_blank" type="primary" href="https://github.com/hxrui">github</el-link>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                  <el-link  target="_blank" type="success" href="https://gitee.com/haoxr">码云</el-link>
               </el-col>
             </el-row>
             <el-divider/>
             <el-row :gutter="10">
-              <el-col :span="12" style="font-weight: bold">
+              <el-col :span="8" style="font-weight: bold">
                 接口文档地址
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                  <el-link  target="_blank" type="primary" href="http://www.youlai.tech:9999/doc.html">线上</el-link>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                  <el-link  target="_blank" type="success" href="http://localhost:9999/doc.html">本地</el-link>
               </el-col>
             </el-row>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6" :xs="24">
-        <el-card class="technology-stack">
-          <div slot="header" class="clearfix">
-            <span>后端技术栈</span>
-          </div>
-          <div style="font-size: 14px">
-            <el-row>
-              <el-col :span="12">Spring Boot</el-col>
-              <el-col :span="12">2.5.0</el-col>
+            <el-divider/>
+            <el-row :gutter="10">
+              <el-col :span="8" style="font-weight: bold">
+                后端技术栈
+              </el-col>
+              <el-col :span="16">
+                Spring Boot、Spring Cloud、Spring Cloud Alibaba、Spring Security OAuth2、JWT、Mybatis-Plus
+              </el-col>
             </el-row>
             <el-divider/>
-            <el-row>
-              <el-col :span="12">Spring Cloud</el-col>
-              <el-col :span="12">2020.0.3</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">Spring Cloud Alibaba</el-col>
-              <el-col :span="12">2021.1</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">Spring Security OAuth2</el-col>
-              <el-col :span="12">5.5.0</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">Mybatis-Plus</el-col>
-              <el-col :span="12">3.4.3</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">Seata</el-col>
-              <el-col :span="12">1.4.0</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">ElasticSearch</el-col>
-              <el-col :span="12">7.10.1</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">Redis</el-col>
-              <el-col :span="12">6.0.6</el-col>
+            <el-row :gutter="10">
+              <el-col :span="8" style="font-weight: bold">
+                前端技术栈
+              </el-col>
+              <el-col :span="16">
+                vue、element-ui、uni-app、vue-element-admin
+              </el-col>
             </el-row>
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6" :xs="24">
-        <el-card class="technology-stack">
-          <div slot="header" class="clearfix">
-            <span>前端技术栈</span>
-          </div>
-          <div style="font-size: 14px">
-            <el-row>
-              <el-col :span="12">vue</el-col>
-              <el-col :span="12">2.6.10</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">element-ui</el-col>
-              <el-col :span="12">2.13.2</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">uni-app</el-col>
-              <el-col :span="12">2.x.x</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">vue-element-admin</el-col>
-              <el-col :span="12">4.3.1</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">vue-router</el-col>
-              <el-col :span="12">3.0.2</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">vuex</el-col>
-              <el-col :span="12">3.1.0</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">axios</el-col>
-              <el-col :span="12">0.18.1</el-col>
-            </el-row>
-            <el-divider/>
-            <el-row>
-              <el-col :span="12">echarts</el-col>
-              <el-col :span="12">4.2.1</el-col>
-            </el-row>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6" :xs="24">
+
+      <el-col :span="12" :xs="24">
         <el-card class="technology-stack">
           <div slot="header" class="clearfix">
             <span>联系信息</span>
@@ -221,7 +144,7 @@
             <el-tabs v-model="contactActiveName">
               <el-tab-pane label="开发人员" name="1">
                 <el-row :gutter="5">
-                  <el-col :span="12">
+                  <el-col :span="8">
                     <el-card :body-style="{ padding: '0px' }" align="center">
                       <el-image
                         style="width: 60px; height: 60px"
@@ -239,7 +162,7 @@
                     </el-card>
                   </el-col>
 
-                  <el-col :span="12">
+                  <el-col :span="8">
                     <el-card :body-style="{ padding: '0px' }" align="center">
                       <el-image
                         style="width: 60px; height: 60px"
@@ -247,7 +170,24 @@
                         :preview-src-list="['https://gitee.com/haoxr/image/raw/master/huawei.jpg']">
                       </el-image>
                       <div style="padding: 6px;">
-                        <span>花花的世界</span>
+                        <span>猴子也能上天</span>
+                        <div class="bottom clearfix" style="margin-top: 5px">
+                          <el-tag type="primary" size="mini">后端</el-tag>
+                          <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
+                          <el-tag type="danger" style="margin-left: 5px" size="mini">运维</el-tag>
+                        </div>
+                      </div>
+                    </el-card>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-card :body-style="{ padding: '0px' }" align="center">
+                      <el-image
+                        style="width: 60px; height: 60px"
+                        src="  https://gitee.com/haoxr/image/raw/master/DaniR.png"
+                        :preview-src-list="['https://gitee.com/haoxr/image/raw/master/DaniR.png']">
+                      </el-image>
+                      <div style="padding: 6px;">
+                        <span>DaniR</span>
                         <div class="bottom clearfix" style="margin-top: 5px">
                           <el-tag type="primary" size="mini">后端</el-tag>
                           <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
@@ -258,7 +198,7 @@
                   </el-col>
                 </el-row>
                 <el-row :gutter="5" style="margin-top: 8px">
-                  <el-col :span="12">
+                  <el-col :span="8">
                     <el-card :body-style="{ padding: '0px' }" align="center">
                       <el-image
                         style="width: 60px; height: 60px"
@@ -270,11 +210,12 @@
                         <div class="bottom clearfix" style="margin-top: 5px">
                           <el-tag type="primary" size="mini">后端</el-tag>
                           <el-tag type="success" style="margin-left: 5px" size="mini">前端</el-tag>
+                          <el-tag type="danger" style="margin-left: 5px" size="mini">运维</el-tag>
                         </div>
                       </div>
                     </el-card>
                   </el-col>
-                  <el-col :span="12">
+                  <el-col :span="8">
                     <el-card :body-style="{ padding: '0px' }" align="center">
                       <el-image
                         style="width: 60px; height: 60px"
@@ -504,22 +445,20 @@ export default {
   position: relative;
 
   .project-brief-introduction {
+    height: 400px;
     .el-divider--horizontal {
-      margin: 17px 0;
+      margin: 16px 0;
     }
 
     .content {
-      line-height: 26px;
+      line-height: 20px;
     }
 
     margin-bottom: 24px;
   }
 
   .technology-stack {
-    .el-divider--horizontal {
-      margin: 12px 0;
-    }
-
+    height: 400px;
     margin-bottom: 24px;
   }
 
