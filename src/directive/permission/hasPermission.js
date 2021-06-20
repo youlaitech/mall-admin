@@ -4,7 +4,7 @@ import store from '@/store'
 function hasPermission(el, binding) {
   const roles = store.getters && store.getters.roles
   // 超级管理员拥有所有的按钮权限
-  if (roles.includes(this.ROOT_ROLE_CODE)) {
+  if (roles.includes('ROOT')) {
     return true
   }
   const {value} = binding
