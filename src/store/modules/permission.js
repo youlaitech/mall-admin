@@ -8,6 +8,10 @@ import {list as listRoute} from '@/api/admin/route'
  * @param route
  */
 function hasPermission(roles, route) {
+  // 超级管理员放行
+  if (roles.includes('ROOT')) {
+    return true
+  }
   if (route.meta && route.meta.roles) {
     return roles.some(role => route.meta.roles.includes(role))
   } else {
