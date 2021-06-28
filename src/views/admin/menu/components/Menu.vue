@@ -101,16 +101,16 @@
         </el-form-item>
 
         <el-form-item label="路由名称" prop="routeName">
-          <el-input v-model="form.routeName" placeholder="system_user" style="width: 95%"/>
-          <el-tooltip  effect="dark" content="vue-router编程式路由跳转方式之一，例：this.$router.push({name:'system_user',params:{id:1}})" placement="right">
+          <el-input v-model="form.routeName" placeholder="admin-user" style="width: 95%"/>
+          <el-tooltip  effect="dark" content="vue-router编程式路由跳转方式之一，例：this.$router.push({name:'admin-user',params:{id:1}})" placement="right">
             <i class="el-icon-info" style="margin-left: 5px;color:darkseagreen"></i>
           </el-tooltip>
         </el-form-item>
 
         <el-form-item label="路由路径" prop="routePath">
-          <el-input v-model="form.routePath" :placeholder="form.parentId==0?'/system':'user'"  style="width: 95%"/>
+          <el-input v-model="form.routePath" :placeholder="form.parentId==0?'/admin':'user'"  style="width: 95%"/>
           <el-tooltip  effect="dark"
-                       content="vue-router编程式路由跳转方式之一，例：this.$router.push({path:'/system/user',query:{id:1}})"
+                       content="vue-router编程式路由跳转方式之一，例：this.$router.push({path:'/admin/user',query:{id:1}})"
                        placement="right">
             <i class="el-icon-info" style="margin-left: 5px;color:darkseagreen"></i>
           </el-tooltip>

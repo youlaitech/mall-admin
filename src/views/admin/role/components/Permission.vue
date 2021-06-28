@@ -77,26 +77,26 @@ export default {
   methods: {
     handleQuery() {
       this.loading = true
-      const that = this
       listPermission({
         queryMode: 'list',
         menuId: this.menu.id,
       }).then(response => {
-        that.permissionList = response.data
+        const {data} = response
         if (this.role.code == this.ROOT_ROLE_CODE) {  // 如果是超级管理员默认勾选全部且不可编辑
           this.isRoot = true
-          that.permissionList.map(item => this.$set(item, 'checked', true))
+          data.map(item => this.$set(item, 'checked', true))
+          this.permissionList = data
           this.loading = false
         } else {
           this.isRoot = false
-          listRolePermission(that.role.id, {menuId: this.menu.id}).then(res => {
+          listRolePermission(this.role.id, {menuId: this.menu.id}).then(res => {
             this.initialCheckedPermissionIds = res.data
-            that.permissionList.map(item => {
+            data.map(item => {
               if (this.initialCheckedPermissionIds.includes(item.id)) {
                 item.checked = true
               }
             })
-            this.$forceUpdate()
+            this.permissionList = data
             this.loading = false
           })
         }
@@ -136,7 +136,8 @@ export default {
       }
       this.isIndeterminate = false;
     },
-    handleCheckChange() {
+    handleCheckChange(item, val) {
+      console.log('handleCheckChange', item, val)
       const checkedCount = this.permissionList.filter(item => item.checked).length
       this.checkAll = checkedCount === this.permissionList.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.permissionList.length;

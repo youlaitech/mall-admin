@@ -32,7 +32,7 @@
               icon="el-icon-plus"
               type="primary"
               @click="handleAdd"
-              v-has-permission="['system:user:add']"
+              v-has-permission="['sys:user:add']"
             >新增
             </el-button>
             <el-button
@@ -41,7 +41,7 @@
               type="success"
               style="margin-left:15px"
               @click="handleUpdate"
-              v-has-permission="['system:user:edit']"
+              v-has-permission="['sys:user:edit']"
             >修改
             </el-button>
             <el-button
@@ -49,7 +49,7 @@
               icon="el-icon-delete"
               type="danger"
               style="margin-left:15px"
-              v-has-permission="['system:user:delete']"
+              v-has-permission="['sys:user:delete']"
               @click="handleDelete"
             >删除
             </el-button>
@@ -135,7 +135,7 @@
                 circle
                 plain
                 @click.stop="handleUpdate(scope.row)"
-                v-has-permission="['system:user:edit']" />
+                v-has-permission="['sys:user:edit']" />
               <el-button
                 type="danger"
                 icon="el-icon-delete"
@@ -143,7 +143,7 @@
                 circle
                 plain
                 @click.stop="handleDelete(scope.row)"
-                v-has-permission="['system:user:delete']"/>
+                v-has-permission="['sys:user:delete']"/>
               <el-button
                 type="info"
                 icon="el-icon-key"
@@ -151,7 +151,7 @@
                 circle
                 plain
                 @click.stop="handleResetPassword(scope.row)"
-                v-has-permission="['system:user:reset_password']"/>
+                v-has-permission="['sys:user:reset']"/>
             </template>
           </el-table-column>
         </el-table>

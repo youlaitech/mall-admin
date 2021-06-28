@@ -15,12 +15,13 @@ function hasPermission(el, binding) {
       const hasPermission = perms.some(perm => {
         return requiredPerms.includes(perm)
       })
+      console.log(requiredPerms,hasPermission)
       if (!hasPermission) {
         el.parentNode && el.parentNode.removeChild(el)
       }
     }
   } else {
-    throw new Error(`need perms! Like v-has-permission="['system:user:add','system:user:edit']"`)
+    throw new Error(`need perms! Like v-has-permission="['sys:user:add','sys:user:edit']"`)
   }
 }
 
