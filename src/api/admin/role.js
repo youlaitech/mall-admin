@@ -75,6 +75,6 @@ export function updateRolePermission(menuId, roleId, permissionIds) {
   return request({
     url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
     method: 'put',
-    data: {moduleId: menuId, permissionIds: permissionIds}
+    data: {menuId: menuId, permissionIds: permissionIds}
   })
 }
