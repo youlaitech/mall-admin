@@ -43,6 +43,7 @@ import { listDictItemByCode } from "@/api/admin/dict-item"
 
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
+
 // 全局指令注册
 import permission from './directive/permission'
 Vue.use(permission)

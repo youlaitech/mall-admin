@@ -271,8 +271,9 @@ export default {
               this.$message.warning('URL权限的所属服务不能为空')
               return false
             }
+            this.form.urlPerm = this.urlPerm.requestMethod + ':/' + this.urlPerm.serviceName + this.urlPerm.requestPath;
           }
-          this.form.urlPerm = this.urlPerm.requestMethod + ':/' + this.urlPerm.serviceName + this.urlPerm.requestPath;
+
           this.form.menuId = this.menu.id
           if (this.form.id != undefined) {
             update(this.form.id, this.form).then(() => {

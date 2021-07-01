@@ -15,7 +15,6 @@ function hasPermission(el, binding) {
       const hasPermission = perms.some(perm => {
         return requiredPerms.includes(perm)
       })
-      console.log(requiredPerms,hasPermission)
       if (!hasPermission) {
         el.parentNode && el.parentNode.removeChild(el)
       }
