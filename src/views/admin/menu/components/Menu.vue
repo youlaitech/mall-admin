@@ -100,12 +100,12 @@
           <el-input v-model="form.name" placeholder="请输入菜单名称"/>
         </el-form-item>
 
-        <el-form-item label="路由名称" prop="routeName">
+<!--        <el-form-item label="路由名称" prop="routeName">
           <el-input v-model="form.routeName" placeholder="admin-user" style="width: 95%"/>
           <el-tooltip  effect="dark" content="vue-router编程式路由跳转方式之一，例：this.$router.push({name:'admin-user',params:{id:1}})" placement="right">
             <i class="el-icon-info" style="margin-left: 5px;color:darkseagreen"></i>
           </el-tooltip>
-        </el-form-item>
+        </el-form-item>-->
 
         <el-form-item label="路由路径" prop="routePath">
           <el-input v-model="form.routePath" :placeholder="form.parentId==0?'/admin':'user'"  style="width: 95%"/>
