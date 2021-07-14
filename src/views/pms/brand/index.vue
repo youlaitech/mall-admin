@@ -43,16 +43,14 @@
             <img slot="reference"
                  :src="scope.row.logoUrl"
                  :alt="scope.row.logoUrl"
-                 style="max-height: 60px;max-width: 60px"
-            />
+                 style="max-height: 60px;max-width: 60px"/>
           </el-popover>
         </template>
       </el-table-column>
       <el-table-column
         prop="sort"
         label="排序"
-        min-width="10"
-      />
+        min-width="10"/>
       <el-table-column
         label="操作"
         min-width="10" >
@@ -80,18 +78,18 @@
     <el-dialog
       :title="dialog.title"
       :visible.sync="dialog.visible"
-      @close="cancel"
+      @close="closeDialog"
       top="5vh"
       width="800px">
       <el-form id="dataForm" label-width="120px" :model="form" :rules="rules" ref="form">
         <el-form-item label="品牌名称" prop="name">
-          <el-input v-model="form.name" auto-complete="off"></el-input>
+          <el-input v-model="form.name" auto-complete="off" style="width: 200px"></el-input>
         </el-form-item>
-        <el-form-item label="logo" prop="logo" label-width="120px">
-          <single-upload v-model="form.logo"></single-upload>
+        <el-form-item label="LOGO" prop="logoUrl" label-width="120px">
+          <single-upload v-model="form.logoUrl"></single-upload>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="form.sort" auto-complete="off" style="width: 180px"></el-input>
+          <el-input v-model="form.sort" auto-complete="off" style="width: 200px"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,7 +101,7 @@
 </template>
 
 <script>
-  import {list, detail, update, add, del, patch} from '@/api/pms/brand'
+  import {page, detail, update, add, del} from '@/api/pms/brand'
   import SingleUpload from '@/components/Upload/SingleUpload'
 
   export default {
@@ -133,10 +131,8 @@
         },
         form: {
           name: undefined,
-          firstLetter: undefined,
-          logo: undefined,
-          status: 1,
-          sort: undefined
+          logoUrl: undefined,
+          sort: 1
         },
         rules: {
           name: [{
@@ -152,7 +148,7 @@
       handleQuery() {
         this.queryParams.page = this.pagination.page
         this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
+        page(this.queryParams).then(response => {
           this.loading = false
           const {data, total} = response
           this.pageList = data

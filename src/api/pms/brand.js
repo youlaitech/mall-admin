@@ -8,6 +8,14 @@ export function list(queryParams) {
   })
 }
 
+export function page(queryParams) {
+  return request({
+    url: '/mall-pms/api/v1/brands/page',
+    method: 'get',
+    params: queryParams
+  })
+}
+
 export function detail(id) {
   return request({
     url: '/mall-pms/api/v1/brands/' + id,

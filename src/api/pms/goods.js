@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function list(queryParams) {
+export function page(queryParams) {
   return request({
-    url: '/mall-pms/api/v1/spus',
+    url: '/mall-pms/api/v1/goods/page',
     method: 'get',
     params: queryParams
   })
@@ -10,14 +10,14 @@ export function list(queryParams) {
 
 export function detail(id) {
   return request({
-    url: '/mall-pms/api/v1/spus/' + id,
+    url: '/mall-pms/api/v1/goods/' + id,
     method: 'get'
   })
 }
 
 export function add(data) {
   return request({
-    url: '/mall-pms/api/v1/spus',
+    url: '/mall-pms/api/v1/goods',
     method: 'post',
     data: data
   })
@@ -25,7 +25,7 @@ export function add(data) {
 
 export function update(id, data) {
   return request({
-    url: '/mall-pms/api/v1/spus/' + id,
+    url: '/mall-pms/api/v1/goods/' + id,
     method: 'put',
     data: data
   })
@@ -33,14 +33,14 @@ export function update(id, data) {
 
 export function del(ids) {
   return request({
-    url: '/mall-pms/api/v1/spus/'+ids,
+    url: '/mall-pms/api/v1/goods/'+ids,
     method: 'delete'
   })
 }
 
 export function patch(id, data) {
   return request({
-    url: '/mall-pms/api/v1/spus/' + id,
+    url: '/mall-pms/api/v1/goods/' + id,
     method: 'patch',
     data: data
   })
