@@ -9,52 +9,73 @@
       <el-steps :active="active" process-status="finish" finish-status="success" simple>
         <el-step title="选择商品分类"></el-step>
         <el-step title="填写商品信息"></el-step>
-        <el-step title="填写商品属性"></el-step>
+        <el-step title="设置商品属性"></el-step>
+        <el-step title="填写商品详情"></el-step>
       </el-steps>
       <goods-category
         v-show="active==0"
-        v-model="goodsForm"
+        v-model="goods"
+        v-if="loaded==true"
         @prev="prev"
         @next="next">
       </goods-category>
-      <goods-category
+      <goods-info
         v-show="active==1"
-        v-model="goodsForm"
+        v-model="goods"
+        v-if="loaded==true"
         @prev="prev"
-        @next="next"
-      >
-      </goods-category>
-      <goods-category
+        @next="next">
+      </goods-info>
+
+      <goods-attribute
         v-show="active==2"
-        v-model="goodsForm"
+        v-model="goods"
+        v-if="loaded==true"
         @prev="prev"
         @next="next">
-      </goods-category>
-      <goods-category
+      </goods-attribute>
+
+      <goods-inventory
         v-show="active==3"
-        v-model="goodsForm"
+        v-model="goods"
+        v-if="loaded==true"
         @prev="prev"
         @next="next">
-      </goods-category>
+      </goods-inventory>
+
     </el-card>
   </div>
 </template>
 
 <script>
 import GoodsCategory from "@/views/pms/goods/components/GoodsCategory";
+import GoodsInfo from "@/views/pms/goods/components/GoodsInfo";
+import GoodsAttribute from "@/views/pms/goods/components/GoodsAttribute";
 import {detail} from "@/api/pms/goods";
+import GoodsInventory from "@/views/pms/goods/components/GoodsInventory";
 
 export default {
   name: "goods-detail",
-  components: {GoodsCategory},
-  props:['goodsId'],
+  components: {GoodsInventory, GoodsCategory, GoodsInfo, GoodsAttribute},
+  props: ['goodsId'],
   data() {
     return {
+      loaded: false,
       active: 0,
-      goodsForm: {
-        spuInfo:{},
-        attrValueList:[],
-        skuList:[]
+      goods: {
+        id: undefined,
+        name: undefined,
+        categoryId: undefined,
+        brandId: undefined,
+        originPrice: undefined,
+        price: undefined,
+        picUrl: undefined,
+        album: undefined,
+        description: undefined,
+        detail: undefined,
+        attrList: [],
+        specList: [],
+        skuList: []
       }
     };
   },
@@ -62,24 +83,30 @@ export default {
     this.loadData()
   },
   methods: {
+    loadData() {
+      const goodsId = this.$route.query.goodsId
+      if (goodsId) {
+        detail(goodsId).then(response => {
+          this.goods = response.data
+          this.goods.originPrice = this.goods.originPrice / 100
+          this.goods.price = this.goods.price / 100
+          this.loaded = true
+        })
+      } else {
+        this.loaded = true
+      }
+    },
     prev() {
       if (this.active-- <= 0) {
         this.active = 0;
       }
     },
     next() {
-      if (this.active++ >= 2) {
+      if (this.active++ >= 3) {
         this.active = 0;
       }
-    },
-    loadData() {
-      const goodsId = this.$route.query.goodsId
-      if (goodsId) {
-        detail(goodsId).then(response => {
-          this.goodsForm = response.data
-        })
-      }
     }
+
   }
 }
 </script>

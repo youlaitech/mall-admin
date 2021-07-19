@@ -1,49 +1,152 @@
 <template>
   <div class="components-container">
     <div class="components-container__main">
-     商品基本信息
+      <el-form
+        ref="goodsForm"
+        :rules="rules"
+        :model="value"
+        label-width="150px">
+        <el-form-item label="商品名称" prop="name">
+          <el-input style="width: 400px" v-model="value.name"/>
+        </el-form-item>
+
+        <el-form-item label="原价" prop="originPrice">
+          <el-input style="width: 400px" v-model="value.originPrice"/>
+        </el-form-item>
+
+        <el-form-item label="现价" prop="price">
+          <el-input style="width: 400px" v-model="value.price"/>
+        </el-form-item>
+
+        <el-form-item label="商品品牌" prop="brandId">
+          <el-select
+            v-model="value.brandId"
+            clearable
+            style="width:400px">
+            <el-option v-for="item in brandOptions" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="商品简介" prop="brandId">
+          <el-input  type="textarea" style="width: 400px" v-model="value.description"/>
+        </el-form-item>
+
+        <el-form-item label="商品相册">
+          <el-row :gutter="10">
+            <el-col style="width: 180px" v-for="(item,index) in pictures">
+              <el-card :body-style="{ padding: '10px' }">
+                <single-upload v-model="item.url"></single-upload>
+                <div class="bottom" v-if="item.url">
+                  <el-button type="text" class="button" v-if="item.main==true" style="color:#ff4d51">商品主图</el-button>
+                  <el-button type="text" class="button" v-else @click="handleMainPictureChange(index)">设为主图</el-button>
+                  <el-button type="text" class="button" @click="handlePictureRemove(index)">删除图片</el-button>
+                </div>
+                <div class="bottom" v-else>
+                  <el-button type="text" class="button"></el-button>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-form-item>
+
+        <el-form-item label="商品详情" prop="detail">
+          <tinymce  v-model="value.detail" :height="400"/>
+        </el-form-item>
+
+      </el-form>
     </div>
     <div class="components-container__footer">
-      <el-button @click="handlePrev">上一步</el-button>
-      <el-button type="primary" @click="handleNext">下一步</el-button>
+      <el-button @click="handlePrev">上一步，选择商品分类</el-button>
+      <el-button type="primary" @click="handleNext">下一步，设置商品属性</el-button>
     </div>
   </div>
 </template>
-
 <script>
-import {cascadeList} from "@/api/pms/category";
+
+import {list as listBrand} from "@/api/pms/brand"
+import SingleUpload from '@/components/Upload/SingleUpload'
+import Tinymce from '@/components/Tinymce'
 
 export default {
-  name: "GoodsCategory",
+  name: "GoodsInfo",
+  components: {SingleUpload,Tinymce},
   props: {
     value: Object
   },
-  watch: {
-    'value.spuInfo': {
-      handler: function (val, oldVal) {
-        console.log('value.spuInfo', val)
-      }
-    }
-  },
   data() {
     return {
-      options: undefined,
-      pathLabels: []
+      brandOptions: [],
+      pictures: [],
+      rules: {
+        name: [{required: true, message: '请填写商品名称', trigger: 'blur'}],
+      }
     }
   },
   created() {
     this.loadData()
   },
   methods: {
-    loadData: function () {
-      cascadeList().then(response => {
-        this.options = response.data
+    async loadData() {
+      this.handleFormReset()
+
+      await listBrand().then(response => {
+        this.brandOptions = response.data
       })
+
+      const goodsId = this.value.id
+      if (goodsId) {
+
+        const mainPicUrl = this.value.picUrl
+        if (mainPicUrl) {
+          this.pictures.filter(item => item.main == true)[0].url = mainPicUrl
+        }
+
+        const subPicUrls = this.value.subPicUrls
+        if (subPicUrls && subPicUrls.length > 0) {
+          for (let i = 1; i <= subPicUrls.length; i++) {
+            this.pictures[i].url = subPicUrls[i - 1]
+          }
+        }
+      }
     },
-    handleCategoryChange: function () {
-      const checkNode = this.$refs.cascader.getCheckedNodes()[0]
-      this.pathLabels = checkNode.pathLabels // 商品分类选择层级提示
-      this.value.spuInfo.categoryId = checkNode.value
+    // 设置为主图
+    handleMainPictureChange(index) {
+      this.pictures.map(item => item.main = false)
+      this.pictures[index].main = true
+      this.handlePictureReorder()
+    },
+    handlePictureReorder() {
+      const mainPics = this.pictures.filter(item => item.url && item.main == true) //主图
+      const subPics = this.pictures.filter(item => item.url && item.main == false) // 副图
+      // 主图
+      if (mainPics && mainPics.length) {
+        this.pictures[0] = mainPics[0]
+      } else {
+        this.pictures[0] = {url: undefined, main: true}
+      }
+      // 副图列表
+      if (subPics && subPics.length > 0) {
+        for (let i = 1; i < this.pictures.length; i++) {
+          if (subPics.length >= i) {
+            this.pictures[i] = subPics[i - 1]
+          } else {
+            this.pictures[i] = {url: undefined, main: false}
+          }
+        }
+      }
+    },
+    handlePictureRemove(index) {
+      this.pictures[index].url = undefined
+      this.handlePictureReorder()
+    },
+    handleFormReset: function () {
+      this.pictures = [
+        {url: undefined, main: true},
+        {url: undefined, main: false},
+        {url: undefined, main: false},
+        {url: undefined, main: false},
+        {url: undefined, main: false},
+      ]
     },
     handlePrev: function () {
       this.$emit('prev')
@@ -59,7 +162,11 @@ export default {
 
 .components-container {
   &__main {
-    margin: 20px auto
+    margin: 20px auto;
+
+    .button {
+      margin-left: 10px;
+    }
   }
 
   &__footer {

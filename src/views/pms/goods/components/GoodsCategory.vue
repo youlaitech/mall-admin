@@ -6,10 +6,10 @@
         :options="options"
         :props="{emitPath:false}"
         @change="handleCategoryChange"
-      />
+        v-model="categoryId"/>
 
       <div style="margin-top: 20px">
-        <el-link type="info" :underline="false">您选择的商品分类:</el-link>
+        <el-link type="info" :underline="false" v-show="pathLabels.length>0">您选择的商品分类:</el-link>
         <el-link type="danger" :underline="false" v-for="(item,index) in pathLabels" style="margin-left: 5px">
           {{ item }}
           <i v-show="index!=2" class=" el-icon-arrow-right"></i>
@@ -18,8 +18,7 @@
 
     </div>
     <div class="components-container__footer">
-      <el-button @click="handlePrev">上一步</el-button>
-      <el-button type="primary" @click="handleNext">下一步</el-button>
+      <el-button type="primary" @click="handleNext">下一步，填写商品信息</el-button>
     </div>
   </div>
 </template>
@@ -32,17 +31,11 @@ export default {
   props: {
     value: Object
   },
-  watch: {
-    'value.spuInfo.categoryId': {
-      handler: function (val) {
-        console.log('categoryId', val)
-      }
-    }
-  },
   data() {
     return {
       options: undefined,
-      pathLabels: []
+      pathLabels: [],
+      categoryId: undefined
     }
   },
   created() {
@@ -52,18 +45,21 @@ export default {
     loadData: function () {
       cascadeList().then(response => {
         this.options = response.data
+        if (this.value.id) {
+          this.categoryId = this.value.categoryId
+          this.$nextTick(() => {
+            this.handleCategoryChange()
+          })
+        }
       })
     },
     handleCategoryChange: function () {
       const checkNode = this.$refs.cascader.getCheckedNodes()[0]
       this.pathLabels = checkNode.pathLabels // 商品分类选择层级提示
-      this.value.spuInfo.categoryId = checkNode.value
-    },
-    handlePrev: function () {
-      this.$emit('prev')
+      this.value.categoryId = checkNode.value
     },
     handleNext: function () {
-      if (!this.value.spuInfo.categoryId) {
+      if (!this.value.categoryId) {
         this.$message.warning('请选择商品分类')
         return
       }

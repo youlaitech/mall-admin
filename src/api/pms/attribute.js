@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 
 
-export function list(params) {
+export function listAttribute(params) {
   return request({
     url: '/mall-pms/api/v1/attributes',
     method: 'get',

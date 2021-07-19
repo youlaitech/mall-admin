@@ -3,34 +3,16 @@
     <div class="components-container__main">
       <el-card class="box-card">
         <div slot="header">
-          <span>商品属性</span>
-          <el-button style="float: right;" type="primary" size="mini" @click="handleAttributeAdd">
-            添加属性
+          <span>商品规格</span>
+          <el-button style="float: right;" type="primary" size="mini" @click="handleSpecificationAdd">
+            添加规格
           </el-button>
         </div>
-        <el-form size="mini" ref="attributeForm" :inline="true" :model="value">
-          <el-table size="mini" :data="value.attrList" highlight-current-row border>
-            <el-table-column property="name" label="属性名称">
+        <el-form size="mini" ref="specificationForm" :inline="true" :model="value">
+          <el-table size="mini" :data="value.specList" highlight-current-row border>
+            <el-table-column label="规格名">
               <template slot-scope="scope">
-                <el-form-item :prop="'attrList[' + scope.$index + '].name'" >
-                  <el-input v-model="scope.row.name"></el-input>
-                </el-form-item>
-              </template>
-            </el-table-column>
-
-            <el-table-column property="value" label="属性值">
-              <template slot-scope="scope">
-                <el-form-item :prop="'attrList[' + scope.$index + '].value'" >
-                  <el-input v-model="scope.row.value"></el-input>
-                </el-form-item>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="操作" width="150">
-              <template slot-scope="scope">
-                <el-form-item>
-                  <el-button type="danger" icon="el-icon-minus" circle @click="handleAttributeRemove(scope.$index)"/>
-                </el-form-item>
+                {{ scope.row.name }}
               </template>
             </el-table-column>
           </el-table>
@@ -76,15 +58,15 @@ export default {
   methods: {
     loadData() {
       if (!this.value.id) {
-        listAttribute({categoryId: this.value.categoryId, type: 2}).then(res => {
-          this.value.attrList = res.data
+        listAttribute({categoryId: this.value.categoryId, type: 1}).then(res => {
+          this.value.specList = res.data
         })
       }
     },
-    handleAttributeAdd: function () {
+    handleSpecificationAdd: function () {
       this.value.attrList.push({})
     },
-    handleAttributeRemove: function (index) {
+    handleSpecificationRemove: function (index) {
       this.value.attrList.splice(index, 1)
     },
     handlePrev: function () {
