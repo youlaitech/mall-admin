@@ -1,49 +1,41 @@
 <template>
   <div class="components-container">
-    <el-card class="box-card" shadow="never">
-      <div class="clearfix" slot="header">
-        <b>
-          {{ this.$route.query.goodsId ? '编辑商品' : '新增商品' }}
-        </b>
-      </div>
-      <el-steps :active="active" process-status="finish" finish-status="success" simple>
-        <el-step title="选择商品分类"></el-step>
-        <el-step title="填写商品信息"></el-step>
-        <el-step title="设置商品属性"></el-step>
-        <el-step title="填写商品详情"></el-step>
-      </el-steps>
-      <goods-category
-        v-show="active==0"
-        v-model="goods"
-        v-if="loaded==true"
-        @prev="prev"
-        @next="next">
-      </goods-category>
-      <goods-info
-        v-show="active==1"
-        v-model="goods"
-        v-if="loaded==true"
-        @prev="prev"
-        @next="next">
-      </goods-info>
+    <el-steps :active="active" process-status="finish" finish-status="success" simple>
+      <el-step title="选择商品分类"></el-step>
+      <el-step title="填写商品信息"></el-step>
+      <el-step title="设置商品属性"></el-step>
+      <el-step title="设置商品库存"></el-step>
+    </el-steps>
+    <goods-category
+      v-show="active==0"
+      v-model="goods"
+      v-if="loaded==true"
+      @prev="prev"
+      @next="next">
+    </goods-category>
+    <goods-info
+      v-show="active==1"
+      v-model="goods"
+      v-if="loaded==true"
+      @prev="prev"
+      @next="next">
+    </goods-info>
 
-      <goods-attribute
-        v-show="active==2"
-        v-model="goods"
-        v-if="loaded==true"
-        @prev="prev"
-        @next="next">
-      </goods-attribute>
+    <goods-attribute
+      v-show="active==2"
+      v-model="goods"
+      v-if="loaded==true"
+      @prev="prev"
+      @next="next">
+    </goods-attribute>
 
-      <goods-inventory
-        v-show="active==3"
-        v-model="goods"
-        v-if="loaded==true"
-        @prev="prev"
-        @next="next">
-      </goods-inventory>
-
-    </el-card>
+    <goods-inventory
+      v-show="active==3"
+      v-model="goods"
+      v-if="loaded==true"
+      @prev="prev"
+      @next="next">
+    </goods-inventory>
   </div>
 </template>
 
@@ -61,7 +53,7 @@ export default {
   data() {
     return {
       loaded: false,
-      active: 0,
+      active: 3,
       goods: {
         id: undefined,
         name: undefined,
