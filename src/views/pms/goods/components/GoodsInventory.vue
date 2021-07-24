@@ -5,35 +5,58 @@
         <div slot="header">
           <span>商品规格</span>
           <el-button style="float: right;" type="primary" size="mini" @click="handleSpecAdd">
-            添加规格
+            添加规格项
           </el-button>
         </div>
         <el-form size="mini" ref="specForm" :inline="true" :model="value">
-          <el-table size="mini" ref="specTable" :data="specList" highlight-current-row border>
-            <el-table-column label="规格名" width="200">
-              <template slot-scope="scope">
-                <span> {{ scope.row.name }} </span>
+          <el-table size="mini" ref="specTable" :data="specList" row-key="id" fit highlight-current-row border>
+            <el-table-column align="center" label="" width="50">
+              <template slot-scope="{}">
+                <svg-icon class="drag-handler" icon-class="drag"/>
               </template>
             </el-table-column>
-
-            <el-table-column label="规格值">
+            <el-table-column label="规格名" width="200">
+              <template slot-scope="{row}">
+                <el-input type="text" v-model="row.name" size="mini"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column>
+              <template slot="header">
+                规格值
+                <el-link type="danger" style="font-size:12px" :underline="false">（默认第一条规格包含图片）</el-link>
+              </template>
               <template slot-scope="scope">
                 <div style="margin-right:15px;display: inline-block" v-for="item in scope.row.values">
                   <el-tag
                     closable
                     :type="types[scope.$index%types.length]"
-                    @close="handleTagClose(scope.$index,item)"
-                  >
+                    @close="handleSpecValueRemove(scope.$index,item)">
                     {{ item.value }}
                   </el-tag>
                   <mini-card-upload v-show="scope.$index==0" style="margin-top: 5px" v-model="scope.row.picUrl"/>
                 </div>
+                <el-input
+                  style="width: 80px;vertical-align: top"
+                  size="mini"
+                  v-if="tagInputs[scope.$index].visible"
+                  v-model="tagInputs[scope.$index].value"
+                  @keyup.enter.native="handleSpecValueInput(scope.$index)"
+                  @blur="handleSpecValueInput(scope.$index)"/>
+                <el-button v-else size="mini" icon="el-icon-plus" style="vertical-align: top"
+                           @click="handleSpecValueAdd(scope.$index)">添加规格值
+                </el-button>
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="拖拽排序" width="80">
-              <template slot-scope="{}">
-                <svg-icon class="drag-handler" icon-class="drag"/>
+            <el-table-column width="60" label="操作">
+              <template slot-scope="scope">
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  size="mini"
+                  circle
+                  plain
+                  @click.stop="handleSpecRemove(scope.$index)"/>
               </template>
             </el-table-column>
           </el-table>
@@ -70,7 +93,7 @@ export default {
         }
       },
       types: ['', 'success', 'info', 'warning', 'danger'],
-
+      tagInputs: [{value: undefined, visible: false}], // 规格值标签临时值和显隐控制
     }
   },
   created() {
@@ -78,25 +101,40 @@ export default {
   },
   methods: {
     async loadData() {
-      // 获取规格列表，type:1表示规格
+      // type: 1-规格；2-属性
       const data = await listAttribute({categoryId: this.value.categoryId, type: 1})
       this.specList = data.data
-      this.specList.forEach(spec => {
-        spec.values = this.value.specList.filter(item => item.attributeId == spec.id)
+      this.specList.forEach((item, index) => {
+        this.tagInputs.push({})
+        this.$set(this.tagInputs[index],"value",undefined);
+        this.$set(this.tagInputs[index],"visible",false);
+        item.values = this.value.specList.filter(data => data.attributeId == item.id)
       })
       this.$nextTick(() => {
         this.setSort()
       })
     },
     handleSpecAdd: function () {
-      this.value.attrList.push({})
+      if (this.specList.length >= 3) {
+        this.$message.warning('最多支持3组规格')
+        return
+      }
+      this.specList.push({})
+      this.tagInputs[this.specList.length - 1] = {value: undefined, visible: false}
     },
-    handleSpecificationRemove: function (index) {
-      this.value.attrList.splice(index, 1)
+    handleSpecRemove: function (index) {
+      this.specList.splice(index, 1)
+      this.tagInputs.splice(index, 1)
     },
-    handleTagClose: function (rowIndex, specItem) {
+    handleSpecValueRemove: function (rowIndex, specItem) {
       const removeIndex = this.specList[rowIndex].values.indexOf(specItem)
-      console.log('removeIndex', removeIndex)
+    },
+    handleSpecValueInput: function (rowIndex) {
+      const currSpecValue = this.tagInputs[rowIndex].value
+
+    },
+    handleSpecValueAdd: function (rowIndex) {
+      this.tagInputs[rowIndex].visible = true
     },
     setSort() {
       const el = this.$refs.specTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
@@ -106,11 +144,10 @@ export default {
           dataTransfer.setData('Text', '')
         },
         onEnd: evt => {
-          console.log('evt.oldIndex',evt.oldIndex,evt.newIndex)
-          const targetRow = this.specList.splice(evt.oldIndex, 1)[0]
-          console.log('targetRow',targetRow)
-          this.specList.splice(evt.newIndex, 0, targetRow)
-          this.$forceUpdate()
+          // oldIndex 拖拽行当前所在索引
+          // newIndex 拖拽行目标索引
+          const targetRow = this.specList.splice(evt.oldIndex, 1)[0] //  返回被删除的行
+          this.specList.splice(evt.newIndex, 0, targetRow) // 拼接
         }
       })
     },
