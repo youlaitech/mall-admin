@@ -29,13 +29,13 @@
       @next="next">
     </goods-attribute>
 
-    <goods-inventory
+    <goods-stock
       v-show="active==3"
       v-model="goods"
       v-if="loaded==true"
       @prev="prev"
       @next="next">
-    </goods-inventory>
+    </goods-stock>
   </div>
 </template>
 
@@ -44,11 +44,11 @@ import GoodsCategory from "@/views/pms/goods/components/GoodsCategory";
 import GoodsInfo from "@/views/pms/goods/components/GoodsInfo";
 import GoodsAttribute from "@/views/pms/goods/components/GoodsAttribute";
 import {detail} from "@/api/pms/goods";
-import GoodsInventory from "@/views/pms/goods/components/GoodsInventory";
+import GoodsStock from "@/views/pms/goods/components/GoodsStock";
 
 export default {
   name: "goods-detail",
-  components: {GoodsInventory, GoodsCategory, GoodsInfo, GoodsAttribute},
+  components: {GoodsStock, GoodsCategory, GoodsInfo, GoodsAttribute},
   props: ['goodsId'],
   data() {
     return {
@@ -98,7 +98,6 @@ export default {
         this.active = 0;
       }
     }
-
   }
 }
 </script>
