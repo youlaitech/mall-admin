@@ -17,7 +17,8 @@
             </el-table-column>
             <el-table-column label="规格名" width="200">
               <template slot-scope="{row}">
-                <el-input type="text" v-model="row.name" size="mini"></el-input>
+                <el-input type="text" v-model="row.name" size="mini"
+                          @input="handleSpecNameInput(row,row.index)"></el-input>
               </template>
             </el-table-column>
             <el-table-column>
@@ -69,14 +70,19 @@
         </div>
         <el-form size="mini" ref="skuForm" :inline="true">
           <el-table size="mini" ref="stockTable" :data="skuList" fit highlight-current-row border>
-            <el-table-column align="center" label="" width="50"></el-table-column>
-            <el-table-column align="center" label="" width="50">
+            <el-table-column
+              v-for="(item,index) in specTempList"
+              align="center"
+              :prop="'specValue'+(index+1)"
+              :label="item.name">
             </el-table-column>
-            <el-table-column align="center" label="" width="50">
+            <el-table-column prop="sn" label="商品编码" align="center">
             </el-table-column>
-            <el-table-column align="center" label="" width="50">
+            <el-table-column prop="price" label="现价（元）" align="center">
             </el-table-column>
-            <el-table-column align="center" label="" width="50">
+            <el-table-column prop="originPrice" label="原价（元）" align="center">
+            </el-table-column>
+            <el-table-column prop="stock" label="库存" align="center">
             </el-table-column>
           </el-table>
         </el-form>
@@ -104,6 +110,7 @@ export default {
   data() {
     return {
       specList: [],
+      specTempList: [],
       rules: {
         attribute: {
           name: [{required: true, message: '请填写参数名称', trigger: 'blur'}],
@@ -162,7 +169,6 @@ export default {
     handleSpecValueInput: function (rowIndex) {
       const currSpecValue = this.tagInputs[rowIndex].value
       const specValues = this.specList[rowIndex].values
-      console.log(specValues)
       if (specValues && specValues.length > 0 && specValues.map(item => item.value).includes(currSpecValue)) {
         this.$message.warning("规格值重复，请重新输入")
         return false
@@ -200,7 +206,6 @@ export default {
       })
     },
     handleSkuGenerate: function () {
-      console.log('规格列表', this.specList)
       // [
       //    { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] },
       //    { 'id':2,'name':'版本','values':[{id:1,value:'6+128G'},{id:2,value:'8+128G'},{id:3,value:'8G+256G'}] }
@@ -209,21 +214,31 @@ export default {
 
       this.skuList = specList.reduce((acc, curr) => {
         let result = []
-        acc.forEach(item => {  // item=> {}
+        acc.forEach((item, index) => {  // item=> {}
           // curr => { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] }
           curr.values.forEach(v => {  // v=>{id:1,value:'白色'}
+            if (!v.id) {
+              v.id = 'x' + index
+            }
             let temp = {}
-            Object.assign(temp, item); // item=>{name:'白色 ',specs:1,}
-            temp.name += v.value + ' '
-            temp.specs += v.id + '_'
+            Object.assign(temp, item) // item=>{name:'白色 ',specs:1,}
+            temp.specValues += v.value + '_' // 规格值拼接
+            temp.specIds += v.id + '_' // 规格ID拼接
             result.push(temp)
           })
         })
         return result
-      }, [{name: '', specs: ''}])
+      }, [{specValues: '', specIds: ''}])
 
-      console.log('sku列表',this.skuList)
-
+      this.skuList.forEach(sku => {
+        sku.specValues.substring(0, sku.specValues.length - 1).split('_').forEach((value, index) => {
+          const key = 'specValue' + (index + 1)
+          sku[key] = value
+        })
+      })
+    },
+    handleSpecNameInput: function () {
+      this.specTempList = JSON.parse(JSON.stringify(this.specList));
     },
     handlePrev: function () {
       this.$emit('prev')
