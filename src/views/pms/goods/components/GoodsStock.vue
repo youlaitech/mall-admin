@@ -69,7 +69,12 @@
           <span>商品库存</span>
         </div>
         <el-form size="mini" ref="skuForm" :inline="true">
-          <el-table size="mini" ref="stockTable" :data="skuList" fit highlight-current-row border>
+          <el-table
+            :data="skuList"
+            :span-method="handleCellMerge"
+            size="mini"
+            fit highlight-current-row border
+          >
             <el-table-column
               v-for="(item,index) in specTempList"
               align="center"
@@ -110,7 +115,7 @@ export default {
   data() {
     return {
       specList: [],
-      specTempList: [],
+      specTempList: [], // fix: 规格名输入框变化，库存明细表格header不渲染问题
       rules: {
         attribute: {
           name: [{required: true, message: '请填写参数名称', trigger: 'blur'}],
@@ -131,12 +136,12 @@ export default {
       const {data} = await listAttribute({categoryId: this.value.categoryId, type: 1})
       this.specList = data
       this.specList.forEach((item, index) => {
-        this.tagInputs.push({})
-        this.$set(this.tagInputs[index], "value", undefined);
-        this.$set(this.tagInputs[index], "visible", false);
+        this.tagInputs.push({'value': undefined, 'visible': false})
         item.values = this.value.specList.filter(data => data.attributeId == item.id)
       })
-      this.handleSpecSort()
+      this.specTempList = JSON.parse(JSON.stringify(this.specList));
+      this.generateSku()
+      this.sortSpec()
       this.$nextTick(() => {
         this.setSort()
       })
@@ -147,18 +152,15 @@ export default {
         return
       }
       this.specList.push({})
-      const index = this.specList.length - 1
-      this.tagInputs.push({})
-      this.$set(this.tagInputs[index], "value", undefined);
-      this.$set(this.tagInputs[index], "visible", false);
-      this.handleSpecSort()
+      this.tagInputs.push({'value': undefined, 'visible': false})
+      this.sortSpec()
     },
     handleSpecRemove: function (index) {
       this.specList.splice(index, 1)
       this.tagInputs.splice(index, 1)
-      this.handleSpecSort()
+      this.sortSpec()
     },
-    handleSpecSort: function () {
+    sortSpec: function () {
       this.specList.forEach((item, index) => {
         item.index = index
       })
@@ -184,7 +186,7 @@ export default {
       this.tagInputs[rowIndex].visible = false
 
       // 生成SKU列表
-      this.handleSkuGenerate()
+      this.generateSku()
     },
     handleSpecValueAdd: function (rowIndex) {
       this.tagInputs[rowIndex].visible = true
@@ -201,11 +203,11 @@ export default {
           // newIndex 拖拽行目标索引
           const targetRow = this.specList.splice(evt.oldIndex, 1)[0] //  返回被删除的行
           this.specList.splice(evt.newIndex, 0, targetRow) // 拼接
-          this.handleSpecSort()
+          this.sortSpec()
         }
       })
     },
-    handleSkuGenerate: function () {
+    generateSku: function () {
       // [
       //    { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] },
       //    { 'id':2,'name':'版本','values':[{id:1,value:'6+128G'},{id:2,value:'8+128G'},{id:3,value:'8G+256G'}] }
@@ -218,7 +220,7 @@ export default {
           // curr => { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] }
           curr.values.forEach(v => {  // v=>{id:1,value:'白色'}
             if (!v.id) {
-              v.id = 'x' + index
+              v.id = 'x' + index // 因为页面新增的规格项没有id，后台持久化前替换临时ID
             }
             let temp = {}
             Object.assign(temp, item) // item=>{name:'白色 ',specs:1,}
@@ -239,6 +241,32 @@ export default {
     },
     handleSpecNameInput: function () {
       this.specTempList = JSON.parse(JSON.stringify(this.specList));
+    },
+    /**
+     * 合并规格值单元格
+     */
+    handleCellMerge({row, column, rowIndex, columnIndex}) {
+      let mergeRows = [1, 1, 1] // 分别对应规格1、规格2、规格3列合并的行数
+      const specLen = this.specList.length
+      if (specLen == 2) {
+        mergeRows = [this.specList[1].values.length, 1, 1]
+      } else if (specLen == 3) {
+        mergeRows = [this.specList[1].values.length * this.specList[2].values.length, this.specList[2].values.length, 1]
+      }
+      if (columnIndex == 0) {
+        if (rowIndex % mergeRows[0] === 0) {
+          return [mergeRows[0], 1]// 合并单元格
+        } else {
+          return [0, 0] // 隐藏单元格
+        }
+      }
+      if (columnIndex == 1) {
+        if (rowIndex % mergeRows[1] === 0) {
+          return [mergeRows[1], 1]// 合并单元格
+        } else {
+          return [0, 0]  // 隐藏单元格
+        }
+      }
     },
     handlePrev: function () {
       this.$emit('prev')
