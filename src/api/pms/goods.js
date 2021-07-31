@@ -15,7 +15,7 @@ export function detail(id) {
   })
 }
 
-export function add(data) {
+export function addGoods(data) {
   return request({
     url: '/mall-pms/api/v1/goods',
     method: 'post',
@@ -23,7 +23,7 @@ export function add(data) {
   })
 }
 
-export function update(id, data) {
+export function updateGoods(id, data) {
   return request({
     url: '/mall-pms/api/v1/goods/' + id,
     method: 'put',
@@ -31,7 +31,7 @@ export function update(id, data) {
   })
 }
 
-export function del(ids) {
+export function delGoods(ids) {
   return request({
     url: '/mall-pms/api/v1/goods/'+ids,
     method: 'delete'

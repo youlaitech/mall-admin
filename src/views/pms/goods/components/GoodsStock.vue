@@ -18,7 +18,7 @@
             <el-table-column label="规格名" width="200">
               <template slot-scope="{row}">
                 <el-input type="text" v-model="row.name" size="mini"
-                          @input="handleSpecNameInput(row,row.index)"></el-input>
+                          @input="changeSpec()"></el-input>
               </template>
             </el-table-column>
             <el-table-column>
@@ -30,11 +30,11 @@
                 <div style="margin-right:15px;display: inline-block" v-for="item in row.values">
                   <el-tag
                     closable
-                    :type="types[row.index%types.length]"
-                    @close="handleSpecValueRemove(row.index,item)">
+                    :type="colors[row.index%colors.length]"
+                    @close="handleSpecValueRemove(row.index,item.id)">
                     {{ item.value }}
                   </el-tag>
-                  <mini-card-upload v-if="row.index==0" style="margin-top: 5px" v-model="row.picUrl"/>
+                  <mini-card-upload v-if="row.index==0" style="margin-top: 5px" v-model="item.picUrl"/>
                 </div>
                 <el-input
                   style="width: 80px;vertical-align: top"
@@ -76,18 +76,34 @@
             fit highlight-current-row border
           >
             <el-table-column
-              v-for="(item,index) in specTempList"
+              v-for="(title,index) in specTitleList"
               align="center"
               :prop="'specValue'+(index+1)"
-              :label="item.name">
+              :label="title">
             </el-table-column>
-            <el-table-column prop="sn" label="商品编码" align="center">
+            <el-table-column
+              label="商品编码"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <el-form-item :prop="'skuList['+scope.$index+'].sn'">
+                  <el-input v-model="scope.row.sn"/>
+                </el-form-item>
+              </template>
             </el-table-column>
-            <el-table-column prop="price" label="现价（元）" align="center">
+            <el-table-column label="价格" align="center">
+              <template slot-scope="scope">
+                <el-form-item :prop="'skuList['+scope.$index+'].price'">
+                  <el-input v-model="scope.row.price"/>
+                </el-form-item>
+              </template>
             </el-table-column>
-            <el-table-column prop="originPrice" label="原价（元）" align="center">
-            </el-table-column>
-            <el-table-column prop="stock" label="库存" align="center">
+            <el-table-column label="库存" align="center">
+              <template slot-scope="scope">
+                <el-form-item :prop="'skuList['+scope.$index+'].stock'">
+                  <el-input v-model="scope.row.stock"/>
+                </el-form-item>
+              </template>
             </el-table-column>
           </el-table>
         </el-form>
@@ -104,6 +120,13 @@
 import {listAttribute} from "@/api/pms/attribute";
 import MiniCardUpload from '@/components/Upload/MiniCardUpload'
 import Sortable from "sortablejs";
+import {addGoods, updateGoods} from "@/api/pms/goods";
+
+Array.prototype.equals = function (target) {
+  return this.length === target.length &&
+    this.every(a => target.some(b => a === b)) &&
+    target.every(x => this.some(y => x === y));
+}
 
 export default {
   name: "GoodsStock",
@@ -115,14 +138,14 @@ export default {
   data() {
     return {
       specList: [],
-      specTempList: [], // fix: 规格名输入框变化，库存明细表格header不渲染问题
+      specTitleList: [], // 规格项名称
       rules: {
         attribute: {
           name: [{required: true, message: '请填写参数名称', trigger: 'blur'}],
           value: [{required: true, message: '请填写参数值', trigger: 'blur'}]
         }
       },
-      types: ['', 'success', 'warning', 'danger'],
+      colors: ['', 'success', 'warning', 'danger'],
       tagInputs: [{value: undefined, visible: false}], // 规格值标签临时值和显隐控制
       skuList: []
     }
@@ -135,12 +158,18 @@ export default {
       // type: 1-规格；2-属性
       const {data} = await listAttribute({categoryId: this.value.categoryId, type: 1})
       this.specList = data
-      this.specList.forEach((item, index) => {
+      this.specList.forEach(item => {
         this.tagInputs.push({'value': undefined, 'visible': false})
         item.values = this.value.specList.filter(data => data.attributeId == item.id)
       })
-      this.specTempList = JSON.parse(JSON.stringify(this.specList));
+
+      // SKU规格ID拼接字符串处理
+      this.value.skuList.forEach(sku => {
+        sku.specIdArr = sku.specs.split('_')
+      })
+
       this.generateSku()
+      this.changeSpec()
       this.sortSpec()
       this.$nextTick(() => {
         this.setSort()
@@ -151,22 +180,34 @@ export default {
         this.$message.warning('最多支持3组规格')
         return
       }
-      this.specList.push({})
+      let maxSpecIndex = this.specList.filter(item => item.id.includes('temp-')).map(item => item.id).reduce((acc, curr) => {
+        return acc > curr ? acc : curr
+      }, 0)
+      this.specList.push({id: 'temp-' + ++maxSpecIndex})
       this.tagInputs.push({'value': undefined, 'visible': false})
       this.sortSpec()
     },
     handleSpecRemove: function (index) {
       this.specList.splice(index, 1)
       this.tagInputs.splice(index, 1)
+      this.generateSku()
       this.sortSpec()
+      this.changeSpec()
     },
     sortSpec: function () {
       this.specList.forEach((item, index) => {
         item.index = index
       })
     },
-    handleSpecValueRemove: function (rowIndex, specItem) {
-      const removeIndex = this.specList[rowIndex].values.indexOf(specItem)
+    handleSpecValueRemove: function (rowIndex, specValueId) {
+      const specList = JSON.parse(JSON.stringify(this.specList))
+      const removeIndex = specList[rowIndex].values.map(item => item.id).indexOf(specValueId)
+      console.log('removeIndex', removeIndex)
+
+      specList[rowIndex].values.splice(removeIndex, 1)
+      this.specList = specList
+      this.changeSpec()
+      this.generateSku()
     },
     handleSpecValueInput: function (rowIndex) {
       const currSpecValue = this.tagInputs[rowIndex].value
@@ -177,9 +218,15 @@ export default {
       }
       if (currSpecValue) {
         if (specValues && specValues.length > 0) {
-          this.specList[rowIndex].values[specValues.length] = {'value': currSpecValue}
+          let maxSpecValueIndex = specValues.filter(item => item.id.includes('temp-')).map(item => item.id).reduce((acc, curr) => {
+            return acc > curr ? acc : curr
+          }, 0)
+          this.specList[rowIndex].values[specValues.length] = {
+            'value': currSpecValue,
+            'id': 'temp-' + ++maxSpecValueIndex
+          }
         } else {
-          this.specList[rowIndex].values = [{'value': currSpecValue}]
+          this.specList[rowIndex].values = [{'value': currSpecValue, 'id': 'temp-1'}]
         }
       }
       this.tagInputs[rowIndex].value = undefined
@@ -203,7 +250,9 @@ export default {
           // newIndex 拖拽行目标索引
           const targetRow = this.specList.splice(evt.oldIndex, 1)[0] //  返回被删除的行
           this.specList.splice(evt.newIndex, 0, targetRow) // 拼接
+          this.generateSku() // 重新生成sku
           this.sortSpec()
+          this.changeSpec()
         }
       })
     },
@@ -212,19 +261,16 @@ export default {
       //    { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] },
       //    { 'id':2,'name':'版本','values':[{id:1,value:'6+128G'},{id:2,value:'8+128G'},{id:3,value:'8G+256G'}] }
       // ]
-      const specList = JSON.parse(JSON.stringify(this.specList)) // 深拷贝
+      const specList = JSON.parse(JSON.stringify(this.specList.filter(item => item.values.length > 0))) // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
 
-      this.skuList = specList.reduce((acc, curr) => {
+      console.log('specList', specList)
+      const skuList = specList.reduce((acc, curr) => {
         let result = []
-        acc.forEach((item, index) => {  // item=> {}
+        acc.forEach(item => {
           // curr => { 'id':1,'name':'颜色','values':[{id:1,value:'白色'},{id:2,value:'黑色'},{id:3,value:'蓝色'}] }
           curr.values.forEach(v => {  // v=>{id:1,value:'白色'}
-            if (!v.id) {
-              v.id = 'x' + index // 因为页面新增的规格项没有id，后台持久化前替换临时ID
-            }
-            let temp = {}
-            Object.assign(temp, item) // item=>{name:'白色 ',specs:1,}
-            temp.specValues += v.value + '_' // 规格值拼接
+            let temp = Object.assign({}, item)
+            temp.specValues += v.value + '_'
             temp.specIds += v.id + '_' // 规格ID拼接
             result.push(temp)
           })
@@ -232,26 +278,44 @@ export default {
         return result
       }, [{specValues: '', specIds: ''}])
 
-      this.skuList.forEach(sku => {
-        sku.specValues.substring(0, sku.specValues.length - 1).split('_').forEach((value, index) => {
-          const key = 'specValue' + (index + 1)
-          sku[key] = value
+      skuList.forEach(item => {
+        const specIdArr = item.specIds.substring(0, item.specIds.length - 1).split('_')
+        const dbSku = this.value.skuList.filter(sku => sku.specIdArr.equals(specIdArr)) //
+
+
+        const specValueArr = item.specValues.substring(0, item.specValues.length - 1).split('_')
+        specValueArr.forEach((v, i) => {
+          const key = 'specValue' + (i + 1)
+          item[key] = v
+          if (i == 0) {
+            const specValues = this.specList[0].values.filter(specValue => specValue.value == v)
+            if (specValues && specValues.length > 0) {
+              item.picUrl = specValues[0].picUrl
+            }
+          }
         })
+
+
       })
+      this.skuList = JSON.parse(JSON.stringify(skuList))
     },
-    handleSpecNameInput: function () {
-      this.specTempList = JSON.parse(JSON.stringify(this.specList));
+    changeSpec: function () {
+      const specList = JSON.parse(JSON.stringify(this.specList))
+      this.specTitleList = specList.map(item => item.name)
     },
     /**
      * 合并规格值单元格
      */
     handleCellMerge({row, column, rowIndex, columnIndex}) {
       let mergeRows = [1, 1, 1] // 分别对应规格1、规格2、规格3列合并的行数
-      const specLen = this.specList.length
+      const specLen = this.specList.filter(item => item.values && item.values.length > 0).length
       if (specLen == 2) {
-        mergeRows = [this.specList[1].values.length, 1, 1]
+        const values_len_2 = this.specList[1].values ? this.specList[1].values.length : 1 // 第2个规格项的规格值的数量
+        mergeRows = [values_len_2, 1, 1]
       } else if (specLen == 3) {
-        mergeRows = [this.specList[1].values.length * this.specList[2].values.length, this.specList[2].values.length, 1]
+        const values_len_2 = this.specList[1].values ? this.specList[1].values.length : 1 // 第2个规格项的规格值的数量
+        const values_len_3 = this.specList[2].values ? this.specList[2].values.length : 1 // 第3个规格项的规格值的数量
+        mergeRows = [values_len_2 * values_len_3, values_len_3, 1]
       }
       if (columnIndex == 0) {
         if (rowIndex % mergeRows[0] === 0) {
@@ -272,7 +336,19 @@ export default {
       this.$emit('prev')
     },
     handleSubmit: function () {
-      this.$emit('next')
+
+      let submitGoodsData = Object.assign({}, this.value)
+      delete submitGoodsData.specList
+      submitGoodsData.specList = this.specList
+      console.log('提交数据', submitGoodsData)
+      const goodsId = this.value.id
+      if (goodsId) { // 编辑商品提交
+        updateGoods(goodsId, this.value)
+
+      } else { // 新增商品提交
+
+      }
+
     }
   }
 }
@@ -289,6 +365,10 @@ export default {
     position: fixed;
     bottom: 20px;
     right: 20px;
+  }
+
+  .box-card {
+    margin-bottom: 20px;
   }
 }
 </style>
