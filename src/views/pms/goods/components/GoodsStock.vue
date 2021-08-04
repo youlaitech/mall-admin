@@ -338,7 +338,6 @@ export default {
       this.$emit('prev')
     },
     handleSubmit: function () {
-
       let submitGoodsData = Object.assign({}, this.value)
       delete submitGoodsData.specList
       delete submitGoodsData.skuList
@@ -351,7 +350,17 @@ export default {
         specList = specList.concat(item.values)
       })
       submitGoodsData.specList = specList  // 规格列表
-      submitGoodsData.skuList = this.skuList // SKU列表
+
+      submitGoodsData.price *= 100  // 金额转成分保存至数据库
+      submitGoodsData.originPrice *= 100
+
+      let skuList = JSON.parse(JSON.stringify(this.skuList))
+      skuList.map(item => {
+        item.price *= 100
+        return item
+      })
+      submitGoodsData.skuList = skuList
+
       console.log('提交数据', submitGoodsData)
       const goodsId = this.value.id
       if (goodsId) { // 编辑商品提交
