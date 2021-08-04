@@ -53,7 +53,7 @@ export default {
   data() {
     return {
       loaded: false,
-      active: 3,
+      active: 0,
       goods: {
         id: undefined,
         name: undefined,

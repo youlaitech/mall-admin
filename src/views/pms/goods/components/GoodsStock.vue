@@ -122,11 +122,6 @@ import MiniCardUpload from '@/components/Upload/MiniCardUpload'
 import Sortable from "sortablejs";
 import {addGoods, updateGoods} from "@/api/pms/goods";
 
-Array.prototype.equals = function (target) {
-  return this.length === target.length &&
-    this.every(a => target.some(b => a === b)) &&
-    target.every(x => this.some(y => x === y));
-}
 
 export default {
   name: "GoodsStock",
@@ -138,7 +133,7 @@ export default {
   data() {
     return {
       specList: [],
-      specTitleList: [], // 规格项名称
+      specTitleList: [], // 规格项表格标题
       rules: {
         attribute: {
           name: [{required: true, message: '请填写参数名称', trigger: 'blur'}],
@@ -155,17 +150,22 @@ export default {
   },
   methods: {
     async loadData() {
-      // type: 1-规格；2-属性
-      const {data} = await listAttribute({categoryId: this.value.categoryId, type: 1})
-      this.specList = data
-      this.specList.forEach(item => {
-        this.tagInputs.push({'value': undefined, 'visible': false})
-        item.values = this.value.specList.filter(data => data.attributeId == item.id)
+      // 规格数据格式转换
+      this.value.specList.forEach(spec => {
+        const index = this.specList.findIndex(item => item.name == spec.name)
+        if (index > -1) {
+          this.specList[index].values.push({id: spec.id, value: spec.value, picUrl: spec.picUrl})
+        } else {
+          this.specList.push({name: spec.name, values: [{id: spec.id, value: spec.value, picUrl: spec.picUrl}]})
+        }
       })
-
+      // 每个规格项追加一个添加规格值按钮
+      for (let i = 0; i < this.specList.length; i++) {
+        this.tagInputs.push({'value': undefined, 'visible': false})
+      }
       // SKU规格ID拼接字符串处理
       this.value.skuList.forEach(sku => {
-        sku.specIdArr = sku.specs.split('_')
+        sku.specIdArr = sku.specIds.split('_')
       })
 
       this.generateSku()
@@ -180,10 +180,7 @@ export default {
         this.$message.warning('最多支持3组规格')
         return
       }
-      let maxSpecIndex = this.specList.filter(item => item.id.includes('temp-')).map(item => item.id).reduce((acc, curr) => {
-        return acc > curr ? acc : curr
-      }, 0)
-      this.specList.push({id: 'temp-' + ++maxSpecIndex})
+      this.specList.push({})
       this.tagInputs.push({'value': undefined, 'visible': false})
       this.sortSpec()
     },
@@ -218,7 +215,8 @@ export default {
       }
       if (currSpecValue) {
         if (specValues && specValues.length > 0) {
-          let maxSpecValueIndex = specValues.filter(item => item.id.includes('temp-')).map(item => item.id).reduce((acc, curr) => {
+          // temp-1 取数值 1
+          let maxSpecValueIndex = specValues.filter(item => item.id.includes('temp-')).map(item => item.id.substring(5)).reduce((acc, curr) => {
             return acc > curr ? acc : curr
           }, 0)
           this.specList[rowIndex].values[specValues.length] = {
@@ -263,7 +261,6 @@ export default {
       // ]
       const specList = JSON.parse(JSON.stringify(this.specList.filter(item => item.values.length > 0))) // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
 
-      console.log('specList', specList)
       const skuList = specList.reduce((acc, curr) => {
         let result = []
         acc.forEach(item => {
@@ -280,9 +277,14 @@ export default {
 
       skuList.forEach(item => {
         const specIdArr = item.specIds.substring(0, item.specIds.length - 1).split('_')
-        const dbSku = this.value.skuList.filter(sku => sku.specIdArr.equals(specIdArr)) //
-
-
+        const skus = this.value.skuList.filter(sku => sku.specIdArr.equals(specIdArr)) // 数据库的SKU列表
+        if (skus && skus.length > 0) {
+          const sku = skus[0]
+          item.id = sku.id
+          item.sn = sku.sn
+          item.price = sku.price / 100
+          item.stock = sku.stock
+        }
         const specValueArr = item.specValues.substring(0, item.specValues.length - 1).split('_')
         specValueArr.forEach((v, i) => {
           const key = 'specValue' + (i + 1)
@@ -294,10 +296,10 @@ export default {
             }
           }
         })
-
-
       })
       this.skuList = JSON.parse(JSON.stringify(skuList))
+
+      console.log('生成的SKU列表', this.skuList)
     },
     changeSpec: function () {
       const specList = JSON.parse(JSON.stringify(this.specList))
@@ -339,18 +341,44 @@ export default {
 
       let submitGoodsData = Object.assign({}, this.value)
       delete submitGoodsData.specList
-      submitGoodsData.specList = this.specList
+      delete submitGoodsData.skuList
+
+      let specList = []
+      this.specList.forEach(item => {
+        item.values.forEach(value => {
+          value.name = item.name
+        })
+        specList = specList.concat(item.values)
+      })
+      submitGoodsData.specList = specList  // 规格列表
+      submitGoodsData.skuList = this.skuList // SKU列表
       console.log('提交数据', submitGoodsData)
       const goodsId = this.value.id
       if (goodsId) { // 编辑商品提交
-        updateGoods(goodsId, this.value)
-
+        updateGoods(goodsId, submitGoodsData).then(response => {
+          this.$router.push({path: '/pms/goods'})
+          console.log('商品提交结果', response)
+        })
       } else { // 新增商品提交
-
+        addGoods(submitGoodsData).then(response => {
+          this.$router.push({path: '/pms/goods'})
+          console.log('商品提交结果', response)
+        })
       }
-
     }
   }
+}
+
+
+/**
+ * 重写数组equals方法，数组元素完全相同不论顺序
+ * @param target
+ * @returns {boolean}
+ */
+Array.prototype.equals = function (target) {
+  return this.length === target.length &&
+    this.every(a => target.some(b => a === b)) &&
+    target.every(x => this.some(y => x === y));
 }
 </script>
 
