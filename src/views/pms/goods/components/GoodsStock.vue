@@ -285,14 +285,17 @@ export default {
           item.price = sku.price / 100
           item.stock = sku.stock
         }
-        const specValueArr = item.specValues.substring(0, item.specValues.length - 1).split('_')
+        const specValueArr = item.specValues.substring(0, item.specValues.length - 1).split('_')  // ['黑','6+128G','官方标配']
+        console.log('specValueArr',specValueArr)
+        console.log('this.specList[0].values',this.specList[0].values)
         specValueArr.forEach((v, i) => {
           const key = 'specValue' + (i + 1)
           item[key] = v
           if (i == 0) {
-            const specValues = this.specList[0].values.filter(specValue => specValue.value == v)
-            if (specValues && specValues.length > 0) {
-              item.picUrl = specValues[0].picUrl
+            const valueIndex = this.specList[0].values.findIndex(specValue => specValue.value == v)
+            console.log('valueIndex',valueIndex)
+            if (valueIndex > -1) {
+              item.picUrl = this.specList[0].values[valueIndex].picUrl
             }
           }
         })
