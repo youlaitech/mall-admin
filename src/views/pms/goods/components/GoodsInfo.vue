@@ -27,8 +27,8 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="商品简介" prop="brandId">
-          <el-input  type="textarea" style="width: 400px" v-model="value.description"/>
+        <el-form-item label="商品简介">
+          <el-input type="textarea" style="width: 400px" v-model="value.description"/>
         </el-form-item>
 
         <el-form-item label="商品相册">
@@ -50,7 +50,7 @@
         </el-form-item>
 
         <el-form-item label="商品详情" prop="detail">
-          <tinymce  v-model="value.detail" :height="400"/>
+          <tinymce v-model="value.detail" :height="400"/>
         </el-form-item>
 
       </el-form>
@@ -69,7 +69,7 @@ import Tinymce from '@/components/Tinymce'
 
 export default {
   name: "GoodsInfo",
-  components: {SingleUpload,Tinymce},
+  components: {SingleUpload, Tinymce},
   props: {
     value: Object
   },
@@ -79,6 +79,9 @@ export default {
       pictures: [],
       rules: {
         name: [{required: true, message: '请填写商品名称', trigger: 'blur'}],
+        originPrice: [{required: true, message: '请填写原价', trigger: 'blur'}],
+        price: [{required: true, message: '请填写现价', trigger: 'blur'}],
+        brandId: [{required: true, message: '请选择商品品牌', trigger: 'blur'}],
       }
     }
   },
@@ -152,7 +155,11 @@ export default {
       this.$emit('prev')
     },
     handleNext: function () {
-      this.$emit('next')
+      this.$refs["goodsForm"].validate((valid) => {
+        if (valid) {
+          this.$emit('next')
+        }
+      })
     }
   }
 }

@@ -8,11 +8,25 @@
             添加属性
           </el-button>
         </div>
-        <el-form size="mini" ref="attributeForm" :inline="true" :model="value">
-          <el-table size="mini" :data="value.attrList" highlight-current-row border>
+        <el-form
+          ref="attributeForm"
+          :model="value"
+          :rules="rules"
+          size="mini"
+          :inline="true"
+        >
+          <el-table
+            :data="value.attrList"
+            size="mini"
+            highlight-current-row
+            border
+          >
             <el-table-column property="name" label="属性名称">
               <template slot-scope="scope">
-                <el-form-item :prop="'attrList[' + scope.$index + '].name'" >
+                <el-form-item
+                  :prop="'attrList[' + scope.$index + '].name'"
+                  :rules="rules.attribute.name"
+                >
                   <el-input v-model="scope.row.name"></el-input>
                 </el-form-item>
               </template>
@@ -20,8 +34,11 @@
 
             <el-table-column property="value" label="属性值">
               <template slot-scope="scope">
-                <el-form-item :prop="'attrList[' + scope.$index + '].value'" >
-                  <el-input v-model="scope.row.value"></el-input>
+                <el-form-item
+                  :prop="'attrList[' + scope.$index + '].value'"
+                  :rules="rules.attribute.value"
+                >
+                  <el-input v-model="scope.row.value"/>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -53,19 +70,12 @@ export default {
   props: {
     value: Object
   },
-  watch: {
-    'value.categoryId': {
-      handler: function (val) {
-        console.log('value.categoryId', val)
-      }
-    }
-  },
   data() {
     return {
       rules: {
         attribute: {
-          name: [{required: true, message: '请填写参数名称', trigger: 'blur'}],
-          value: [{required: true, message: '请填写参数值', trigger: 'blur'}]
+          name: [{required: true, message: '请填写属性名称', trigger: 'blur'}],
+          value: [{required: true, message: '请填写属性值', trigger: 'blur'}]
         }
       },
     }
@@ -75,6 +85,7 @@ export default {
   },
   methods: {
     loadData() {
+      // 新增的时候加载商品分类的属性列表
       if (!this.value.id) {
         listAttribute({categoryId: this.value.categoryId, type: 2}).then(res => {
           this.value.attrList = res.data
@@ -91,7 +102,11 @@ export default {
       this.$emit('prev')
     },
     handleNext: function () {
-      this.$emit('next')
+      this.$refs["attributeForm"].validate((valid) => {
+        if (valid) {
+          this.$emit('next')
+        }
+      })
     }
   }
 }
