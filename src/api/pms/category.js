@@ -8,6 +8,16 @@ export function list(queryParams) {
   })
 }
 
+export function cascadeList(queryParams) {
+  return request({
+    url: '/mall-pms/api/v1/categories/cascade',
+    method: 'get',
+    params: queryParams
+  })
+}
+
+
+
 export function detail(id) {
   return request({
     url: '/mall-pms/api/v1/categories/' + id,
@@ -33,9 +43,8 @@ export function update(id, data) {
 
 export function del(ids) {
   return request({
-    url: '/mall-pms/api/v1/categories',
-    method: 'delete',
-    params: {ids: ids}
+    url: '/mall-pms/api/v1/categories/' + ids,
+    method: 'delete'
   })
 }
 

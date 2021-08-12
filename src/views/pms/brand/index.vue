@@ -26,63 +26,34 @@
       <el-table-column
         type="selection"
         min-width="5%"
-      >
-      </el-table-column>
+      />
       <el-table-column
         prop="name"
         label="品牌名称"
-        min-width="10"
-      >
-      </el-table-column>
+        min-width="10"/>
       <el-table-column
-        prop="firstLetter"
-        label="检索首字母"
-        min-width="10"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="logo"
-        label="logo"
-        min-width="10"
-      >
+        prop="logoUrl"
+        label="LOGO"
+        min-width="10" >
         <template slot-scope="scope">
           <el-popover
             placement="right"
-            trigger="click"
-          >
-            <img :src="scope.row.logo">
+            trigger="click">
+            <img :src="scope.row.logoUrl">
             <img slot="reference"
-                 :src="scope.row.logo"
-                 :alt="scope.row.logo"
-                 style="max-height: 60px;max-width: 60px"
-            />
+                 :src="scope.row.logoUrl"
+                 :alt="scope.row.logoUrl"
+                 style="max-height: 60px;max-width: 60px"/>
           </el-popover>
         </template>
       </el-table-column>
       <el-table-column
         prop="sort"
         label="排序"
-        min-width="10"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="status"
-        label="是否显示"
-        min-width="10"
-      >
-        <template slot-scope="scope">
-          <el-switch
-            @change="handleStatusChange(scope.row)"
-            :active-value="1"
-            :inactive-value="0"
-            v-model="scope.row.status">
-          </el-switch>
-        </template>
-      </el-table-column>
+        min-width="10"/>
       <el-table-column
         label="操作"
-        min-width="10"
-      >
+        min-width="10" >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -107,31 +78,22 @@
     <el-dialog
       :title="dialog.title"
       :visible.sync="dialog.visible"
-      @close="cancel"
+      @close="closeDialog"
       top="5vh"
-      width="40%">
+      width="800px">
       <el-form id="dataForm" label-width="120px" :model="form" :rules="rules" ref="form">
         <el-form-item label="品牌名称" prop="name">
-          <el-input v-model="form.name" auto-complete="off"></el-input>
+          <el-input v-model="form.name" auto-complete="off" style="width: 200px"></el-input>
         </el-form-item>
-        <el-form-item label="检索首字母" prop="firstLetter">
-          <el-input v-model="form.firstLetter" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="logo" prop="logo" label-width="120px">
-          <single-upload v-model="form.logo"></single-upload>
+        <el-form-item label="LOGO" prop="logoUrl" label-width="120px">
+          <single-upload v-model="form.logoUrl"></single-upload>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="form.sort" auto-complete="off" style="width: 180px"></el-input>
-        </el-form-item>
-        <el-form-item label="是否显示" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
-          </el-radio-group>
+          <el-input v-model="form.sort" auto-complete="off" style="width: 200px"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
+        <el-button @click="closeDialog">取 消</el-button>
         <el-button type="primary" @click="handleSubmit">确 定</el-button>
       </div>
     </el-dialog>
@@ -139,7 +101,7 @@
 </template>
 
 <script>
-  import {list, detail, update, add, del, patch} from '@/api/pms/brand'
+  import {page, detail, update, add, del} from '@/api/pms/brand'
   import SingleUpload from '@/components/Upload/SingleUpload'
 
   export default {
@@ -169,10 +131,8 @@
         },
         form: {
           name: undefined,
-          firstLetter: undefined,
-          logo: undefined,
-          status: 1,
-          sort: undefined
+          logoUrl: undefined,
+          sort: 1
         },
         rules: {
           name: [{
@@ -188,7 +148,7 @@
       handleQuery() {
         this.queryParams.page = this.pagination.page
         this.queryParams.limit = this.pagination.limit
-        list(this.queryParams).then(response => {
+        page(this.queryParams).then(response => {
           this.loading = false
           const {data, total} = response
           this.pageList = data
@@ -278,26 +238,12 @@
           }
         })
       },
-      cancel() {
+      closeDialog() {
         this.resetForm()
         this.dialog = {
           title: undefined,
           visible: false
         }
-      },
-      handleStatusChange(row) {
-        const text = row.status === 1 ? '开启' : '关闭'
-        this.$confirm('确认"' + text + row.name + '"数据项吗?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function () {
-          return patch(row.id, 1, {status: row.status})
-        }).then(() => {
-          this.$message.success(text + '成功')
-        }).catch(function () {
-          row.status = row.status === 1 ? 0 : 1
-        })
       }
     }
   }

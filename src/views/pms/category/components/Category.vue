@@ -1,32 +1,31 @@
 <!-- 商品分类层级最多为三层，level字段标识 -->
 <template>
-  <div class="app-container">
-    <el-row :gutter="10">
-      <el-col :span="12" :xs="24">
-        <el-card>
-          <div class="clearfix" slot="header">
-            <b>
-              <svg-icon icon-class="menu"/>
-              商品分类列表</b>
-          </div>
+  <div class="components-container">
 
-          <div class="custom-tree-container">
-            <div class="block">
-              <el-tree
-                v-loading="loading"
-                ref="category"
-                :data="list"
-                :props="{ label: 'name', children: 'children' }"
-                node-key="id"
-                :expand-on-click-node="false"
-                default-expand-all
-                :accordion="true"
-                @node-click="handleNodeClick">
+    <el-card>
+      <div class="clearfix" slot="header">
+        <b>
+          <svg-icon icon-class="menu"/>
+          商品分类</b>
+      </div>
+
+      <div class="custom-tree-container">
+        <div class="block">
+          <el-tree
+            v-loading="loading"
+            ref="category"
+            :data="list"
+            :props="{ label: 'name', children: 'children' }"
+            node-key="id"
+            :expand-on-click-node="false"
+            default-expand-all
+            :accordion="true"
+            @node-click="handleNodeClick">
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span>
                 <el-image style="width: 30px; height: 30px;vertical-align: middle"
                           v-show="data.level == 3"
-                          :src="data.icon"/>
+                          :src="data.iconUrl"/>
                 {{ data.name }}
               </span>
               <span>
@@ -56,55 +55,55 @@
                   @click.stop="handleDelete(node, data)"/>
               </span>
             </span>
-              </el-tree>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
+          </el-tree>
+        </div>
+      </div>
+    </el-card>
 
-      <el-col :span="12" :xs="24">
-        <el-card class="box-card" shadow="always">
-          <div class="clearfix" slot="header">
-            <b>
-              <svg-icon icon-class="menu"/>
-              {{ title }}</b>
-          </div>
 
-          <el-form label-width="120px" :model="form" :rules="rules" ref="form">
-            <el-form-item label="上级分类" prop="parentId">
-              <el-input v-model="parent.name" readonly/>
-            </el-form-item>
-            <el-form-item label="分类名称" prop="name">
-              <el-input v-model="form.name"/>
-            </el-form-item>
-            <el-form-item label="分类图标" prop="icon">
-              <single-upload v-model="form.icon"></single-upload>
-            </el-form-item>
-            <el-form-item label="显示状态" prop="status">
-              <el-radio-group v-model="form.status">
-                <el-radio :label="1">显示</el-radio>
-                <el-radio :label="0">隐藏</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="排序" prop="sort">
-              <el-input v-model="form.sort"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="handleSubmit">保存</el-button>
-              <el-button icon="el-icon-refresh" @click="resetForm">重置</el-button>
-            </el-form-item>
-          </el-form>
-        </el-card>
-      </el-col>
+    <el-dialog
+      :title="dialog.title"
+      :visible.sync="dialog.visible"
+      width="800px">
 
-    </el-row>
+      <el-form
+        label-width="120px"
+        :model="form"
+        :rules="rules"
+        ref="form"
+        style="width: 80%;">
+        <el-form-item label="上级分类" prop="parentId">
+          <el-input v-model="parent.name" readonly/>
+        </el-form-item>
+        <el-form-item label="分类名称" prop="name">
+          <el-input v-model="form.name"/>
+        </el-form-item>
+        <el-form-item label="分类图标" prop="iconUrl">
+          <single-upload v-model="form.iconUrl"></single-upload>
+        </el-form-item>
+        <el-form-item label="显示状态" prop="visible">
+          <el-radio-group v-model="form.visible">
+            <el-radio :label="1">显示</el-radio>
+            <el-radio :label="0">隐藏</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="form.sort"></el-input>
+        </el-form-item>
+
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleSubmit">确 定</el-button>
+        <el-button @click="dialog.visible=false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {
   list,
-  detail,
   update,
   add,
   del
@@ -123,22 +122,22 @@ export default {
         name: undefined,
         parentId: 0,
         level: undefined,
-        icon: undefined,
-        status: 1,
-        sort: undefined
+        iconUrl: undefined,
+        visible: 1,
+        sort: 1
       },
       rules: {
         parentId: [{
-          required: true, message: '请选择 上级分类', trigger: 'blur'
+          required: true, message: '请选择上级分类', trigger: 'blur'
         }],
         name: [{
-          required: true, message: '请输入类目名称', trigger: 'blur'
+          required: true, message: '请输入分类名称', trigger: 'blur'
         }]
       },
-      queryParams: {
-        queryMode: 'tree'
+      dialog: {
+        title: undefined,
+        visible: false
       },
-      title: '新增商品分类',
       parent: {},
       current: {}
     }
@@ -149,10 +148,12 @@ export default {
   methods: {
     handleQuery() {
       this.resetForm()
-      list(this.queryParams).then(response => {
+      list().then(response => {
         this.list = [{
           id: 0,
           name: '全部分类',
+          parentId:0,
+          level: 0,
           children: response.data
         }]
         this.loading = false
@@ -163,33 +164,39 @@ export default {
         id: undefined,
         name: undefined,
         parentId: 0,
-        level: undefined,
-        icon: undefined,
-        status: 1,
-        sort: undefined
+        level: 0,
+        iconUrl: undefined,
+        visible: 1,
+        sort: 1
       }
-      this.parent = {id: 0, name: '顶级分类'}
+      this.parent = {id: 0, name: '顶级分类', level: 0}
       if (this.$refs['form']) {
         this.$refs['form'].resetFields()
       }
     },
     handleAdd(row) {
-      if (row.id) { // 行点击新增
-        this.form.parentId = row.id
-      } else { // 工具栏点击新增
-        if (this.current) {
-          this.form.parentId = this.current.id
-        } else {
-          this.form.parentId = 0
-          this.form.component = 'Layout'
+      this.resetForm()
+      if (row.id != null) { // 行点击新增
+        this.parent = {
+          id: row.id,
+          name: row.name,
+          level: row.level
         }
       }
-      this.title = '新增商品分类'
+
+      this.dialog = {
+        title: '新增分类',
+        visible: true
+      }
     },
     handleUpdate(row) {
       this.resetForm()
-      this.title = '修改商品分类'
-      this.form = JSON.parse(JSON.stringify(row))
+      this.handleNodeClick(row)
+      this.form = this.current
+      this.dialog = {
+        title: '新增商品分类',
+        visible: true
+      }
     },
     handleDelete(node, row) {
       this.$confirm('确认删除已选中的数据项？', "警告", {
@@ -207,16 +214,22 @@ export default {
     handleSubmit() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
+
           const id = this.form.id
           if (id != undefined) {
-            update(id, this.form).then(response => {
+            update(id, this.form).then(() => {
               this.$message.success('修改成功')
               this.handleQuery()
+              this.closeDialog()
             })
           } else {
-            add(this.form).then(response => {
+            this.form.parentId = this.parent.id
+            this.form.level = this.parent.level + 1
+
+            add(this.form).then(() => {
               this.$message.success('新增成功')
               this.handleQuery()
+              this.closeDialog()
             })
           }
         }
@@ -231,15 +244,13 @@ export default {
     },
     handleNodeClick(row) {
       const parentNode = this.$refs.category.getNode(row.parentId)
+
       this.parent = {
         id: parentNode.key,
-        name: parentNode.label
+        name: parentNode.label,
+        level: row.level
       }
-
-      const current = JSON.parse(JSON.stringify(row));
-      this.current = current
-      this.form = current
-      this.title = '修改商品分类'
+      this.current = JSON.parse(JSON.stringify(row))
       this.$emit('categoryClick', row)
     }
   }

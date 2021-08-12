@@ -1,10 +1,10 @@
 <template>
-  <div class="app-container">
+  <div class="components-container">
     <el-card class="box-card" shadow="always">
       <div class="clearfix" slot="header">
         <b>
           <svg-icon icon-class="menu"/>
-          商品属性</b>
+          分类{{ attributeTypeName }}</b>
       </div>
       <el-row>
         <el-col :span="12">
@@ -18,13 +18,13 @@
 
       <el-row style="margin-top: 10px">
         <el-form
-          :disabled="!category||category.children.length!==0"
+          :disabled="!category||!category.children||category.children.length!==0"
           label-width="100"
           :model="form"
           ref="form">
           <el-form-item
             v-for="(item, index) in form.attributes"
-            :label="'属性' + (index+1)"
+            :label="attributeTypeName + (index+1)"
             :prop="'attributes.' + index + '.name'"
             :rules="rules.attribute.name">
             <el-input v-model="item.name" style="width: 300px"/>
@@ -62,20 +62,33 @@ import {list, saveBatch} from "@/api/pms/attribute";
 
 export default {
   name: "Attribute",
+  props: ['attributeType'],
   data() {
+    const attributeNameValidator = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请输入' + this.attributeTypeName + '名称'))
+      } else {
+        callback();
+      }
+    };
     return {
+      attributeTypeName: this.attributeType == 1 ? '规格' : '属性',
       category: undefined,
       form: {
+        categoryId: undefined,
+        type: undefined,
         attributes: [{
           id: undefined,
-          categoryId: undefined,
           name: undefined
         }]
       },
+
       rules: {
         attribute: {
           name: [{
-            required: true, message: '请输入属性名称'
+            required: true,
+            validator: attributeNameValidator,
+            trigger: 'blur'
           }]
         }
       }
@@ -83,17 +96,15 @@ export default {
   },
   methods: {
     handleSubmit() {
-
-      this.form.attributes.forEach(item => {
-        item.categoryId = this.category.id
-      })
-      saveBatch(this.form.attributes).then(() => {
+      this.form.categoryId = this.category.id
+      this.form.type = this.attributeType
+      saveBatch(this.form).then(() => {
         this.$message.success('提交成功')
       })
     },
     categoryClick(category) {
       this.category = category
-      list({categoryId: category.id}).then(response => {
+      list({categoryId: category.id, type: this.attributeType}).then(response => {
         const {data} = response
         if (data.length > 0) {
           this.form.attributes = response.data
