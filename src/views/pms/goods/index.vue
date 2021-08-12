@@ -38,31 +38,28 @@
 
         <template slot-scope="props">
           <el-table
-            :data="props.row.skus"
+            :data="props.row.skuList"
             size="small"
             border>
-            <el-table-column align="center" label="商品条码" prop="code"/>
+            <el-table-column align="center" label="商品编码" prop="sn"/>
             <el-table-column align="center" label="商品规格" prop="name"/>
             <el-table-column label="图片" prop="picUrl">
               <template slot-scope="scope">
                 <img :src="scope.row.picUrl" width="40">
               </template>
             </el-table-column>
-            <el-table-column align="center" label="原价" prop="originalPrice">
-              <template slot-scope="scope">{{ scope.row.originPrice | moneyFormatter }}</template>
-            </el-table-column>
             <el-table-column align="center" label="现价" prop="price">
               <template slot-scope="scope">{{ scope.row.price | moneyFormatter }}</template>
             </el-table-column>
-            <el-table-column align="center" label="库存" prop="inventory"/>
+            <el-table-column align="center" label="库存" prop="stock"/>
           </el-table>
         </template>
 
       </el-table-column>
       <el-table-column label="商品名称" prop="name" min-width="140"/>
       <el-table-column label="商品图片">
-        <template slot-scope="scope">
-          <img :src="formatAlbum(scope.row.album)" width="40">
+        <template slot-scope="{row}">
+          <img :src="row.picUrl" width="40">
         </template>
       </el-table-column>
       <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
@@ -108,7 +105,7 @@
 </template>
 
 <script>
-import {page, del, patch} from '@/api/pms/goods'
+import {page, removeGoods} from '@/api/pms/goods'
 import {cascadeList} from '@/api/pms/category'
 
 export default {
@@ -190,7 +187,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(function () {
-        return del(ids)
+        return removeGoods(ids)
       }).then(() => {
         this.$message.success("删除成功")
         this.handleQuery()

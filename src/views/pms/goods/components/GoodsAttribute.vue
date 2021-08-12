@@ -27,7 +27,7 @@
                   :prop="'attrList[' + scope.$index + '].name'"
                   :rules="rules.attribute.name"
                 >
-                  <el-input v-model="scope.row.name"></el-input>
+                  <el-input v-model="scope.row.name"/>
                 </el-form-item>
               </template>
             </el-table-column>

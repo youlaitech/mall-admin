@@ -31,7 +31,7 @@ export function updateGoods(id, data) {
   })
 }
 
-export function delGoods(ids) {
+export function removeGoods(ids) {
   return request({
     url: '/mall-pms/api/v1/goods/'+ids,
     method: 'delete'

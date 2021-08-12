@@ -38,7 +38,7 @@
                 <single-upload v-model="item.url"></single-upload>
                 <div class="bottom" v-if="item.url">
                   <el-button type="text" class="button" v-if="item.main==true" style="color:#ff4d51">商品主图</el-button>
-                  <el-button type="text" class="button" v-else @click="handleMainPictureChange(index)">设为主图</el-button>
+                  <el-button type="text" class="button" v-else @click="setMainPicture(index)">设为主图</el-button>
                   <el-button type="text" class="button" @click="handlePictureRemove(index)">删除图片</el-button>
                 </div>
                 <div class="bottom" v-else>
@@ -112,35 +112,19 @@ export default {
         }
       }
     },
-    // 设置为主图
-    handleMainPictureChange(index) {
-      this.pictures.map(item => item.main = false)
-      this.pictures[index].main = true
-      this.handlePictureReorder()
-    },
-    handlePictureReorder() {
-      const mainPics = this.pictures.filter(item => item.url && item.main == true) //主图
-      const subPics = this.pictures.filter(item => item.url && item.main == false) // 副图
-      // 主图
-      if (mainPics && mainPics.length) {
-        this.pictures[0] = mainPics[0]
-      } else {
-        this.pictures[0] = {url: undefined, main: true}
-      }
-      // 副图列表
-      if (subPics && subPics.length > 0) {
-        for (let i = 1; i < this.pictures.length; i++) {
-          if (subPics.length >= i) {
-            this.pictures[i] = subPics[i - 1]
-          } else {
-            this.pictures[i] = {url: undefined, main: false}
-          }
-        }
-      }
+    // 设置主图
+    setMainPicture(changeIndex) {
+      const mainPicture = JSON.parse(JSON.stringify( this.pictures[0]))
+      const changePicture =  JSON.parse(JSON.stringify( this.pictures[changeIndex]))
+
+      console.log(changeIndex,changePicture.url,mainPicture.url)
+
+      this.pictures[0].url = changePicture.url
+      this.pictures[changeIndex].url = mainPicture.url
+
     },
     handlePictureRemove(index) {
       this.pictures[index].url = undefined
-      this.handlePictureReorder()
     },
     handleFormReset: function () {
       this.pictures = [
@@ -157,6 +141,15 @@ export default {
     handleNext: function () {
       this.$refs["goodsForm"].validate((valid) => {
         if (valid) {
+          // 商品图片处理
+          const tempMainPicUrl = this.pictures.filter(item => item.main == true && item.url).map(item => item.url)
+          if (tempMainPicUrl && tempMainPicUrl.length > 0) {
+            this.value.picUrl = tempMainPicUrl[0]
+          }
+          const tempSubPicUrl = this.pictures.filter(item => item.main == false && item.url).map(item => item.url)
+          if (tempSubPicUrl && tempSubPicUrl.length > 0) {
+            this.value.subPicUrls = tempSubPicUrl
+          }
           this.$emit('next')
         }
       })
