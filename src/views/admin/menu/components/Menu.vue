@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="components-container">
     <el-card class="box-card" shadow="always">
       <div class="clearfix" slot="header">
         <b>
           <svg-icon icon-class="menu"/>
-          菜单列表</b>
+       菜单列表</b>
       </div>
       <!-- 搜索表单 -->
       <el-form
@@ -100,15 +100,8 @@
           <el-input v-model="form.name" placeholder="请输入菜单名称"/>
         </el-form-item>
 
-<!--        <el-form-item label="路由名称" prop="routeName">
-          <el-input v-model="form.routeName" placeholder="admin-user" style="width: 95%"/>
-          <el-tooltip  effect="dark" content="vue-router编程式路由跳转方式之一，例：this.$router.push({name:'admin-user',params:{id:1}})" placement="right">
-            <i class="el-icon-info" style="margin-left: 5px;color:darkseagreen"></i>
-          </el-tooltip>
-        </el-form-item>-->
-
-        <el-form-item label="路由路径" prop="routePath">
-          <el-input v-model="form.routePath" :placeholder="form.parentId==0?'/admin':'user'"  style="width: 95%"/>
+        <el-form-item label="路由Path" prop="routePath">
+          <el-input v-model="form.routePath" :placeholder="form.parentId==0?'/system':'user'"  style="width: 95%"/>
           <el-tooltip  effect="dark"
                        content="vue-router编程式路由跳转方式之一，例：this.$router.push({path:'/admin/user',query:{id:1}})"
                        placement="right">
@@ -172,7 +165,6 @@ import {add, del, list, patch, update} from "@/api/admin/menu";
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TreeSelect from '@riophae/vue-treeselect'
 import IconSelect from '@/components/IconSelect'
-import {list as dictList} from '@/api/admin/dict-item'
 
 export default {
   name: "Menu",
@@ -377,7 +369,7 @@ export default {
         title: undefined,
         visible: false
       }
-    },
+    }
   }
 }
 </script>

@@ -99,8 +99,7 @@
           element-loading-spinner="el-icon-loading"
           border
           :data="pageList"
-          @selection-change="handleSelectionChange"
-        >
+          @selection-change="handleSelectionChange" >
           <el-table-column align="center" type="selection" width="50"/>
           <el-table-column align="center" label="用户编号" prop="id" width="100"/>
           <el-table-column align="center" label="用户名" prop="username" width="150"/>
