@@ -6,10 +6,10 @@
       </el-col>
 
       <el-col :span="8" :xs="24">
-        <!-- 规格 -->
-        <attribute ref="specification" :attributeType="1"></attribute>
-        <!-- 属性 -->
-        <attribute ref="attribute" :attributeType="2"></attribute>
+        <!-- 商品规格 -->
+        <attribute ref="spec" :attributeType="1"></attribute>
+        <!-- 商品属性 -->
+        <attribute ref="attr" :attributeType="2"></attribute>
       </el-col>
     </el-row>
   </div>
@@ -22,14 +22,14 @@ import Attribute from './components/Attribute'
 
 export default {
   name: "index",
-  components: {Attribute, Category },
+  components: {Attribute, Category},
   data() {
     return {}
   },
   methods: {
     categoryClick(category) {
-      this.$refs.specification.categoryClick(category)
-      this.$refs.attribute.categoryClick(category)
+      this.$refs.spec.categoryClick(category)
+      this.$refs.attr.categoryClick(category)
     }
   }
 }

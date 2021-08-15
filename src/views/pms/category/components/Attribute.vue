@@ -4,7 +4,7 @@
       <div class="clearfix" slot="header">
         <b>
           <svg-icon icon-class="menu"/>
-          分类{{ attributeTypeName }}</b>
+          商品{{ attributeTypeName }}</b>
       </div>
       <el-row>
         <el-col :span="12">
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import {list, saveBatch} from "@/api/pms/attribute";
+import {listAttribute, saveBatch} from "@/api/pms/attribute";
 
 export default {
   name: "Attribute",
@@ -104,7 +104,7 @@ export default {
     },
     categoryClick(category) {
       this.category = category
-      list({categoryId: category.id, type: this.attributeType}).then(response => {
+      listAttribute({categoryId: category.id, type: this.attributeType}).then(response => {
         const {data} = response
         if (data.length > 0) {
           this.form.attributes = response.data
