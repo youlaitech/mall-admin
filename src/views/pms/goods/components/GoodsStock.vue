@@ -201,7 +201,6 @@ export default {
   },
   methods: {
     async loadData() {
-
       this.value.specList.forEach(spec => {
         const index = this.specForm.specList.findIndex(item => item.name == spec.name)
         if (index > -1) {
