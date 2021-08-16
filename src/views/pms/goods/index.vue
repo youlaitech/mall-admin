@@ -2,8 +2,8 @@
   <div class="app-container">
     <el-form :inline="true" ref="queryForm">
       <el-form-item>
-        <el-button type="primary" @click="handleAdd">新增</el-button>
-        <el-button type="success" @click="handleUpdate" :disabled="single">修改</el-button>
+        <el-button type="primary" @click="handleAdd">发布商品</el-button>
+        <el-button type="success" @click="handleUpdate" :disabled="single">编辑商品</el-button>
         <el-button type="danger" @click="handleDelete" :disabled="multiple">删除</el-button>
       </el-form-item>
       <el-form-item>
@@ -34,7 +34,7 @@
       @row-click="handleRowClick"
       border>
       <el-table-column type="selection" min-width="5%" center/>
-      <el-table-column type="expand" width="100" label="库存信息">
+      <el-table-column type="expand" width="100" label="商品库存信息">
 
         <template slot-scope="props">
           <el-table

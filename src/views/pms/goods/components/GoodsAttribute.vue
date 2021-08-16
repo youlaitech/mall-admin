@@ -70,6 +70,16 @@ export default {
   props: {
     value: Object
   },
+  watch:{
+    // 监听选择的商品分类关联商品属性
+    'value.categoryId':{
+        handler(newVal,oldVal){
+          listAttribute({categoryId: newVal, type: 2}).then(res => {
+            this.value.attrList = res.data
+          })
+        }
+    }
+  },
   data() {
     return {
       rules: {
@@ -80,18 +90,7 @@ export default {
       },
     }
   },
-  created() {
-    this.loadData()
-  },
   methods: {
-    loadData() {
-      // 新增的时候加载商品分类的属性列表
-      if (!this.value.id) {
-        listAttribute({categoryId: this.value.categoryId, type: 2}).then(res => {
-          this.value.attrList = res.data
-        })
-      }
-    },
     handleAttributeAdd: function () {
       this.value.attrList.push({})
     },

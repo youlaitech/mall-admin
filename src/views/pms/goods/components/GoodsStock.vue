@@ -149,7 +149,24 @@ export default {
   props: {
     value: Object
   },
+  watch: {
+    // 监听选择的商品分类关联商品属性项
+    'value.categoryId': {
+      handler(newVal, oldVal) {
+        listAttribute({categoryId: newVal, type: 1}).then(res => {
+          res.data.forEach(item => {
+            console.log('规格项目', item)
+            this.specForm.specList.push({
+              name: item.name,
+              values: []
+            })
+            this.loadData()
 
+          })
+        })
+      }
+    }
+  },
   data() {
     return {
       // 包装一层用于表单验证
@@ -177,34 +194,26 @@ export default {
     }
   },
   created() {
-    this.loadData()
+    if(this.value.id){
+      this.loadData()
+    }
+
   },
   methods: {
     async loadData() {
-      // 新增商品
-      if (!this.value.id) {
-        const {data} = await listAttribute({categoryId: this.value.categoryId, type: 1})
-        if (data && data.length > 0) {
-          data.forEach(item => {
-            this.specForm.specList.push({
-              name: item.name,
-              values: []
-            })
+
+      this.value.specList.forEach(spec => {
+        const index = this.specForm.specList.findIndex(item => item.name == spec.name)
+        if (index > -1) {
+          this.specForm.specList[index].values.push({id: spec.id, value: spec.value, picUrl: spec.picUrl})
+        } else {
+          this.specForm.specList.push({
+            name: spec.name,
+            values: [{id: spec.id, value: spec.value, picUrl: spec.picUrl}]
           })
         }
-      } else { // 规格数据格式转换
-        this.value.specList.forEach(spec => {
-          const index = this.specForm.specList.findIndex(item => item.name == spec.name)
-          if (index > -1) {
-            this.specForm.specList[index].values.push({id: spec.id, value: spec.value, picUrl: spec.picUrl})
-          } else {
-            this.specForm.specList.push({
-              name: spec.name,
-              values: [{id: spec.id, value: spec.value, picUrl: spec.picUrl}]
-            })
-          }
-        })
-      }
+      })
+
 
       // 每个规格项追加一个添加规格值按钮
       for (let i = 0; i < this.specForm.specList.length; i++) {
@@ -325,7 +334,7 @@ export default {
 
       skuList.forEach(item => {
         item.specIds = item.specIds.substring(0, item.specIds.length - 1)
-        item.name = item.specValues.substring(0, item.specIds.length - 1).replaceAll('_',' ')
+        item.name = item.specValues.substring(0, item.specIds.length - 1).replaceAll('_', ' ')
         const specIdArr = item.specIds.split('|')
         const skus = this.value.skuList.filter(sku => sku.specIdArr.equals(specIdArr)) // 数据库的SKU列表
         if (skus && skus.length > 0) {
