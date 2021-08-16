@@ -194,7 +194,7 @@ export default {
     }
   },
   created() {
-    if(this.value.id){
+    if (this.value.id) {
       this.loadData()
     }
 
@@ -347,7 +347,7 @@ export default {
         specValueArr.forEach((v, i) => {
           const key = 'specValue' + (i + 1)
           item[key] = v
-          if (i == 0) {
+          if (i == 0 && this.specForm.specList.length > 0) {
             const valueIndex = this.specForm.specList[0].values.findIndex(specValue => specValue.value == v)
             if (valueIndex > -1) {
               item.picUrl = this.specForm.specList[0].values[valueIndex].picUrl
