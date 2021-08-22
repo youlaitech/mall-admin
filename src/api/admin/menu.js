@@ -1,12 +1,28 @@
 import request from '@/utils/request'
 
-export function list(queryParams) {
+export function getMenuTableList(queryParams) {
   return request({
-    url: '/youlai-admin/api/v1/menus',
+    url: '/youlai-admin/api/v1/menus/table',
     method: 'get',
     params: queryParams
   })
 }
+
+export function getMenuSelectList() {
+  return request({
+    url: '/youlai-admin/api/v1/menus/select',
+    method: 'get'
+  })
+}
+
+
+export function getMenuRouteList() {
+  return request({
+    url: '/youlai-admin/api/v1/menus/route',
+    method: 'get'
+  })
+}
+
 
 export function detail(id) {
   return request({

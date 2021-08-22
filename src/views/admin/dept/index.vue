@@ -27,7 +27,7 @@
 
     <el-table
       v-loading="loading"
-      :data="pageList"
+      :data="tableList"
       row-key="id"
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import {list, detail, update, add, del} from '@/api/admin/dept'
+import {getDeptTableList,getDeptSelectList, detail, update, add, del} from '@/api/admin/dept'
 import TreeSelect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -124,7 +124,7 @@ export default {
   data() {
     return {
       loading: true,
-      pageList: [],
+      tableList: [],
       deptOptions: [],
       queryParams: {
         name: undefined,
@@ -169,9 +169,8 @@ export default {
   },
   methods: {
     handleQuery() {
-      this.queryParams.queryMode = 'list'
-      list(this.queryParams).then(response => {
-        this.pageList = response.data
+      getDeptTableList(this.queryParams).then(response => {
+        this.tableList = response.data
         this.loading = false
       })
     },
@@ -249,8 +248,7 @@ export default {
       }
     },
     loadDeptOptions() {
-      this.queryParams.queryMode = 'tree'
-      list(this.queryParams).then(response => {
+      getDeptSelectList().then(response => {
         this.deptOptions = [{
           id: 0,
           label: '无',

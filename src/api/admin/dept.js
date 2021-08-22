@@ -1,12 +1,21 @@
 import request from '@/utils/request'
 
-export function list(queryParams) {
+export function getDeptTableList(queryParams) {
   return request({
-    url: '/youlai-admin/api/v1/depts',
+    url: '/youlai-admin/api/v1/depts/table',
     method: 'get',
     params: queryParams
   })
 }
+
+
+export function getDeptSelectList() {
+  return request({
+    url: '/youlai-admin/api/v1/depts/select',
+    method: 'get'
+  })
+}
+
 
 export function detail(id) {
   return request({

@@ -216,7 +216,7 @@
 
 <script>
   import {add, del, detail, list, patch, update} from '@/api/admin/user'
-  import {list as deptList} from '@/api/admin/dept'
+  import {getDeptSelectList } from '@/api/admin/dept'
   import {list as roleList} from '@/api/admin/role'
   import TreeSelect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -438,7 +438,7 @@
         })
       },
       loadDeptOptions() {
-        deptList({queryMode: 'tree'}).then(response => {
+        getDeptSelectList().then(response => {
           this.deptOptions = response.data
         })
       },

@@ -4,7 +4,7 @@
       <div class="clearfix" slot="header">
         <b>
           <svg-icon icon-class="menu"/>
-       菜单列表</b>
+          菜单列表</b>
       </div>
       <!-- 搜索表单 -->
       <el-form
@@ -33,7 +33,7 @@
       <!-- 数据表格 -->
       <el-table
         v-loading="loading"
-        :data="pageList"
+        :data="tableList"
         row-key="id"
         highlight-current-row
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
@@ -101,10 +101,10 @@
         </el-form-item>
 
         <el-form-item label="路由Path" prop="routePath">
-          <el-input v-model="form.routePath" :placeholder="form.parentId==0?'/system':'user'"  style="width: 95%"/>
-          <el-tooltip  effect="dark"
-                       content="vue-router编程式路由跳转方式之一，例：this.$router.push({path:'/admin/user',query:{id:1}})"
-                       placement="right">
+          <el-input v-model="form.routePath" :placeholder="form.parentId==0?'/system':'user'" style="width: 95%"/>
+          <el-tooltip effect="dark"
+                      content="vue-router编程式路由跳转方式之一，例：this.$router.push({path:'/admin/user',query:{id:1}})"
+                      placement="right">
             <i class="el-icon-info" style="margin-left: 5px;color:darkseagreen"></i>
           </el-tooltip>
         </el-form-item>
@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import {add, del, list, patch, update} from "@/api/admin/menu";
+import {getMenuTableList,getMenuSelectList, add, del, patch, update} from "@/api/admin/menu";
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TreeSelect from '@riophae/vue-treeselect'
 import IconSelect from '@/components/IconSelect'
@@ -176,15 +176,9 @@ export default {
       single: true,
       multiple: true,
       queryParams: {
-        name: undefined,
-        queryMode: undefined
+        name: undefined
       },
-      pagination: {
-        page: 1,
-        limit: 10,
-        total: 0
-      },
-      pageList: [],
+      tableList: [],
       dialog: {
         title: undefined,
         visible: false
@@ -218,21 +212,12 @@ export default {
   methods: {
     handleQuery() {
       this.resetForm()
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
-      this.queryParams.queryMode = 'list'
-      list(this.queryParams).then(response => {
-        this.pageList = response.data
-        this.pagination.total = response.total
+      getMenuTableList(this.queryParams).then(response => {
+        this.tableList = response.data
         this.loading = false
       })
     },
     handleReset() {
-      this.pagination = {
-        page: 1,
-        limit: 10,
-        total: 0
-      }
       this.queryParams.name = undefined
       this.handleQuery()
       this.loadMenuOptions()
@@ -346,7 +331,7 @@ export default {
     },
     loadMenuOptions() {
       this.menuOptions = []
-      list({queryMode: 'tree'}).then(response => {
+      getMenuSelectList().then(response => {
         const menuOption = {id: 0, label: '无', children: response.data}
         this.menuOptions.push(menuOption)
         this.$forceUpdate()

@@ -34,7 +34,7 @@
       @row-click="handleRowClick"
       border>
       <el-table-column type="selection" min-width="5%" center/>
-      <el-table-column type="expand" width="100" label="商品库存信息">
+      <el-table-column type="expand" width="120" label="库存信息">
 
         <template slot-scope="props">
           <el-table
@@ -64,14 +64,15 @@
       </el-table-column>
       <el-table-column label="商品类目" prop="categoryName" min-width="100"/>
       <el-table-column label="商品品牌" prop="brandName" min-width="100"/>
-      <el-table-column align="center" label="原价【起】" prop="originalPrice">
+      <el-table-column align="center" label="零售价" prop="originalPrice">
         <template slot-scope="scope">{{ scope.row.originPrice | moneyFormatter }}</template>
       </el-table-column>
-      <el-table-column align="center" label="现价【起】" prop="price">
+      <el-table-column align="center" label="促销价" prop="price">
         <template slot-scope="scope">{{ scope.row.price | moneyFormatter }}</template>
       </el-table-column>
       <el-table-column label="销量" prop="sales" min-width="100"/>
       <el-table-column label="单位" prop="unit" min-width="100"/>
+      <el-table-column label="描述" prop="description" min-width="100"/>
       <el-table-column label="详情" prop="detail">
         <template slot-scope="scope">
           <el-dialog :visible.sync="dialogVisible" title="商品详情">
@@ -80,7 +81,6 @@
           <el-button type="primary" size="mini" @click="handleGoodsView(scope.row.detail)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column min-width="100" label="描述" prop="description"/>
       <el-table-column label="操作" min-width="120">
         <template slot-scope="scope">
           <el-button

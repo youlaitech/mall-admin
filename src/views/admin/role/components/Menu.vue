@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import {list as listMenu} from "@/api/admin/menu";
+import {getMenuSelectList} from "@/api/admin/menu";
 import {listRoleMenu, updateRoleMenu} from "@/api/admin/role"
 
 export default {
@@ -52,11 +52,11 @@ export default {
     }
   },
   created() {
-    this.loadMenus()
+    this.loadData()
   },
   methods: {
-    loadMenus() {
-      listMenu({queryMode: 'tree'}).then(response => {
+    loadData() {
+      getMenuSelectList().then(response => {
         this.menuOptions = response.data
         this.expandedKeys = this.menuOptions.map(node => node.id) //展开所有节点
       })
