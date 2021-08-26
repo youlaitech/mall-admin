@@ -181,7 +181,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="角色" prop="roleIds">
-        <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 250px">
+        <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 100%">
           <el-option
             v-for="item in roleOptions"
             :label="item.name"
@@ -217,7 +217,7 @@
 <script>
   import {add, del, detail, list, patch, update} from '@/api/admin/user'
   import {getDeptSelectList } from '@/api/admin/dept'
-  import {list as roleList} from '@/api/admin/role'
+  import {getRoleList} from '@/api/admin/role'
   import TreeSelect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -433,7 +433,7 @@
         })
       },
       loadRoleOptions() {
-        roleList({queryMode: 'list'}).then(response => {
+        getRoleList().then(response => {
           this.roleOptions = response.data
         })
       },

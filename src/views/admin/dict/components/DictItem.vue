@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import {add, del, detail, list, patch, update} from "@/api/admin/dict-item";
+import {add, del, detail, getDictItemPageList, patch, update} from "@/api/admin/dict-item";
 
 export default {
   name: "DictItem",
@@ -121,7 +121,6 @@ export default {
       queryParams: {
         name: undefined,
         dictCode: undefined,
-        queryMode: 'page'
       },
       pagination: {
         page: 1,
@@ -156,7 +155,7 @@ export default {
       this.loading = true
       this.queryParams.page = this.pagination.page
       this.queryParams.limit = this.pagination.limit
-      list(this.queryParams).then(response => {
+      getDictItemPageList(this.queryParams).then(response => {
         this.pageList = response.data
         this.pagination.total = response.total
         this.loading = false

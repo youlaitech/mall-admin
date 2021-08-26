@@ -1,6 +1,15 @@
 import request from '@/utils/request'
 
-export function list(queryParams) {
+export function getPermissionPageList(queryParams) {
+  return request({
+    url: '/youlai-admin/api/v1/permissions/page',
+    method: 'get',
+    params: queryParams
+  })
+}
+
+
+export function getPermissionList(queryParams) {
   return request({
     url: '/youlai-admin/api/v1/permissions',
     method: 'get',

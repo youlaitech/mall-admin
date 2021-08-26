@@ -1,15 +1,12 @@
 import request from '@/utils/request'
 
-export function list(queryParams) {
+export function getDictPageList(queryParams) {
   return request({
-    url: '/youlai-admin/api/v1/dicts',
+    url: '/youlai-admin/api/v1/dicts/page',
     method: 'get',
     params: queryParams
   })
 }
-
-
-
 
 export function detail(id) {
   return request({

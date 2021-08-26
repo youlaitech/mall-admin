@@ -121,8 +121,7 @@
 </template>
 
 <script>
-import {add, del, detail, list, update} from "@/api/admin/permission";
-import request from "@/utils/request";
+import {add, del, detail, getPermissionPageList, update} from "@/api/admin/permission";
 
 export default {
   name: "permission",
@@ -133,10 +132,8 @@ export default {
       single: true,
       multiple: true,
       queryParams: {
-        queryMode: 'page',
         name: undefined,
-        menuId: undefined,
-        type: undefined
+        menuId: undefined
       },
       pagination: {
         page: 1,
@@ -182,9 +179,7 @@ export default {
       this.queryParams.limit = this.pagination.limit
 
       this.queryParams.menuId = this.menu.id
-      this.queryParams.type = this.type
-
-      list(this.queryParams).then(response => {
+      getPermissionPageList(this.queryParams).then(response => {
         this.pageList = response.data
         this.pagination.total = response.total
         this.loading = false

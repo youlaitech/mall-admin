@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function list(queryParams) {
+export function getDictItemPageList(queryParams) {
   return request({
-    url: '/youlai-admin/api/v1/dict-items',
+    url: '/youlai-admin/api/v1/dict-items/page',
     method: 'get',
     params: queryParams
   })

@@ -1,10 +1,17 @@
 import request from '@/utils/request'
 
-export function list(queryParams) {
+export function getRolePageList(queryParams) {
+  return request({
+    url: '/youlai-admin/api/v1/roles/page',
+    method: 'get',
+    params: queryParams
+  })
+}
+
+export function getRoleList() {
   return request({
     url: '/youlai-admin/api/v1/roles',
     method: 'get',
-    params: queryParams
   })
 }
 

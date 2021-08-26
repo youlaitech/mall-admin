@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import {list, update, add, del} from '@/api/admin/role'
+import {getRolePageList, update, add, del} from '@/api/admin/role'
 
 export default {
   data() {
@@ -170,7 +170,7 @@ export default {
     handleQuery() {
       this.queryParams.page = this.pagination.page
       this.queryParams.limit = this.pagination.limit
-      list(this.queryParams).then(response => {
+      getRolePageList(this.queryParams).then(response => {
         this.pageList = response.data
         this.pagination.total = response.total
         this.loading = false

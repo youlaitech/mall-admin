@@ -150,7 +150,7 @@
 
 <script>
 import {list, detail, update, add, del} from '@/api/admin/client'
-import {list as dictList, listDictItemByCode} from '@/api/admin/dict-item'
+import { listDictItemByCode} from '@/api/admin/dict-item'
 
 export default {
   data() {
@@ -215,7 +215,7 @@ export default {
   },
   methods: {
     handleQuery() {
-      this.listDictItemByCode('grant_type').then(response => {
+      listDictItemByCode('grant_type').then(response => {
         this.authorizedGrantTypesOptions = response.data
         this.queryParams.page = this.pagination.page
         this.queryParams.limit = this.pagination.limit

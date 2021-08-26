@@ -55,7 +55,7 @@
 
 <script>
 
-import {list as listPermission} from '@/api/admin/permission'
+import {getPermissionList} from '@/api/admin/permission'
 import {listRolePermission, updateRolePermission} from '@/api/admin/role'
 
 export default {
@@ -77,8 +77,7 @@ export default {
   methods: {
     handleQuery() {
       this.loading = true
-      listPermission({
-        queryMode: 'list',
+     getPermissionList({
         menuId: this.menu.id,
       }).then(response => {
         const {data} = response
