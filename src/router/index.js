@@ -112,7 +112,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'user',
-        component: () => import('@/views/admin/user'),
+        component: () => import('@/views/system/user'),
         name: 'User',
         meta: {
           title: '用户管理',
@@ -121,7 +121,7 @@ export const asyncRoutes = [
       },
       {
         path: 'dept',
-        component: () => import('@/views/admin/dept'),
+        component: () => import('@/views/system/dept'),
         name: 'Dept',
         meta: {
           title: '部门管理',

@@ -25,7 +25,7 @@ import Pagination from '@/components/Pagination'
 
 import 'default-passive-events' // 移除浏览器提示 Added non-passive event listener to a scroll-blocking...
 
-import { listDictItemByCode } from "@/api/admin/dict-item"
+import { listDictItemByCode } from "@/api/system/dict-item"
 
 /**
  * If you don't want to use mock-server

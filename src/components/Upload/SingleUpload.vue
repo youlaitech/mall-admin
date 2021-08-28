@@ -18,7 +18,7 @@
 </template>
 <script>
 import {getToken} from '@/utils/auth'
-import {del} from '@/api/admin/file'
+import {del} from '@/api/system/file'
 
 export default {
   name: 'MultiUpload',
