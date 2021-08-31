@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import {getMenuTableList,getMenuSelectList, add, del, patch, update} from "@/api/system/menu";
+import {getMenuTableList,getMenuTreeSelectList, add, del, patch, update} from "@/api/system/menu";
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TreeSelect from '@riophae/vue-treeselect'
 import IconSelect from '@/components/IconSelect'
@@ -205,10 +205,13 @@ export default {
     }
   },
   created() {
-    this.loadMenuOptions()
-    this.handleQuery()
+    this.loadData()
   },
   methods: {
+    loadData(){
+      this.loadMenuOptions()
+      this.handleQuery()
+    },
     handleQuery() {
       this.resetForm()
       getMenuTableList(this.queryParams).then(response => {
@@ -219,7 +222,6 @@ export default {
     handleReset() {
       this.queryParams.name = undefined
       this.handleQuery()
-      this.loadMenuOptions()
     },
     handleRowClick(row) {
       const currentRow = JSON.parse(JSON.stringify(row));
@@ -329,7 +331,7 @@ export default {
     },
     loadMenuOptions() {
       this.menuOptions = []
-      getMenuSelectList().then(response => {
+      getMenuTreeSelectList().then(response => {
         const menuOption = {id: 0, label: '无', children: response.data}
         this.menuOptions.push(menuOption)
         this.$forceUpdate()
