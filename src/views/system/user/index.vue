@@ -337,7 +337,7 @@ export default {
     },
     // 部门节点单击事件
     handleNodeClick(data) {
-      this.queryParams.deptId = data.value
+      this.queryParams.deptId = data.id
       this.handleQuery()
     },
     // 用户状态修改
