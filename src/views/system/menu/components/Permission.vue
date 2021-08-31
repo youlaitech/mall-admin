@@ -1,5 +1,5 @@
 <template>
-  <div class="perm-container">
+  <div class="components-container">
     <el-card class="box-card" shadow="always">
       <div class="clearfix" slot="header">
         <b>

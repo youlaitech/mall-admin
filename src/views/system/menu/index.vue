@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="10">
+    <el-row >
       <el-col :span="10" :xs="24">
         <menus @menuClick="menuClick" @resetPermission="resetPermission"></menus>
       </el-col>
