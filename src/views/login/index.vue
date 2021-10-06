@@ -1,17 +1,18 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on"
+             label-position="left">
 
       <div class="title-container">
         <h3 class="title">
           {{ $t('login.title') }}
         </h3>
-        <lang-select class="set-language" />
+        <lang-select class="set-language"/>
       </div>
 
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon-class="user" />
+          <svg-icon icon-class="user"/>
         </span>
         <el-input
           ref="username"
@@ -27,7 +28,7 @@
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
           <span class="svg-container">
-            <svg-icon icon-class="password" />
+            <svg-icon icon-class="password"/>
           </span>
           <el-input
             :key="passwordType"
@@ -43,12 +44,30 @@
             @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
           </span>
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
+      <el-form-item prop="validateCode">
+         <span class="svg-container">
+            <svg-icon icon-class="validCode"/>
+          </span>
+        <el-input
+          v-model="loginForm.validateCode"
+          auto-complete="off"
+          placeholder="请输入验证码"
+          style="width: 63%"
+          @keyup.enter.native="handleLogin"
+        />
+        <div class="validate-code">
+          <img :src="validateCodeImg" @click="getCode" height="38px"/>
+        </div>
+      </el-form-item>
+
+
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
+                 @click.native.prevent="handleLogin">
         {{ $t('login.logIn') }}
       </el-button>
 
@@ -57,7 +76,7 @@
           <span>{{ $t('login.username') }} : admin</span>
           <span>{{ $t('login.password') }} : 123456 </span>
         </div>
-        <el-button  class="thirdparty-button" type="primary" @click="showDialog=true">
+        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
           {{ $t('login.thirdparty') }}
         </el-button>
       </div>
@@ -68,19 +87,20 @@
       <br>
       <br>
       <br>
-      <social-sign />
+      <social-sign/>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import {getValidateCode} from "@/api/user";
+import {validUsername} from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './components/SocialSignin'
 
 export default {
   name: 'Login',
-  components: { LangSelect, SocialSign },
+  components: {LangSelect, SocialSign},
   data() {
     const validateUsername = (rule, value, callback) => {
       /*if (!validUsername(value)) {
@@ -100,23 +120,26 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '123456'
+        password: '123456',
+        validateCode: undefined,
+        uuid: undefined
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{required: true, trigger: 'blur', validator: validateUsername}],
+        password: [{required: true, trigger: 'blur', validator: validatePassword}]
       },
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      validateCodeImg: undefined
     }
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function (route) {
         const query = route.query
         if (query) {
           this.redirect = query.redirect
@@ -128,6 +151,7 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    this.getCode();
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -141,7 +165,7 @@ export default {
   },
   methods: {
     checkCapslock(e) {
-      const { key } = e
+      const {key} = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
     },
     showPwd() {
@@ -160,11 +184,12 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({path: this.redirect || '/', query: this.otherQuery})
               this.loading = false
             })
             .catch(() => {
               this.loading = false
+              this.getCode()
             })
         } else {
           console.log('error submit!!')
@@ -179,25 +204,13 @@ export default {
         }
         return acc
       }, {})
+    },
+    getCode() {
+      getValidateCode().then(res => {
+        this.validateCodeImg = "data:image/gif;base64," + res.data.img;
+        this.loginForm.uuid = res.data.uuid;
+      })
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
@@ -206,8 +219,8 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/hxrui/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
+$bg: #283443;
+$light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -250,9 +263,9 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
 .login-container {
   min-height: 100%;
@@ -324,6 +337,17 @@ $light_gray:#eee;
     position: absolute;
     right: 0;
     bottom: 6px;
+  }
+
+  .validate-code {
+    position: absolute;
+    right: 0;
+    top:0;
+    img {
+      height: 48px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
   }
 
   @media only screen and (max-width: 470px) {

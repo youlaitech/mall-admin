@@ -2,12 +2,11 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    // url: '/vue-element-admin/user/login',
     url: '/youlai-auth/oauth/token',
     method: 'post',
     params: data,
     headers: {
-      'Authorization': 'Basic eW91bGFpLWFkbWluOjEyMzQ1Ng==' // 客户端信息加密摘要认证，明文：youlai-admin:123456
+      'Authorization': 'Basic bWFsbC1hZG1pbi13ZWI6MTIzNDU2' // 客户端信息加密摘要认证，明文：mall-admin-web:123456
     }
   })
 }
@@ -27,3 +26,9 @@ export function logout() {
   })
 }
 
+export function getValidateCode() {
+  return request({
+    url: '/validate-code',
+    method: 'get'
+  })
+}
