@@ -33,26 +33,26 @@ const mutations = {
 }
 
 const actions = {
-  login({commit}, userInfo) {
-    const {username, password, validateCode, uuid} = userInfo
-    return new Promise((resolve, reject) => {
-      login({
-        username: username,
-        password: password,
-        grant_type: 'captcha',
-        uuid: uuid,
-        validateCode: validateCode
-      }).then(response => {
-        const {access_token, refresh_token, token_type} = response.data
-        const token = token_type + " " + access_token
-        commit('SET_TOKEN', token)
-        setToken(token)
-        setRefreshToken(refresh_token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+login({commit}, userInfo) {
+  const {username, password, validateCode, uuid} = userInfo
+  return new Promise((resolve, reject) => {
+    login({
+      username: username,
+      password: password,
+      grant_type: 'captcha',
+      uuid: uuid,
+      validateCode: validateCode
+    }).then(response => {
+      const {access_token, refresh_token, token_type} = response.data
+      const token = token_type + " " + access_token
+      commit('SET_TOKEN', token)
+      setToken(token)
+      setRefreshToken(refresh_token)
+      resolve()
+    }).catch(error => {
+      reject(error)
     })
+  })
   },
   refreshToken({commit}, refreshToken) {
     commit('SET_TOKEN', undefined)

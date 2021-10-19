@@ -13,7 +13,6 @@ export function login(data) {
 
 export function getUserInfo() {
   return request({
-    // url: '/vue-element-admin/user/info',
     url: '/youlai-admin/api/v1/users/me',
     method: 'get'
   })
@@ -26,9 +25,9 @@ export function logout() {
   })
 }
 
-export function getValidateCode() {
+export function getCaptcha() {
   return request({
-    url: '/validate-code',
+    url: '/captcha',
     method: 'get'
   })
 }

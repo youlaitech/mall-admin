@@ -57,11 +57,11 @@
           v-model="loginForm.validateCode"
           auto-complete="off"
           placeholder="请输入验证码"
-          style="width: 63%"
+          style="width: 65%"
           @keyup.enter.native="handleLogin"
         />
         <div class="validate-code">
-          <img :src="validateCodeImg" @click="getCode" height="38px"/>
+          <img :src="captchaUrl" @click="getValidateCode" height="38px"/>
         </div>
       </el-form-item>
 
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import {getValidateCode} from "@/api/user";
+import {getCaptcha} from "@/api/user";
 import {validUsername} from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './components/SocialSignin'
@@ -126,7 +126,11 @@ export default {
       },
       loginRules: {
         username: [{required: true, trigger: 'blur', validator: validateUsername}],
-        password: [{required: true, trigger: 'blur', validator: validatePassword}]
+        password: [{required: true, trigger: 'blur', validator: validatePassword}],
+        validateCode: [
+          {required: true, message: '请输入验证码', trigger: 'blur'}
+        ],
+
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -134,7 +138,7 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
-      validateCodeImg: undefined
+      captchaUrl: undefined
     }
   },
   watch: {
@@ -151,7 +155,7 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
-    this.getCode();
+    this.getValidateCode();
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -189,7 +193,7 @@ export default {
             })
             .catch(() => {
               this.loading = false
-              this.getCode()
+              this.getValidateCode()
             })
         } else {
           console.log('error submit!!')
@@ -205,10 +209,11 @@ export default {
         return acc
       }, {})
     },
-    getCode() {
-      getValidateCode().then(res => {
-        this.validateCodeImg = "data:image/gif;base64," + res.data.img;
-        this.loginForm.uuid = res.data.uuid;
+    getValidateCode() {
+      getCaptcha().then(response => {
+        const {img, uuid} = response.data
+        this.captchaUrl = "data:image/gif;base64," + img
+        this.loginForm.uuid = uuid;
       })
     }
   }
@@ -342,7 +347,8 @@ $light_gray: #eee;
   .validate-code {
     position: absolute;
     right: 0;
-    top:0;
+    top: 0;
+
     img {
       height: 48px;
       cursor: pointer;
