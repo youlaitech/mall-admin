@@ -46,23 +46,26 @@
             v-for="permission in permissionList"
             style="margin-top: 20px"
           >
-            <el-tooltip class="item" effect="dark" placement="bottom">
+<!--            <el-tooltip class="item" effect="dark" placement="bottom">
               <div slot="content">
                 URL权限：{{ permission.urlPerm }}<br />按钮权限：{{
                   permission.btnPerm
                 }}
               </div>
-              <el-checkbox
-                border
-                v-model="permission.checked"
-                :label="permission.id"
-                :key="permission.id"
-                @change="handleCheckChange"
-                size="mini"
-              >
-                {{ permission.name }}
-              </el-checkbox>
-            </el-tooltip>
+
+            </el-tooltip>-->
+
+
+            <el-checkbox
+              border
+              v-model="permission.checked"
+              :label="permission.id"
+              :key="permission.id"
+              @change="handleCheckChange"
+              size="mini"
+            >
+              {{ permission.name }}
+            </el-checkbox>
           </el-col>
         </el-row>
       </div>
