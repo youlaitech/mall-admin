@@ -13,10 +13,11 @@
         <el-cascader
           v-model="queryParams.categoryId"
           placeholder="商品分类"
+          :props="{emitPath:false}"
           :options="categoryOptions"
           expand-trigger="hover"
           clearable
-        style="width: 300px"
+          style="width: 300px"
         />
       </el-form-item>
       <el-form-item>
