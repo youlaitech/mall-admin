@@ -270,17 +270,7 @@ export default {
   },
   methods: {
     async loadData() {
-      await this.listByDictCode("logistics_channel").then(response => {
-        this.logisticsChannelOptions = response.data
-      })
       await this.handleQuery()
-    },
-    logisticsChannelFormatter(row) {
-      const arr = this.logisticsChannelOptions.filter(item => item.value == row.logisticsChannel)
-      if (arr.length > 0) {
-        return arr[0].name
-      }
-      return
     },
 
     handleQuery() {
