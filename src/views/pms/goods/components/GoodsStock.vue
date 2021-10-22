@@ -494,4 +494,8 @@ Array.prototype.equals = function (target) {
     margin-bottom: 20px;
   }
 }
+
+.el-form-item--mini.el-form-item{
+  margin-top: 18px;
+}
 </style>
