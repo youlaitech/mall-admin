@@ -12,7 +12,7 @@
         <el-link type="info" :underline="false" v-show="pathLabels.length>0">您选择的商品分类:</el-link>
         <el-link type="danger" :underline="false" v-for="(item,index) in pathLabels" style="margin-left: 5px">
           {{ item }}
-          <i v-show="index!=2" class=" el-icon-arrow-right"></i>
+          <i v-show="index<pathLabels.length-1" class=" el-icon-arrow-right"></i>
         </el-link>
       </div>
 

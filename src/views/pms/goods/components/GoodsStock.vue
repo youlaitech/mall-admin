@@ -27,7 +27,9 @@
             <el-table-column label="规格名" width="200">
               <template slot-scope="scope">
                 <el-form-item
-                  :prop="'specList[' + scope.$index + '].name'">
+                  :prop="'specList[' + scope.$index + '].name'"
+                  :rules="rules.specification.name"
+                >
                   <el-input
                     type="text"
                     v-model="scope.row.name"
