@@ -33,8 +33,8 @@
               <el-button
                 type="text"
                 size="mini"
-                @click.stop="() => showPermSettingDialog(data)">
-                <el-button type="text"> 权限设置</el-button>
+                @click.stop="() => showPermSettingDialog(data,node)">
+                <el-button type="text" v-if="!data.children" >设置权限</el-button>
               </el-button>
             </span>
           </span>
@@ -114,7 +114,7 @@ export default {
       permissionList: [],
       isIndeterminate: true,
       checkAll: false,
-      menuId:undefined
+      menuId: undefined
 
     }
   },
@@ -165,6 +165,10 @@ export default {
      * 打开权限设置弹窗
      */
     showPermSettingDialog(data) {
+      if(!this.role.id){
+        this.$message.warning('请选择角色')
+        return false
+      }
       this.menuId = data.value
       this.dialog.visible = true
       getPermissionList({
@@ -212,7 +216,7 @@ export default {
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.permissionList.length;
     },
-    handlePermissionSubmit(){
+    handlePermissionSubmit() {
       const checkedPermissionIds = this.permissionList
         .filter((item) => item.checked)
         .map((item) => item.id);
