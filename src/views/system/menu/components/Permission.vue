@@ -5,6 +5,7 @@
         <b>
           <svg-icon icon-class="route"/>
           {{ menuName }}权限列表</b>
+          <el-link v-if="!menuName" type="warning" icon="el-icon-info" :underline="false" style="margin-left: 20px">请点击左侧菜单列表选择菜单</el-link>
       </div>
       <!-- 搜索表单 -->
       <el-form
@@ -39,17 +40,15 @@
         size="mini">
         <el-table-column type="selection" width="40" align="center"/>
         <el-table-column label="权限名称" prop="name" width="150"/>
-        <el-table-column label="URL权限标识">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.method=='*'" type="info">*_</el-tag>
-            <el-tag v-if="scope.row.method=='GET'" type="primary">GET_</el-tag>
-            <el-tag v-if="scope.row.method=='POST'" type="success">POST_</el-tag>
-            <el-tag v-if="scope.row.method=='PUT'" type="warning">PUT_</el-tag>
-            <el-tag v-if="scope.row.method=='DELETE'" type="danger">DELETE_</el-tag>
-            {{ scope.row.urlPerm }}
-          </template>
+        <el-table-column label="URL权限" align="center">
+          <el-table-column prop="serviceName" label="所属服务">
+          </el-table-column>
+          <el-table-column prop="requestMethod" label="请求方式">
+          </el-table-column>
+          <el-table-column prop="requestPath" label="请求路径">
+          </el-table-column>
         </el-table-column>
-        <el-table-column label="按钮权限标识" prop="btnPerm" width="150"/>
+        <el-table-column label="按钮权限" prop="btnPerm" width="200"/>
         <el-table-column label="操作" align="center" width="100">
           <template slot-scope="scope">
             <el-button

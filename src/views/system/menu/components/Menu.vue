@@ -100,21 +100,22 @@
           <el-input v-model="form.name" placeholder="请输入菜单名称"/>
         </el-form-item>
 
-        <el-form-item label="路由路径" prop="path">
-          <el-input v-model="form.path" :placeholder="form.parentId==0?'/system':'user'" style="width: 95%"/>
-          <el-tooltip effect="dark"
-                      content="vue-router编程式路由跳转方式之一，例：this.$router.push({path:'/system/user',query:{id:1}})"
-                      placement="right">
-            <i class="el-icon-info" style="margin-left: 5px;color:darkseagreen"></i>
-          </el-tooltip>
-        </el-form-item>
-
-        <el-form-item label="组件路径" prop="component">
-          <el-input v-model="form.component" :readonly="form.parentId==0?true:false"
-                    placeholder="system/user/index">
+        <el-form-item label="页面路径" prop="component">
+          <el-input
+            v-model="form.component"
+            :readonly="form.parentId==0?true:false"
+            placeholder="system/user/index"
+            style="width: 95%"
+          >
             <template v-if="form.parentId!=0" slot="prepend">src/views/</template>
             <template v-if="form.parentId!=0" slot="append">.vue</template>
           </el-input>
+
+          <el-tooltip effect="dark"
+                      content="请输入页面路径，如果是父级菜单请填写 Layout 即可"
+                      placement="right">
+            <i class="el-icon-info" style="margin-left: 10px;color:darkseagreen"></i>
+          </el-tooltip>
         </el-form-item>
 
         <el-form-item label="菜单图标">
@@ -161,7 +162,7 @@
 </template>
 
 <script>
-import {getMenuTableList,getMenuTreeSelectList, add, del, patch, update} from "@/api/system/menu";
+import {getMenuTableList, getMenuTreeSelectList, add, del, patch, update} from "@/api/system/menu";
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TreeSelect from '@riophae/vue-treeselect'
 import IconSelect from '@/components/IconSelect'
@@ -198,6 +199,11 @@ export default {
         name: [
           {required: true, message: '请输入菜单名称', trigger: 'blur'}
         ],
+        component: [
+          {required: true, message: '请输入页面路径', trigger: 'blur'}
+        ]
+
+
       },
       title: '新增菜单',
       menuOptions: [],
@@ -208,7 +214,7 @@ export default {
     this.loadData()
   },
   methods: {
-    loadData(){
+    loadData() {
       this.loadMenuOptions()
       this.handleQuery()
     },
@@ -221,6 +227,7 @@ export default {
     },
     handleReset() {
       this.queryParams.name = undefined
+      this.form.parentId = 0
       this.handleQuery()
     },
     handleRowClick(row) {
