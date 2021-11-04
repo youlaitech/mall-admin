@@ -179,6 +179,7 @@ export default {
           // 如果是超级管理员默认勾选全部且不可编辑
           this.isRoot = true;
           data.map((item) => this.$set(item, "checked", true));
+          this.checkAll=true
           this.permissionList = data;
           this.loading = false;
         } else {
@@ -191,6 +192,7 @@ export default {
               }
             });
             this.permissionList = data;
+            this.handlePermissionCheck()
             this.loading = false;
           });
         }
