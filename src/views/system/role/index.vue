@@ -1,11 +1,14 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :span="12" :xs="24">
+      <el-col :span="10" :xs="24">
         <role ref="role" @roleClick="roleClick"></role>
       </el-col>
-      <el-col :span="12" :xs="24">
+      <el-col :span="6" :xs="24">
         <menus ref="menu" @menuClick="menuClick"></menus>
+      </el-col>
+      <el-col :span="8" :xs="24">
+        <permission ref="permission"></permission>
       </el-col>
     </el-row>
   </div>
@@ -15,10 +18,11 @@
 <script>
 import Role from './components/Role'
 import Menus from './components/Menu'
+import Permission from './components/Permission'
 
 export default {
   name: "index",
-  components: { Role, Menus},
+  components: {Permission, Role, Menus},
   data() {
     return {
       role: undefined,
@@ -30,6 +34,7 @@ export default {
       this.role = role
       this.menu = undefined
       this.$refs.menu.roleClick(role)
+      this.$refs.permission.menuClick(this.menu, this.role)
     },
     menuClick(menu) {
       if (!this.role) {
@@ -37,6 +42,7 @@ export default {
         return
       }
       this.menu = menu
+      this.$refs.permission.menuClick(this.menu, this.role)
     }
   }
 }
