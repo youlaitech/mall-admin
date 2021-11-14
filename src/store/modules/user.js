@@ -61,11 +61,10 @@ login({commit}, userInfo) {
         grant_type: 'refresh_token',
         refresh_token: refreshToken,
       }).then(response => {
-        const {access_token, refresh_token, token_type} = response.data
+        const {access_token, token_type} = response.data
         const token = token_type + " " + access_token
         commit('SET_TOKEN', token)
         setToken(token)
-        setRefreshToken(refresh_token)
         resolve(token)
       }).catch(error => {
         reject(error)
