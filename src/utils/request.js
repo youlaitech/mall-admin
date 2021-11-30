@@ -62,6 +62,7 @@ service.interceptors.response.use(
               location.reload()
             })
           })
+          return Promise.reject(new Error(msg || 'Error'))
         }).finally(() => {
           refreshing = false
         })
@@ -82,6 +83,7 @@ service.interceptors.response.use(
       store.dispatch('user/resetToken').then(() => {
         location.reload()
       })
+      return Promise.reject(new Error(msg || 'Error'))
     } else {
       Message({
         message: msg || '系统出错',

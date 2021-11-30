@@ -41,7 +41,7 @@ login({commit}, userInfo) {
       password: password,
       grant_type: 'captcha',
       uuid: uuid,
-      validateCode: validateCode
+      code: validateCode
     }).then(response => {
       const {access_token, refresh_token, token_type} = response.data
       const token = token_type + " " + access_token
