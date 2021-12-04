@@ -6,7 +6,7 @@ export function login(data) {
     method: 'post',
     params: data,
     headers: {
-      'Authorization': 'Basic bWFsbC1hZG1pbi13ZWI6MTIzNDU2' // 客户端信息加密摘要认证，明文：mall-admin-web:123456
+      'Authorization': 'Basic bWFsbC1hZG1pbi13ZWI6MTIzNDU2' // 客户端信息加密，明文：mall-admin-web:123456
     }
   })
 }
