@@ -84,6 +84,9 @@ service.interceptors.response.use(
         location.reload()
       })
       return Promise.reject(new Error(msg || 'Error'))
+    } else if (code === 'B0001' && refreshing) {
+      // 修复 https://gitee.com/youlaitech/youlai-mall/issues/I482WS
+      return Promise.resolve()
     } else {
       Message({
         message: msg || '系统出错',
