@@ -118,7 +118,7 @@
         multiple: true,
         pagination: {
           pageNum:1,
-          pageSize:1,
+          pageSize:10,
           total: 0
         },
         queryParams: {
@@ -158,7 +158,7 @@
       handleReset() {
         this.pagination = {
           pageNum:1,
-          pageSize:1,
+          pageSize:10,
           total: 0
         }
         this.queryParams = {
