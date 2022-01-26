@@ -17,7 +17,7 @@ export function getMenuSelectList() {
 
 export function getMenuTreeSelectList() {
   return request({
-    url: '/youlai-admin/api/v1/menus/tree-select',
+    url: '/youlai-admin/api/v1/menus/tree_select',
     method: 'get'
   })
 }

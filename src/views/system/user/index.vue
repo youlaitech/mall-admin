@@ -157,8 +157,8 @@
 
         <pagination
           v-show="pagination.total>0"
-          :limit.sync="pagination.limit"
-          :page.sync="pagination.page"
+          :limit.sync="pagination.pageSize"
+          :page.sync="pagination.pageNum"
           :total="pagination.total"
           @pagination="handleQuery"
         />
@@ -242,8 +242,8 @@ export default {
         mobile: undefined
       },
       pagination: {
-        page: 1,
-        limit: 10,
+        pageNum:1,
+        pageSize:1,
         total: 0
       },
       pageList: [],
@@ -307,8 +307,8 @@ export default {
       await this.loadDeptOptions()
     },
     handleQuery() {
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
+      this.queryParams.pageNum = this.pagination.pageNum
+      this.queryParams.pageSize = this.pagination.pageSize
       list(this.queryParams).then(response => {
         const {data, total} = response
         this.pageList = data
@@ -318,8 +318,8 @@ export default {
     },
     handleReset() {
       this.pagination = {
-        page: 1,
-        limit: 10,
+        pageNum:1,
+        pageSize:1,
         total: 0
       }
       this.queryParams = {

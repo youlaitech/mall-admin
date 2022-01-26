@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function list(queryParams) {
   return request({
-    url: '/youlai-admin/api/v1/users',
+    url: '/youlai-admin/api/v1/users/page',
     method: 'get',
     params: queryParams
   })
@@ -10,7 +10,7 @@ export function list(queryParams) {
 
 export function detail(id) {
   return request({
-    url: '/youlai-admin/api/v1/users/' + id,
+    url: '/youlai-admin/api/v1/users/' + id+'/form_detail',
     method: 'get'
   })
 }

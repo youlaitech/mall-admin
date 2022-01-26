@@ -63,8 +63,8 @@
     <pagination
       v-show="pagination.total>0"
       :total="pagination.total"
-      :page.sync="pagination.page"
-      :limit.sync="pagination.limit"
+      :page.sync="pagination.pageNum"
+      :limit.sync="pagination.pageSize"
       @pagination="handleQuery"
     />
 
@@ -123,8 +123,8 @@ export default {
         dictCode: undefined,
       },
       pagination: {
-        page: 1,
-        limit: 10,
+        pageNum:1,
+        pageSize:1,
         total: 0
       },
       pageList: [],
@@ -153,8 +153,8 @@ export default {
         return
       }
       this.loading = true
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
+      this.queryParams.pageNum = this.pagination.pageNum
+      this.queryParams.pageSize = this.pagination.pageSize
       getDictItemPageList(this.queryParams).then(response => {
         this.pageList = response.data
         this.pagination.total = response.total
@@ -163,8 +163,8 @@ export default {
     },
     handleReset() {
       this.pagination = {
-        page: 1,
-        limit: 10,
+        pageNum:1,
+        pageSize:1,
         total: 0
       }
       this.queryParams = {

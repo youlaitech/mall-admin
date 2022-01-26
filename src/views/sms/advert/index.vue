@@ -9,7 +9,7 @@
       <el-form-item  >
         <el-input
           v-model="queryParams.name"
-          placeholder="广告名称"
+          placeholder="广告标题"
           clearable
           @keyup.enter.native="handleQuery"/>
       </el-form-item>
@@ -21,20 +21,20 @@
     <el-table v-loading="loading" :data="pageList" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" min-width="5" align="center"/>
       <el-table-column type="index" label="序号" width="50" align="center"/>
-      <el-table-column prop="name" label="广告名称" min-width="10"/>
+      <el-table-column prop="name" label="广告标题" min-width="10"/>
       <el-table-column label="广告图片" min-width="10">
         <template slot-scope="scope">
           <el-popover
             placement="right"
             title=""
             trigger="hover">
-            <img :src="scope.row.pic"/>
-            <img slot="reference" :src="scope.row.pic" :alt="scope.row.pic"
+            <img :src="scope.row.picUrl"/>
+            <img slot="reference" :src="scope.row.picUrl" :alt="scope.row.picUrl"
                  style="max-height: 60px;max-width: 60px">
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="startTime" label="开始时间" min-width="10"/>
+      <el-table-column prop="beginTime" label="开始时间" min-width="10"/>
       <el-table-column prop="endTime" label="到期时间" min-width="10"/>
       <el-table-column prop="status" label="状态" min-width="6" :formatter="statusFormat"/>
       <el-table-column prop="sort" label="排序" min-width="6"/>
@@ -59,39 +59,39 @@
     <pagination
       v-show="pagination.total>0"
       :total="pagination.total"
-      :page.sync="pagination.page"
-      :limit.sync="pagination.limit"
+      :page.sync="pagination.pageNum"
+      :limit.sync="pagination.pageSize"
       @pagination="handleQuery"/>
 
     <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="700px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="广告名称" required prop="name">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item label="广告标题" required prop="name">
+          <el-input v-model="form.title"></el-input>
         </el-form-item>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="开始时间" required prop="startTime">
-              <el-date-picker
-                v-model="form.startTime"
+            <el-form-item label="开始时间" required prop="beginTime">
+              <el-date-picUrlker
+                v-model="form.beginTime"
                 type="datetime"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 placeholder="选择时间">
-              </el-date-picker>
+              </el-date-picUrlker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="到期时间" required prop="endTime">
-              <el-date-picker
+              <el-date-picUrlker
                 v-model="form.endTime"
                 type="datetime"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 placeholder="选择时间">
-              </el-date-picker>
+              </el-date-picUrlker>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="广告图片" prop="pic">
-          <single-upload v-model="form.pic"></single-upload>
+        <el-form-item label="广告图片" prop="picUrl">
+          <single-upload v-model="form.picUrl"></single-upload>
         </el-form-item>
         <el-row>
           <el-col :span="12">
@@ -147,8 +147,8 @@ export default {
         name: undefined
       },
       pagination: {
-        page: 1,
-        limit: 10,
+        pageNum:1,
+        pageSize:1,
         total: 0
       },
       pageList: [],
@@ -161,9 +161,9 @@ export default {
       // 表单参数
       form: {
         id: undefined,
-        name: undefined,
-        pic: undefined,
-        startTime: undefined,
+        title: undefined,
+        picUrl: undefined,
+        beginTime: undefined,
         endTime: undefined,
         status: 1,
         sort: undefined,
@@ -172,10 +172,10 @@ export default {
       },
       // 表单校验
       rules: {
-        name: [
-          {required: true, message: '请输入广告名称', trigger: 'blur'}
+        title: [
+          {required: true, message: '请输入广告标题', trigger: 'blur'}
         ],
-        pic: [
+        picUrl: [
           {required: true, message: '请上传广告图片', trigger: 'blur'}
         ]
       }
@@ -186,8 +186,8 @@ export default {
   },
   methods: {
     handleQuery() {
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
+      this.queryParams.pageNum = this.pagination.pageNum
+      this.queryParams.pageSize = this.pagination.pageSize
       list(this.queryParams).then(response => {
         this.pageList = response.data
         this.pagination.total = response.total
@@ -196,8 +196,8 @@ export default {
     },
     handleReset() {
       this.pagination = {
-        page: 1,
-        limit: 10,
+        pageNum:1,
+        pageSize:1,
         total: 0
       }
       this.queryParams = {
@@ -272,8 +272,8 @@ export default {
       this.form = {
         id: undefined,
         name: undefined,
-        pic: undefined,
-        startTime: undefined,
+        picUrl: undefined,
+        beginTime: undefined,
         endTime: undefined,
         status: 1,
         sort: undefined,

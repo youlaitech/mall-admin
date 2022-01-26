@@ -71,8 +71,8 @@
       <pagination
         v-show="pagination.total>0"
         :total="pagination.total"
-        :page.sync="pagination.page"
-        :limit.sync="pagination.limit"
+        :page.sync="pagination.pageNum"
+        :limit.sync="pagination.pageSize"
         @pagination="handleQuery"
       />
       <el-dialog
@@ -135,8 +135,8 @@ export default {
         menuId: undefined
       },
       pagination: {
-        page: 1,
-        limit: 10,
+        pageNum:1,
+        pageSize:1,
         total: 0
       },
       pageList: [],
@@ -174,8 +174,8 @@ export default {
   },
   methods: {
     handleQuery() {
-      this.queryParams.page = this.pagination.page
-      this.queryParams.limit = this.pagination.limit
+      this.queryParams.pageNum = this.pagination.pageNum
+      this.queryParams.pageSize = this.pagination.pageSize
 
       this.queryParams.menuId = this.menu.id
       getPermissionPageList(this.queryParams).then(response => {
@@ -186,8 +186,8 @@ export default {
     },
     handleReset() {
       this.pagination = {
-        page: 1,
-        limit: 10,
+        pageNum:1,
+        pageSize:1,
         total: 0
       }
       this.queryParams.name = undefined
