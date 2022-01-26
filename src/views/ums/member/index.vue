@@ -195,7 +195,6 @@
         // 非多个禁用
         multiple: true,
         queryParams: {
-          queryMode: 'page',
           nickName: undefined
         },
         pagination: {
@@ -250,7 +249,6 @@
           total: 0
         }
         this.queryParams = {
-          queryMode: 'page',
           nickName: undefined
         }
         this.handleQuery()
