@@ -80,7 +80,7 @@ const state = reactive({
     {
       imgUrl: 'http://cdn.youlai.tech/rui.jpg',
       nickname: '郝先瑞',
-      positions: ['后端', '前端', '打杂'],
+      positions: ['Java', 'Vue3', '文档'],
       homepage: 'https://www.cnblogs.com/haoxianrui/'
     },
     {
@@ -92,7 +92,7 @@ const state = reactive({
     {
       imgUrl: 'http://cdn.youlai.tech/chuan.jpg',
       nickname: '张川',
-      positions: ['后端', '前端'],
+      positions: ['Java', 'Vue3'],
       homepage: 'https://blog.csdn.net/qq_41595149'
     }
   ],
