@@ -26,7 +26,7 @@
 
 - 基于 vue-element-admin 升级的Vue3版本 ，极易上手，减少学习成本；
 - 一套完整适配的微服务权限系统线上接口，企业级真实前后端接入场景，非Mock数据；
-- 功能全面：国际化、动态路由、按钮权限、主题大小切换、Echart、wangEditor；
+- 功能全面：国际化、动态路由、按钮权限、主题大小切换、Echarts、wangEditor；
 - TypeScript 全面支持，包括组件和API调用层面；
 - 主流 Vue3 生态和前端技术栈，常用组件极简封装；
 - 从0到1的项目文档支持；
@@ -53,7 +53,7 @@
 
 | ![控制台](http://cdn.youlai.tech/dashboard.png) | ![国际化](http://cdn.youlai.tech/i18n.gif) |
 | ----| ----|
-|![商品管理](http://cdn.youlai.tech/goods.png) | ![角色管理](http://cdn.youlai.tech/role.jpg) |
+|![商品管理](http://cdn.youlai.tech/goods.png) | ![角色管理](http://cdn.youlai.tech/role.png) |
 
 
 ## 项目地址
