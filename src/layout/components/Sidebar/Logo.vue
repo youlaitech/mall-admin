@@ -24,7 +24,7 @@ const props = defineProps({
 })
 
 const title=ref("youlai-mall")
-const logo=ref("http://cdn.youlai.tech/logo.png")
+const logo=ref("https://s2.loli.net/2022/04/07/hyquWXELOoYvlP6.png")
 
 </script>
 
