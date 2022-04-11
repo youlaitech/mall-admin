@@ -19,8 +19,7 @@
             :filter-node-method="filterDeptNode"
             default-expand-all
             @node-click="handleDeptNodeClick"
-          >
-          </el-tree>
+          ></el-tree>
         </el-card>
       </el-col>
 
@@ -28,93 +27,96 @@
       <el-col :span="20" :xs="24">
         <el-card class="box-card">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-            <el-form-item>
-              <el-button
-                type="success"
-                :icon="Plus"
-                @click="handleAdd"
-                v-hasPerm="['sys:user:add']"
-              >
-                新增
-              </el-button>
-              <el-button
-                type="danger"
-                :icon="Delete"
-                :disabled="multiple"
-                @click="handleDelete"
-                v-hasPerm="['sys:user:delete']"
-              >
-                删除
-              </el-button>
-            </el-form-item>
+            <el-row>
+              <el-col :span="18" :xs="24" :sm="14">
+                <el-form-item>
+                  <el-button
+                    type="success"
+                    :icon="Plus"
+                    @click="handleAdd"
+                    v-hasPerm="['sys:user:add']"
+                  >新增</el-button>
+                  <el-button
+                    type="danger"
+                    :icon="Delete"
+                    :disabled="multiple"
+                    @click="handleDelete"
+                    v-hasPerm="['sys:user:delete']"
+                  >删除</el-button>
+                </el-form-item>
 
-            <el-form-item prop="keywords">
-              <el-input
-                v-model="queryParams.keywords"
-                placeholder="用户名/昵称/手机号"
-                clearable
-                style="width: 200px"
-                @keyup.enter="handleQuery"
-              />
-            </el-form-item>
+                <el-form-item prop="keywords">
+                  <el-input
+                    v-model="queryParams.keywords"
+                    placeholder="用户名/昵称/手机号"
+                    clearable
+                    style="width: 200px"
+                    @keyup.enter="handleQuery"
+                  />
+                </el-form-item>
 
-            <el-form-item prop="status">
-              <el-select
-                v-model="queryParams.status"
-                placeholder="用户状态"
-                clearable
-                style="width: 200px"
-              >
-                <el-option label="正常" value="1" />
-                <el-option label="停用" value="0" />
-              </el-select>
-            </el-form-item>
+                <el-form-item prop="status">
+                  <el-select
+                    v-model="queryParams.status"
+                    placeholder="用户状态"
+                    clearable
+                    style="width: 200px"
+                  >
+                    <el-option label="正常" value="1" />
+                    <el-option label="停用" value="0" />
+                  </el-select>
+                </el-form-item>
 
-            <el-form-item>
-              <el-button type="primary" :icon="Search" @click="handleQuery">
-                搜索
-              </el-button>
-              <el-button :icon="Refresh" @click="resetQuery"> 重置 </el-button>
-            </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
+                  <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="6" :xs="24" :sm="10" style="text-align: right;">
+                <el-form-item>
+                  <el-dropdown split-button style="margin-left: 12px;">
+                    导入
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item :icon="Download" @click="handleDownloadTemplate">下载模板</el-dropdown-item>
+                        <el-dropdown-item :icon="Top">导入数据</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                  <el-button :icon="Download" style="margin-left: 12px;" @click="handleExport">导出</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
 
-          <el-table
-            v-loading="loading"
-            :data="userList"
-            @selection-change="handleSelectionChange"
-          >
+          <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" align="center" />
-            <el-table-column
-              key="id"
-              label="用户编号"
-              align="center"
-              prop="id"
-            />
+            <el-table-column key="id" label="用户编号" align="center" prop="id" />
             <el-table-column
               key="username"
-              label="用户名称"
+              label="用户名"
               align="center"
               prop="username"
-              :show-overflow-tooltip="true"
             />
             <el-table-column
               label="用户昵称"
               align="center"
               prop="nickname"
-              :show-overflow-tooltip="true"
             />
+
+            <el-table-column
+              label="性别"
+              align="center"
+              prop="gender"
+            />
+
             <el-table-column
               label="部门"
               align="center"
               prop="deptName"
-              :show-overflow-tooltip="true"
             />
-            <el-table-column
-              label="手机号码"
-              align="center"
-              prop="mobile"
-              width="120"
-            />
+            <el-table-column label="手机号码" align="center" prop="mobile" width="120" />
 
             <el-table-column label="状态" align="center" prop="status">
               <template #default="scope">
@@ -126,13 +128,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column
-              label="创建时间"
-              align="center"
-              prop="gmtCreate"
-              width="180"
-            >
-            </el-table-column>
+            <el-table-column label="创建时间" align="center" prop="gmtCreate" width="180"></el-table-column>
             <el-table-column label="操作" align="center" width="150">
               <template #default="scope">
                 <el-button
@@ -142,8 +138,7 @@
                   plain
                   @click="handleUpdate(scope.row)"
                   v-hasPerm="['sys:user:edit']"
-                >
-                </el-button>
+                ></el-button>
                 <el-button
                   type="danger"
                   :icon="Delete"
@@ -151,16 +146,14 @@
                   plain
                   @click="handleDelete(scope.row)"
                   v-hasPerm="['sys:user:delete']"
-                >
-                </el-button>
+                ></el-button>
                 <el-button
                   type="warning"
                   :icon="Lock"
                   circle
                   plain
                   @click="resetPassword(scope.row)"
-                >
-                </el-button>
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -184,18 +177,9 @@
       append-to-body
       @close="cancel"
     >
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="80px"
-      >
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
         <el-form-item label="用户名" prop="username">
-          <el-input
-            :readonly="!!formData.id"
-            v-model="formData.username"
-            placeholder="请输入用户名"
-          />
+          <el-input :readonly="!!formData.id" v-model="formData.username" placeholder="请输入用户名" />
         </el-form-item>
 
         <el-form-item label="用户昵称" prop="nickname">
@@ -203,27 +187,15 @@
         </el-form-item>
 
         <el-form-item label="归属部门" prop="deptId">
-          <tree-select
-            v-model="formData.deptId"
-            :options="deptOptions"
-            placeholder="请选择归属部门"
-          />
+          <tree-select v-model="formData.deptId" :options="deptOptions" placeholder="请选择归属部门" />
         </el-form-item>
 
         <el-form-item label="手机号码" prop="mobile">
-          <el-input
-            v-model="formData.mobile"
-            placeholder="请输入手机号码"
-            maxlength="11"
-          />
+          <el-input v-model="formData.mobile" placeholder="请输入手机号码" maxlength="11" />
         </el-form-item>
 
         <el-form-item label="邮箱" prop="email">
-          <el-input
-            v-model="formData.email"
-            placeholder="请输入邮箱"
-            maxlength="50"
-          />
+          <el-input v-model="formData.email" placeholder="请输入邮箱" maxlength="50" />
         </el-form-item>
 
         <el-form-item label="状态" prop="status">
@@ -254,8 +226,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm"> 确 定 </el-button>
-          <el-button @click="cancel"> 取 消 </el-button>
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -267,14 +239,13 @@
 import {
   reactive,
   ref,
-  unref,
   watchEffect,
   onMounted,
   getCurrentInstance,
-  toRefs,
+  toRefs
 } from "vue";
 
-// API依赖
+// 导入API
 import {
   listUsersPage,
   getUserFormDetail,
@@ -282,6 +253,8 @@ import {
   addUser,
   updateUser,
   updateUserPart,
+  downloadTemplate,
+  exportUser
 } from "@/api/system/user";
 import { listSelectDepartments } from "@/api/system/dept";
 import { listRoles } from "@/api/system/role";
@@ -295,6 +268,9 @@ import {
   Refresh,
   Delete,
   Lock,
+  ArrowDown,
+  Download,
+  Top
 } from "@element-plus/icons-vue";
 import TreeSelect from "@/components/TreeSelect/index.vue";
 import {
@@ -397,6 +373,9 @@ watchEffect(
   }
 );
 
+/**
+ * 部门列表筛选
+ */
 function filterDeptNode(value: string, data: any) {
   if (!value) {
     return true;
@@ -498,7 +477,7 @@ function resetPassword(row: { [key: string]: any }) {
         ElMessage.success("修改成功，新密码是：" + value);
       });
     })
-    .catch(() => {});
+    .catch(() => { });
 }
 
 /**
@@ -610,6 +589,40 @@ function loadGenderOptions() {
   proxy.$listDictsByCode("gender").then((response: any) => {
     state.genderOptions = response?.data;
   });
+}
+
+/**
+ * 下载用户导入模板
+ */
+function handleDownloadTemplate() {
+  downloadTemplate().then((response: any) => {
+    const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+    const a = document.createElement('a')
+    const href = window.URL.createObjectURL(blob) // 下载链接
+    a.href = href
+    a.download = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]); // 获取后台设置的文件名称
+    document.body.appendChild(a)
+    a.click() // 点击下载
+    document.body.removeChild(a) // 下载完成移除元素
+    window.URL.revokeObjectURL(href) // 释放掉blob对象
+
+  })
+}
+/**
+ * 导出用户
+ */
+function handleExport() {
+  exportUser(queryParams.value).then((response: any) => {
+    const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+    const a = document.createElement('a')
+    const href = window.URL.createObjectURL(blob) // 下载的链接
+    a.href = href
+    a.download = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]); // 获取后台设置的文件名称
+    document.body.appendChild(a)
+    a.click() // 点击导出
+    document.body.removeChild(a) // 下载完成移除元素
+    window.URL.revokeObjectURL(href) // 释放掉blob对象
+  })
 }
 
 /**
