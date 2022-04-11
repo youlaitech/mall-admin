@@ -314,8 +314,6 @@ function handleSelectionChange(selection: any) {
 }
 
 function handleRowClick(row: any) {
-
-  console.log('handleRowClick',row)
   state.currentRow = JSON.parse(JSON.stringify(row));
   emit("menuClick", row);
 }
