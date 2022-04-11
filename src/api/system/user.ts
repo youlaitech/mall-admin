@@ -30,7 +30,7 @@ export function listUsersPage(queryParams: UserQueryParam): AxiosPromise<UserPag
  *
  * @param userId
  */
-export function getUserFormDetail(userId: number):AxiosPromise<UserFormData> {
+export function getUserFormDetail(userId: number): AxiosPromise<UserFormData> {
     return request({
         url: '/youlai-admin/api/v1/users/' + userId + '/form_detail',
         method: 'get'
@@ -80,11 +80,39 @@ export function updateUserPart(id: number, data: any) {
 
 /**
  * 删除用户
+ * 
  * @param ids
  */
 export function deleteUsers(ids: string) {
     return request({
         url: '/youlai-admin/api/v1/users/' + ids,
         method: 'delete',
+    })
+}
+
+/**
+ * 下载用户导入模板
+ * 
+ * @returns 
+ */
+export function downloadTemplate() {
+    return request({
+        url: '/youlai-admin/api/v1/users/template',
+        method: 'get',
+        responseType: "arraybuffer"
+    })
+}
+
+/**
+ * 导出用户
+ * 
+ * @param queryParams 
+ * @returns 
+ */
+export function exportUser(queryParams: UserQueryParam) {
+    return request({
+        url: '/youlai-admin/api/v1/users/_export',
+        method: 'get',
+        responseType: "arraybuffer"
     })
 }
