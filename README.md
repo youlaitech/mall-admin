@@ -88,11 +88,15 @@
 
 ### 项目启动
 
- >🚨 如果前端开发人员或者本地没有启动后台服务的情况，需要修改 vite.config.ts 的代理地址 http://localhost:9999 为线上接口地址 http://www.youlai.tech:9999 
+ > 如果前端开发人员或者本地没有启动后台服务的情况，需要修改 vite.config.ts 的代理地址 http://localhost:9999 为线上接口地址 http://www.youlai.tech:9999 
 
 1. npm install
 2. npm run dev
 3. 浏览器访问 http://localhost:9527
+
+
+🚨 如果安装依赖或启动报错，可尝试将依赖包 `/docs/node_modules.zip` 解压到项目根目录。
+
 
 
 ### 项目部署
