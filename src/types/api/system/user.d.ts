@@ -59,3 +59,11 @@ export interface UserFormData {
     remark: string,
     roleIds: number[]
 }
+
+/**
+ * 用户导入表单类型声明 
+ */
+ export interface UserImportFormData {
+    deptId: number,
+    roleIds: number[]
+}

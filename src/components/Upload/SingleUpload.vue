@@ -35,7 +35,7 @@ import {
   ElUpload,
   UploadFile,
   UploadRawFile,
-  UploadRequestOptions,
+  UploadRequestOptions
 } from "element-plus";
 import { uploadFile, deleteFile } from "@/api/system/file";
 

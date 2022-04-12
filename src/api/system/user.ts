@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
-import { UserFormData, UserInfo, UserPageResult, UserQueryParam } from "@/types";
+import { UserFormData, UserImportFormData, UserInfo, UserPageResult, UserQueryParam } from "@/types";
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
@@ -30,9 +30,9 @@ export function listUsersPage(queryParams: UserQueryParam): AxiosPromise<UserPag
  *
  * @param userId
  */
-export function getUserFormDetail(userId: number): AxiosPromise<UserFormData> {
+export function getUserDetail(userId: number): AxiosPromise<UserFormData> {
     return request({
-        url: '/youlai-admin/api/v1/users/' + userId + '/form_detail',
+        url: '/youlai-admin/api/v1/users/' + userId,
         method: 'get'
     })
 }
@@ -115,4 +115,25 @@ export function exportUser(queryParams: UserQueryParam) {
         method: 'get',
         responseType: "arraybuffer"
     })
+}
+
+/**
+ * 导入用户
+ *
+ * @param file
+ */
+export function importUser(deptId: number, roleIds: string, file: File) {
+    let formData = new FormData()
+    formData.append('file', file)
+    formData.append('deptId',deptId.toString())
+    formData.append('roleIds',roleIds)
+    return request(
+        {
+            url: '/youlai-admin/api/v1/users/_import',
+            method: 'post',
+            data:formData,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
 }
