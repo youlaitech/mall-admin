@@ -128,7 +128,7 @@ const state = reactive({
   total: 0,
   queryParams: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 10
   } as MemberQueryParam,
   memberList: [] as MemberItem[]
 });
@@ -149,7 +149,7 @@ function resetQuery() {
   state.queryParams = {
     pageNum: 1,
     pageSize: 10,
-    nickName: undefined,
+    nickName: ''
   };
   handleQuery();
 }

@@ -4,7 +4,7 @@ import { PageQueryParam, PageResult } from "../base"
  * 会员查询参数类型声明
  */
 export interface MemberQueryParam extends PageQueryParam {
-    nickName: String | undefined
+    nickName?: string 
 }
 
 /**

@@ -14,9 +14,9 @@ export interface UserInfo {
  * 用户查询参数类型声明
  */
 export interface UserQueryParam extends PageQueryParam {
-    keywords: String | undefined,
-    status: number | undefined,
-    deptId: number | undefined
+    keywords: string,
+    status: number,
+    deptId: number
 }
 
 /**
@@ -63,7 +63,7 @@ export interface UserFormData {
 /**
  * 用户导入表单类型声明 
  */
- export interface UserImportFormData {
+export interface UserImportFormData {
     deptId: number,
     roleIds: number[]
 }

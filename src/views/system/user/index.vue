@@ -212,7 +212,7 @@ import { listSelectDepartments } from "@/api/system/dept";
 import { listRoles } from "@/api/system/role";
 
 // 组件依赖
-import { ElMessage, ElMessageBox, ElTree, ElForm, UploadRequestOptions } from "element-plus";
+import { ElMessage, ElMessageBox, ElTree, ElForm, UploadFile } from "element-plus";
 import {
   Search,
   Plus,
@@ -576,7 +576,7 @@ async function showImportDialog() {
 }
 
 
-function handleExcelChange(file: any, fileList: File[]) {
+function handleExcelChange(file: UploadFile, fileList: UploadFile[]) {
   const fileName = file.name;
   if (!/\.(xlsx|xls|XLSX|XLS)$/.test(file.name)) {
     ElMessage.warning('上传Excel只能为xlsx、xls格式');

@@ -24,7 +24,7 @@
         <el-cascader
           v-model="queryParams.categoryId"
           placeholder="商品分类"
-          :props="{ emitPath: false, expandTrigger: 'hover' }"
+          :props="{ emitPath: false }"
           :options="categoryOptions"
           clearable
           style="width: 300px"

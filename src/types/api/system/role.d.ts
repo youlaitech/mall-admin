@@ -4,7 +4,7 @@ import { PageQueryParam, PageResult } from "../base"
  * 角色查询参数类型声明
  */
 export interface RoleQueryParam extends PageQueryParam {
-    name: String | undefined
+    name?: string
 }
 
 /**

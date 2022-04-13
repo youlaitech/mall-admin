@@ -3,43 +3,25 @@
     <!-- 搜索表单 -->
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
-        >
+        <el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
       </el-form-item>
 
       <el-form-item prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="菜单名称"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+        <el-input v-model="queryParams.name" placeholder="菜单名称" clearable @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery"
-          >搜索</el-button
-        >
+        <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 数据表格 -->
-    <el-table
-      v-loading="loading"
-      :data="menuList"
-      highlight-current-row
-      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-      @row-click="handleRowClick"
-      row-key="id"
-      border
-    >
+    <el-table v-loading="loading" :data="menuList" highlight-current-row
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" @row-click="handleRowClick" row-key="id"
+      border>
       <el-table-column label="菜单名称">
         <template #default="scope">
-          <svg-icon
-            color="#333"
-            :icon-class="scope.row.icon ? scope.row.icon : 'build'"
-          />
+          <svg-icon color="#333" :icon-class="scope.row.icon ? scope.row.icon : 'build'" />
           {{ scope.row.name }}
         </template>
       </el-table-column>
@@ -53,45 +35,18 @@
 
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
-          <el-button
-            type="success"
-            :icon="Plus"
-            circle
-            plain
-            @click.stop="handleAdd(scope.row)"
-          />
-          <el-button
-            type="primary"
-            :icon="Edit"
-            circle
-            plain
-            @click.stop="handleUpdate(scope.row)"
-          />
-          <el-button
-            type="danger"
-            :icon="Delete"
-            circle
-            plain
-            @click.stop="handleDelete(scope.row)"
-          />
+          <el-button type="success" :icon="Plus" circle plain @click.stop="handleAdd(scope.row)" />
+          <el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)" />
+          <el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 弹窗表单 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="750px">
-      <el-form
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
+      <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="父级菜单" prop="parentId">
-          <tree-select
-            v-model="formData.parentId"
-            :options="menuOptions"
-            placeholder="选择上级菜单"
-          />
+          <tree-select v-model="formData.parentId" :options="menuOptions" placeholder="选择上级菜单" />
         </el-form-item>
 
         <el-form-item label="菜单名称" prop="name">
@@ -110,51 +65,24 @@
         </el-form-item>
 
         <el-form-item v-if="!isExternalPath" label="页面路径" prop="component">
-          <el-input
-            v-model="formData.component"
-            placeholder="system/user/index"
-            style="width: 95%"
-          >
-            <template v-if="formData.parentId != 0" #prepend
-              >src/views/</template
-            >
+          <el-input v-model="formData.component" placeholder="system/user/index" style="width: 95%">
+            <template v-if="formData.parentId != 0" #prepend>src/views/</template>
             <template v-if="formData.parentId != 0" #append>.vue</template>
           </el-input>
 
-          <el-tooltip
-            effect="dark"
-            content="请输入组件路径，如果是父组件填写 Layout 即可"
-            placement="right"
-          >
-            <i
-              class="el-icon-info"
-              style="margin-left: 10px; color: darkseagreen"
-            ></i>
+          <el-tooltip effect="dark" content="请输入组件路径，如果是父组件填写 Layout 即可" placement="right">
+            <i class="el-icon-info" style="margin-left: 10px; color: darkseagreen"></i>
           </el-tooltip>
         </el-form-item>
 
         <el-form-item label="图标" prop="icon">
-          <el-popover
-            placement="bottom-start"
-            :width="570"
-            trigger="click"
-            v-model:visible="iconSelectVisible"
-          >
+          <el-popover placement="bottom-start" :width="570" trigger="click" v-model:visible="iconSelectVisible">
             <icon-select ref="iconSelectRef" @selected="selected" />
             <template #reference>
-              <el-input
-                v-model="formData.icon"
-                placeholder="点击选择图标"
-                readonly
-                @click="iconSelectVisible = true"
-              >
+              <el-input v-model="formData.icon" placeholder="点击选择图标" readonly @click="iconSelectVisible = true">
                 <template #prefix>
-                  <svg-icon
-                    :icon-class="formData.icon ? formData.icon : 'color'"
-                    class="el-input__icon"
-                    style="margin: auto"
-                    color="#999"
-                  />
+                  <svg-icon :icon-class="formData.icon ? formData.icon : 'color'" class="el-input__icon"
+                    style="margin: auto" color="#999" />
                 </template>
               </el-input>
             </template>
@@ -169,20 +97,11 @@
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input-number
-            v-model="formData.sort"
-            style="width: 100px"
-            controls-position="right"
-            :min="0"
-          />
+          <el-input-number v-model="formData.sort" style="width: 100px" controls-position="right" :min="0" />
         </el-form-item>
 
         <el-form-item label="跳转路径">
-          <el-input
-            v-model="formData.redirect"
-            placeholder="请输入跳转路径"
-            maxlength="50"
-          />
+          <el-input v-model="formData.redirect" placeholder="请输入跳转路径" maxlength="50" />
         </el-form-item>
       </el-form>
 
@@ -240,8 +159,7 @@ const state = reactive({
   multiple: true,
   queryParams: {} as MenuQueryParam,
   menuList: [] as MenuItem[],
-  total: 0,
-  dialog: {visible:false} as Dialog,
+  dialog: { visible: false } as Dialog,
   formData: {
     parentId: 0,
     visible: 1,
@@ -256,7 +174,7 @@ const state = reactive({
   menuOptions: [] as Option[],
   currentRow: undefined,
   isExternalPath: false,
-  iconSelectVisible: false,
+  iconSelectVisible: false
 });
 
 const {
@@ -265,7 +183,6 @@ const {
   multiple,
   queryParams,
   menuList,
-  total,
   dialog,
   formData,
   rules,
