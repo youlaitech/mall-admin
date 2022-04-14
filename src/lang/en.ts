@@ -6,7 +6,7 @@ export default {
     },
     // 登录页面国际化
     login: {
-        title: 'Youlai Mall Management System',
+        title: 'youlai-mall system',
         username: 'Username',
         password: 'Password',
         login: 'Login',
