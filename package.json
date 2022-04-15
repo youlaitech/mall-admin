@@ -1,10 +1,12 @@
 {
-  "name": "mall-admin-web",
-  "version": "0.0.0",
+  "name": "youlai-mall-admin",
+  "version": "3.0.0",
   "scripts": {
     "dev": "vite serve --mode development",
     "build:prod": "vue-tsc --noEmit && vite build --mode production",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "lint": "eslint \"src/**/*.{ts,js,vue}\" --fix",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.0.0",
@@ -33,6 +35,17 @@
     "typescript": "^4.4.3",
     "vite": "^2.6.4",
     "vite-plugin-svg-icons": "^1.1.0",
-    "vue-tsc": "^0.3.0"
+    "vue-tsc": "^0.3.0",
+
+    "eslint": "^8.13.0",
+    "prettier": "^2.6.2",
+    "husky": "^7.0.4",
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.6.0"
   }
 }
