@@ -9,7 +9,7 @@ interface DefaultSettings {
 
 
 const defaultSettings: DefaultSettings = {
-    title: 'vue3-element-admin',
+    title: 'youlai-mall',
     showSettings: true,
     tagsView: true,
     fixedHeader: false,
