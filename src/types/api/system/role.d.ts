@@ -25,9 +25,7 @@ export interface RoleItem {
 /**
  * 角色分页项类型声明
  */
-export interface RolePageResult extends PageResult<RoleItem[]> {
-
-}
+export type RolePageResult = PageResult<RoleItem[]>
 
 /**
  * 角色表单类型声明

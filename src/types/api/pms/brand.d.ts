@@ -21,9 +21,7 @@ export interface BrandItem {
 /**
  * 品牌分页项类型声明
  */
-export interface BrandPageResult extends PageResult<BrandItem[]> {
-
-}
+export type BrandPageResult = PageResult<BrandItem[]>
 
 /**
  * 品牌表单类型声明

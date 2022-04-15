@@ -76,7 +76,7 @@
         </el-form-item>
 
         <el-form-item label="图标" prop="icon">
-          <el-popover placement="bottom-start" :width="570" trigger="click" v-model:visible="iconSelectVisible">
+          <el-popover placement="bottom-start" :width="570" trigger="click" visible="iconSelectVisible">
             <icon-select ref="iconSelectRef" @selected="selected" />
             <template #reference>
               <el-input v-model="formData.icon" placeholder="点击选择图标" readonly @click="iconSelectVisible = true">
@@ -116,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, unref, onMounted, toRefs } from "vue";
+import { reactive, ref, onMounted, toRefs } from "vue";
 
 import { Search, Plus, Edit, Refresh, Delete } from "@element-plus/icons-vue";
 import { ElForm, ElMessage, ElMessageBox } from "element-plus";
@@ -179,8 +179,6 @@ const state = reactive({
 
 const {
   loading,
-  single,
-  multiple,
   queryParams,
   menuList,
   dialog,
@@ -222,12 +220,6 @@ async function loadTreeSelectMenuOptions() {
 function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
-}
-
-function handleSelectionChange(selection: any) {
-  state.ids = selection.map((item: any) => item.id);
-  state.single = selection.length !== 1;
-  state.multiple = !selection.length;
 }
 
 function handleRowClick(row: any) {
@@ -282,15 +274,15 @@ function submitForm() {
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
       if (state.formData.id) {
-        updateMenu(state.formData.id, state.formData).then((response) => {
+        updateMenu(state.formData.id, state.formData).then(() => {
           ElMessage.success("修改成功");
-          state.dialog.visible = false;
+          cancel();
           handleQuery();
         });
       } else {
-        addMenu(state.formData).then((response) => {
+        addMenu(state.formData).then(() => {
           ElMessage.success("新增成功");
-          state.dialog.visible = false;
+          cancel();
           handleQuery();
         });
       }
@@ -315,28 +307,17 @@ function handleDelete(row: any) {
 }
 
 /**
- * 重置表单
- */
-function resetForm() {
-  state.formData.id = undefined;
-  dataFormRef.value.resetFields();
-}
-
-/**
  * 取消关闭弹窗
  */
 function cancel() {
+  state.formData.id = undefined;
+  dataFormRef.value.resetFields();
   state.dialog.visible = false;
-  resetForm();
 }
 
 /**
- * 显示图标选择下拉
+ * 选择图标后事件
  */
-function showIconSelect() {
-  state.iconSelectVisible = true;
-}
-
 function selected(name: string) {
   state.formData.icon = name;
   state.iconSelectVisible = false;

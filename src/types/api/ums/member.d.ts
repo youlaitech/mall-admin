@@ -46,9 +46,7 @@ export interface AddressItem {
 /**
  * 会员分页项类型声明
  */
-export interface MemberPageResult extends PageResult<MemberItem[]> {
-
-}
+export type MemberPageResult = PageResult<MemberItem[]>
 
 /**
  * 会员表单类型声明

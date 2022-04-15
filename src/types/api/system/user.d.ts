@@ -39,9 +39,7 @@ export interface UserItem {
 /**
  * 用户分页项类型声明
  */
-export interface UserPageResult extends PageResult<UserItem[]> {
-
-}
+export type UserPageResult = PageResult<UserItem[]>
 
 /**
  * 用户表单类型声明

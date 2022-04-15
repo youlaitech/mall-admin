@@ -33,8 +33,9 @@ service.interceptors.response.use(
         if (code === '00000') {
             return response.data;
         } else {
-            // 响应数据为二进制流处理(Excel导出)
-            if (response.data instanceof ArrayBuffer) {
+
+             // 响应数据为二进制流处理(Excel导出)
+             if (response.data instanceof ArrayBuffer) {
                 return response
             }
 
@@ -51,10 +52,6 @@ service.interceptors.response.use(
             localStorage.clear(); // 清除浏览器全部缓存
             window.location.href = '/'; // 跳转登录页
             ElMessageBox.alert('当前页面已失效，请重新登录', '提示', {})
-                .then(() => {
-                })
-                .catch(() => {
-                });
         } else {
             ElMessage({
                 message: msg || '系统出错',

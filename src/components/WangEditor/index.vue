@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, shallowRef, reactive, toRefs } from 'vue'
+import { onBeforeUnmount, shallowRef, reactive, toRefs} from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
 // API 引用
@@ -50,11 +50,9 @@ const state = reactive({
 
 const { toolbarConfig, editorConfig, defaultHtml, mode } = toRefs(state)
 
-
 const handleCreated = (editor: any) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
-
 
 function handleChange(editor: any) {
   emit('update:modelValue', editor.getHtml())

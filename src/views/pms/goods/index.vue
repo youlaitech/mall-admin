@@ -177,8 +177,6 @@ const state = reactive({
 
 const {
   loading,
-  ids,
-  single,
   multiple,
   queryParams,
   goodsList,

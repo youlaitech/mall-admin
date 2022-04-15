@@ -24,6 +24,7 @@
                         :type="(colors[i % colors.length] as any)"
                         :class="i !== 0 ? 'f-ml' : ''"
                         size="small"
+                        :key="i"
                       >{{ position }}</el-tag>
                     </div>
                     <div class="developer__homepage">

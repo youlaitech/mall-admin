@@ -20,9 +20,7 @@ export interface AdvertItem {
 /**
  * 广告分页项类型声明
  */
-export interface AdvertPageResult extends PageResult<AdvertItem[]> {
-
-}
+export type AdvertPageResult = PageResult<AdvertItem[]>
 
 /**
  * 广告表单类型声明
