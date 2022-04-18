@@ -14,7 +14,7 @@
     </el-form>
 
     <el-tree ref="menuRef" v-if="refreshTree" :default-expanded-keys="expandedKeys" :default-expand-all="isExpandAll"
-      :data="menuOptions" show-checkbox node-key="id" empty-text="加载菜单中..." :check-strictly="checkStrictly"
+      :data="menuOptions" show-checkbox node-key="value" empty-text="加载菜单中..." :check-strictly="checkStrictly"
       highlight-current @node-click="handleNodeClick" />
   </div>
 </template>
@@ -31,21 +31,19 @@ const emit = defineEmits(["menuClick"]);
 const props = defineProps({
   role: {
     type: Object,
-    default: () => {
-      return {}
-    },
+    default: () => { }
   },
 });
 
 const menuRef = ref(ElTree); // 属性名必须和元素的ref属性值一致
 
 watch(
-  () => props.role.id as any,
-  () => {
-    const roleId = props.role.id;
-    if (roleId) {
+  () => props.role.id,
+  (newVal) => {
+    if (newVal) {
       state.checkStrictly = true;
-      listRoleMenuIds(roleId).then(({ data }) => {
+      // 获取角色拥有的的菜单ID
+      listRoleMenuIds(newVal).then(({ data }) => {
         menuRef.value.setCheckedKeys(data);
         state.checkStrictly = false;
       });
@@ -70,6 +68,7 @@ const { expandedKeys, menuOptions, checkStrictly, isExpandAll, refreshTree } =
 async function loadTreeSelectMenuOptions() {
   await listSelectMenus().then(({ data }) => {
     state.menuOptions = data;
+    menuRef.value.setCheckedKeys(["1"]);
   });
 }
 
