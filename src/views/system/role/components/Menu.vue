@@ -68,7 +68,6 @@ const { expandedKeys, menuOptions, checkStrictly, isExpandAll, refreshTree } =
 async function loadTreeSelectMenuOptions() {
   await listSelectMenus().then(({ data }) => {
     state.menuOptions = data;
-    menuRef.value.setCheckedKeys(["1"]);
   });
 }
 
