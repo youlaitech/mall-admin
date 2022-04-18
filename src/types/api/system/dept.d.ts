@@ -12,9 +12,9 @@ export interface DeptQueryParam {
  */
 
 export interface DeptItem {
-    id: number;
+    id: string;
     name: string;
-    parentId: number;
+    parentId: string;
     treePath: string;
     sort: number;
     status: number;
@@ -28,8 +28,8 @@ export interface DeptItem {
  * 部门表单类型声明
  */
 export interface DeptFormData {
-    id: number|undefined,
-    parentId: number,
+    id?: string,
+    parentId: string,
     name: string,
     sort: number,
     status: number
