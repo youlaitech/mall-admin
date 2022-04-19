@@ -105,7 +105,7 @@
         </el-form-item>
 
         <el-form-item label="所属部门" prop="deptId">
-           <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptOptions" filterable  />
+           <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptOptions" filterable check-strictly  />
         </el-form-item>
 
         <el-form-item label="手机号码" prop="mobile">
@@ -148,8 +148,8 @@
     <el-dialog :title="importDialog.title" v-model="importDialog.visible" width="600px" append-to-body
       @close="closeImportDialog">
       <el-form ref="importFormRef" :model="importFormData" :rules="rules" label-width="80px">
-        <el-form-item label="所属部门" prop="deptId">
-         <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptOptions" filterable  />
+        <el-form-item label="部门" prop="deptId">
+         <el-tree-select v-model="formData.deptId" placeholder="请选择部门" :data="deptOptions" filterable check-strictly  />
         </el-form-item>
 
         <el-form-item label="角色" prop="roleIds">
@@ -351,7 +351,7 @@ function filterDeptNode(value: string, data: any) {
  * 部门树节点点击
  */
 function handleDeptNodeClick(data: { [key: string]: any }) {
-  state.queryParams.deptId = data.id;
+  state.queryParams.deptId = data.value;
   handleQuery();
 }
 
