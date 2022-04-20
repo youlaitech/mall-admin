@@ -54,16 +54,16 @@ export type GoodsPageResult = PageResult<GoodsItem[]>
  * 商品表单数据类型声明
  */
 export interface GoodsDetail {
-	id: string,
-	name: string,
-	categoryId: string,
-	brandId: string,
-	originPrice: number,
-	price: number,
-	picUrl: string,
+	id?: string,
+	name?: string,
+	categoryId?: string,
+	brandId?: string,
+	originPrice?: number,
+	price?: number,
+	picUrl?: string,
 	album: string[],
-	description: string,
-	detail: string,
+	description?: string,
+	detail?: string,
 	attrList: any[],
 	specList: any[],
 	skuList: any[]
