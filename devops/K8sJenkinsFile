@@ -72,7 +72,6 @@ pipeline { // 直接上k8s，用k8s来管理docker
                     script {
                         sh 'yarn config set registry https://registry.npm.taobao.org'
                         sh 'npm config set registry https://registry.npm.taobao.org'
-                        sh 'ls -al $WORKSPACE/src/components/TreeSelect'
                         sh 'yarn install --force'
                         sh 'yarn build:prod'
                     }
