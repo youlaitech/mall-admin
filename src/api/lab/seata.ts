@@ -1,13 +1,15 @@
+import { SeataFormData } from '@/types'
 import request from '@/utils/request'
 
 /**
  * 订单支付
  * @returns 
  */
-export function payOrder() {
+export function payOrder(data: SeataFormData) {
     return request({
-        url: '/youlai-lab/api/v1/order/_pay',
-        method: 'post'
+        url: '/youlai-lab/api/v1/seata/order/_pay',
+        method: 'post',
+        data: data
     })
 }
 
