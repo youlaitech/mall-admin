@@ -1,37 +1,16 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane
-      ref="scrollPaneRef"
-      class="tags-view-wrapper"
-      @scroll="handleScroll"
-    >
-      <router-link
-        v-for="tag in visitedViews"
-        :key="tag.path"
-        :class="isActive(tag) ? 'active' : ''"
-        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
-        class="tags-view-item"
-        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-        @contextmenu.prevent="openMenu(tag, $event)"
-      >
+    <scroll-pane ref="scrollPaneRef" class="tags-view-wrapper" @scroll="handleScroll">
+      <router-link v-for="tag in visitedViews" :key="tag.path" :class="isActive(tag) ? 'active' : ''"
+        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }" class="tags-view-item"
+        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''" @contextmenu.prevent="openMenu(tag, $event)">
         {{ generateTitle(tag.meta.title) }}
-        <span
-          v-if="!isAffix(tag)"
-          class="el-icon-close"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        >
-          <Close
-            class="el-icon-close"
-            style="width: 1em; height: 1em; vertical-align: middle"
-          />
+        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)">
+          <Close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: middle" />
         </span>
       </router-link>
     </scroll-pane>
-    <ul
-      v-show="visible"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="contextmenu"
-    >
+    <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">
         <refresh-right style="width: 1em; height: 1em" />
         刷新
@@ -68,7 +47,7 @@ import {
   ref,
   watch,
   onMounted,
-ComponentInternalInstance,
+  ComponentInternalInstance,
 } from "vue";
 
 import path from "path-browserify";
@@ -155,7 +134,6 @@ function addTags() {
   if (route.name) {
     tagsView.addView(route);
   }
-  return false;
 }
 
 function moveToCurrentTag() {
@@ -188,7 +166,7 @@ function isFirstView() {
   try {
     return (
       (selectedTag.value as TagView).fullPath ===
-        visitedViews.value[1].fullPath ||
+      visitedViews.value[1].fullPath ||
       (selectedTag.value as TagView).fullPath === "/index"
     );
   } catch (err) {
@@ -303,7 +281,7 @@ function handleScroll() {
 
 onMounted(() => {
   initTags();
-  addTags();
+   addTags();
 });
 </script>
 

@@ -2,7 +2,7 @@
 /**
  * 菜单查询参数类型声明
  */
- export interface MenuQueryParam {
+export interface MenuQueryParam {
     name?: string
 }
 
@@ -30,7 +30,7 @@ export interface MenuFormData {
     /**
      * 菜单ID
      */
-    id?: string ,
+    id?: string,
     /**
      * 父菜单ID
      */
@@ -43,7 +43,7 @@ export interface MenuFormData {
      * 菜单是否可见(1:是;0:否;)
      */
     visible: number,
-    icon: string,
+    icon?: string,
     /**
      * 排序
      */
@@ -59,5 +59,10 @@ export interface MenuFormData {
     /**
      * 跳转路由路径
      */
-    redirect: string,
+    redirect?: string,
+
+    /**
+     * 菜单类型(1:菜单；2：目录；3：外链)
+     */
+    type: string
 }

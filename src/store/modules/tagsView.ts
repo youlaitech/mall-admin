@@ -5,7 +5,7 @@ const useTagsViewStore = defineStore({
     id: "tagsView",
     state: (): TagsViewState => ({
         visitedViews: [],
-        cachedViews: []
+        cachedViews: []  //  keepAlive 缓存页面
     }),
     actions: {
         addVisitedView(view: any) {
@@ -17,12 +17,13 @@ const useTagsViewStore = defineStore({
             )
         },
         addCachedView(view: any) {
+            console.log('view.name',view.name)
             if (this.cachedViews.includes(view.name)) return
-            if (!view.meta.noCache) {
+            if (view.meta.keepAlive) {
                 this.cachedViews.push(view.name)
             }
+            console.log('cachedViews',this.cachedViews)
         },
-
         delVisitedView(view: any) {
             return new Promise(resolve => {
                 for (const [i, v] of this.visitedViews.entries()) {
@@ -43,7 +44,6 @@ const useTagsViewStore = defineStore({
             })
 
         },
-
         delOtherVisitedViews(view: any) {
             return new Promise(resolve => {
                 this.visitedViews = this.visitedViews.filter(v => {

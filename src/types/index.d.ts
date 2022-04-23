@@ -14,6 +14,7 @@ export * from './api/pms/brand'
 export * from './api/sms/advert'
 export * from './api/oms/order'
 export * from './api/ums/member'
+export * from './api/lab/seata'
 
 export * from './store'
 

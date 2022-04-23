@@ -61,7 +61,6 @@ const logo = ref("https://www.youlai.tech/files/blog/logo.png")
       width: 32px;
       height: 32px;
       vertical-align: middle;
-      margin-right: 12px;
     }
 
     & .sidebar-title {
@@ -73,6 +72,7 @@ const logo = ref("https://www.youlai.tech/files/blog/logo.png")
       font-size: 14px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
+      margin-left: 12px;
     }
   }
 

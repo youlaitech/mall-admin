@@ -3,7 +3,7 @@
     <router-view v-slot="{ Component, route }">
       <transition name="router-fade" mode="out-in">
         <keep-alive :include="cachedViews">
-          <component :is="Component" :key="route.path" />
+          <component :is="Component" :key="route.fullPath" />
         </keep-alive>
       </transition>
     </router-view>
@@ -29,7 +29,7 @@ const cachedViews = computed(() => tagsView.cachedViews);
   overflow: hidden;
 }
 
-.fixed-header + .app-main {
+.fixed-header+.app-main {
   padding-top: 50px;
 }
 
@@ -39,7 +39,7 @@ const cachedViews = computed(() => tagsView.cachedViews);
     min-height: calc(100vh - 84px);
   }
 
-  .fixed-header + .app-main {
+  .fixed-header+.app-main {
     padding-top: 84px;
   }
 }
