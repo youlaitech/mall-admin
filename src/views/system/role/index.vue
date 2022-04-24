@@ -29,11 +29,11 @@
       <el-col :span="8" :xs="24">
         <el-card class="box-card" shadow="always">
           <template #header>
-            <svg-icon color="#333" icon-class="perm" />
+            <svg-icon icon-class="perm" />
             <span style="margin: 0 5px">权限分配</span>
 
             <el-tag type="success" style="margin: 0 5px 0 0" v-if="role.id">
-              <svg-icon color="green" icon-class="role" />
+              <svg-icon  icon-class="role" />
               {{ role.name }}
             </el-tag>
             <el-tag
@@ -46,7 +46,7 @@
             >
 
             <el-tag type="success" v-if="menu.id" size="small">
-              <svg-icon color="red" icon-class="menu" />
+              <svg-icon icon-class="menu" />
               {{ menu.name }}
             </el-tag>
             <el-tag type="warning" v-else size="small"> 请选择菜单</el-tag>

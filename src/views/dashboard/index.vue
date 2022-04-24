@@ -25,7 +25,7 @@
       <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-people">
-            <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+            <svg-icon icon-class="uv" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">访问数</div>
@@ -52,7 +52,7 @@
             <svg-icon icon-class="money" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">支付金额</div>
+            <div class="card-panel-text">收入金额</div>
             <div class="card-panel-num">1000</div>
           </div>
         </div>
