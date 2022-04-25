@@ -17,12 +17,10 @@ const useTagsViewStore = defineStore({
             )
         },
         addCachedView(view: any) {
-            console.log('view.name',view.name)
             if (this.cachedViews.includes(view.name)) return
             if (view.meta.keepAlive) {
                 this.cachedViews.push(view.name)
             }
-            console.log('cachedViews',this.cachedViews)
         },
         delVisitedView(view: any) {
             return new Promise(resolve => {
