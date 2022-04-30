@@ -56,9 +56,9 @@ import {
 
 // DOM元素的引用声明定义 ，变量名和DOM的ref属性值一致
 const deptTreeRef = ref(ElTree);  // 部门树
-const queryFormRef = ref(ElForm); // 部门树
-const dataFormRef = ref(ElForm); // 部门树
-const importFormRef = ref(ElForm); // 导入
+const queryFormRef = ref(ElForm); // 查询表单
+const dataFormRef = ref(ElForm); // 用户表单
+const importFormRef = ref(ElForm); // 导入表单
 
 const { proxy }: any = getCurrentInstance();
 
@@ -88,7 +88,9 @@ const state = reactive({
   // 角色选项
   roleOptions: [] as RoleItem[],
   // 表单参数
-  formData: {} as UserFormData,
+  formData: {
+    status:1
+  } as UserFormData,
   // 查询参数
   queryParams: {
     pageNum: 1,
@@ -392,7 +394,11 @@ async function showImportDialog() {
   state.importDialog.visible = true
 }
 
-// Excel文件上传
+/**
+ * Excel文件change事件
+ * 
+ * @param file 
+ */
 function handleExcelChange(file: UploadFile) {
   if (!/\.(xlsx|xls|XLSX|XLS)$/.test(file.name)) {
     ElMessage.warning('上传Excel只能为xlsx、xls格式');
@@ -403,6 +409,9 @@ function handleExcelChange(file: UploadFile) {
   state.excelFile = file.raw
 }
 
+/**
+ * Excel文件上传
+ */
 function submitImportForm() {
   importFormRef.value.validate((valid: any) => {
     if (valid) {
@@ -465,6 +474,8 @@ onMounted(() => {
   loadData();
 });
 </script>
+
+
 <template>
   <div class="app-container">
     <el-row :gutter="20">
@@ -498,7 +509,7 @@ onMounted(() => {
                 <el-form-item prop="status">
                   <el-select v-model="queryParams.status" placeholder="用户状态" clearable style="width: 200px">
                     <el-option label="正常" value="1" />
-                    <el-option label="停用" value="0" />
+                    <el-option label="禁用" value="0" />
                   </el-select>
                 </el-form-item>
 
@@ -560,7 +571,7 @@ onMounted(() => {
       </el-col>
     </el-row>
 
-    <!-- 添加或修改参数配置对话框 -->
+    <!-- 用户表单 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="600px" append-to-body @close="cancel">
       <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
         <el-form-item label="用户名" prop="username">
