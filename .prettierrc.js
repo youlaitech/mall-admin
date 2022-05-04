@@ -1,4 +1,6 @@
-// https://juejin.cn/post/6975442828386107400
+/**
+ * 代码格式化配置
+ */
 module.exports = {
 	// 一行最多多少个字符
 	printWidth: 150,

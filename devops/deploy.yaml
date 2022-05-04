@@ -4,7 +4,7 @@ metadata:
   labels:
     app: ${web_app_name}
   name: ${web_app_name}-deployment
-  namespace: ${k8s_namespace}   #一定要写名称空间
+  namespace: ${k8s_namespace} #一定要写名称空间
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
