@@ -7,7 +7,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listGoodsPages(queryParams: GoodsQueryParam): AxiosPromise<GoodsPageResult> {
+export function listGoodsPages(
+	queryParams: GoodsQueryParam
+): AxiosPromise<GoodsPageResult> {
 	return request({
 		url: '/mall-pms/api/v1/goods/page',
 		method: 'get',

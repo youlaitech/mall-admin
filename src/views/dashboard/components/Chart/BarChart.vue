@@ -4,7 +4,13 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted } from 'vue';
+import {
+	nextTick,
+	onActivated,
+	onBeforeUnmount,
+	onDeactivated,
+	onMounted,
+} from 'vue';
 import { init, EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
 import resize from '@/utils/resize';

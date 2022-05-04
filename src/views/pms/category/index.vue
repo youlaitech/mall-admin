@@ -59,9 +59,17 @@ function handleCategoryClick(categoryRow: any) {
 						{{ category.name }} 规格属性
 					</template>
 					<!-- 商品规格 -->
-					<Attribute ref="specificationRef" :attributeType="1" :category="category" />
+					<Attribute
+						ref="specificationRef"
+						:attributeType="1"
+						:category="category"
+					/>
 					<!-- 商品属性 -->
-					<Attribute ref="attributeRef" :attributeType="2" :category="category" />
+					<Attribute
+						ref="attributeRef"
+						:attributeType="2"
+						:category="category"
+					/>
 				</el-card>
 			</el-col>
 		</el-row>

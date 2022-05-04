@@ -3,23 +3,49 @@
 		<div v-if="permissionOptions.length > 0">
 			<el-row>
 				<el-col :span="12">
-					<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选 </el-checkbox>
+					<el-checkbox
+						:indeterminate="isIndeterminate"
+						v-model="checkAll"
+						@change="handleCheckAllChange"
+						>全选
+					</el-checkbox>
 				</el-col>
 				<el-col :span="12" style="text-align: right">
-					<el-button type="primary" :icon="Position" @click="handleSubmit">提交</el-button>
+					<el-button type="primary" :icon="Position" @click="handleSubmit"
+						>提交</el-button
+					>
 				</el-col>
 			</el-row>
 
 			<el-row>
-				<el-col :span="8" v-for="item in permissionOptions" style="margin-top: 20px" :key="item.id">
-					<el-checkbox border v-model="item.checked" :label="item.id" :key="item.id" @change="handleCheckedPermChange">
+				<el-col
+					:span="8"
+					v-for="item in permissionOptions"
+					style="margin-top: 20px"
+					:key="item.id"
+				>
+					<el-checkbox
+						border
+						v-model="item.checked"
+						:label="item.id"
+						:key="item.id"
+						@change="handleCheckedPermChange"
+					>
 						{{ item.name }}
 					</el-checkbox>
 				</el-col>
 			</el-row>
 		</div>
 		<div style="text-align: center" v-else>
-			<el-empty :description="!role ? '请选择角色' : !menu ? '请选择菜单' : '暂无数据，您可在【菜单管理】配置权限数据'"></el-empty>
+			<el-empty
+				:description="
+					!role
+						? '请选择角色'
+						: !menu
+						? '请选择菜单'
+						: '暂无数据，您可在【菜单管理】配置权限数据'
+				"
+			></el-empty>
 		</div>
 	</div>
 </template>
@@ -77,9 +103,12 @@ function handleCheckAllChange(checked: boolean) {
 }
 
 function handleCheckedPermChange() {
-	const checkedCount = state.permissionOptions.filter((item) => item.checked).length;
+	const checkedCount = state.permissionOptions.filter(
+		(item) => item.checked
+	).length;
 	state.checkAll = checkedCount === state.permissionOptions.length;
-	state.isIndeterminate = checkedCount > 0 && checkedCount < state.permissionOptions.length;
+	state.isIndeterminate =
+		checkedCount > 0 && checkedCount < state.permissionOptions.length;
 }
 
 function loadData() {
@@ -107,7 +136,9 @@ function loadData() {
 }
 
 function handleSubmit() {
-	const checkedPermIds = state.permissionOptions.filter((item) => item.checked).map((item) => item.id);
+	const checkedPermIds = state.permissionOptions
+		.filter((item) => item.checked)
+		.map((item) => item.id);
 	saveRolePerms(props.role.id, props.menu.id, checkedPermIds).then(() => {
 		ElMessage.success('提交成功');
 	});

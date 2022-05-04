@@ -1,6 +1,8 @@
 <template>
 	<div class="errPage-container">
-		<el-button icon="el-icon-arrow-left" class="pan-back-btn" @click="back"> 返回 </el-button>
+		<el-button icon="el-icon-arrow-left" class="pan-back-btn" @click="back">
+			返回
+		</el-button>
 		<el-row>
 			<el-col :span="12">
 				<h1 class="text-jumbo text-ginormous">Oops!</h1>
@@ -15,11 +17,18 @@
 					<li class="link-type">
 						<a href="https://www.taobao.com/">随便看看</a>
 					</li>
-					<li><a href="#" @click.prevent="dialogVisible = true">点我看图</a></li>
+					<li>
+						<a href="#" @click.prevent="dialogVisible = true">点我看图</a>
+					</li>
 				</ul>
 			</el-col>
 			<el-col :span="12">
-				<img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream." />
+				<img
+					:src="errGif"
+					width="313"
+					height="428"
+					alt="Girl has dropped her ice cream."
+				/>
 			</el-col>
 		</el-row>
 		<el-dialog v-model:visible="dialogVisible" title="随便看">
@@ -36,7 +45,8 @@ export default {
 	data() {
 		return {
 			errGif: errGif + '?' + +new Date(),
-			ewizardClap: 'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
+			ewizardClap:
+				'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
 			dialogVisible: false,
 		};
 	},

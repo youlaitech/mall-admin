@@ -15,8 +15,12 @@
 					<template #header>
 						<svg-icon icon-class="perm" />
 						<span style="margin: 0 5px">权限列表</span>
-						<el-tag type="success" v-if="menuId" size="small">{{ menuName }}</el-tag>
-						<el-tag type="warning" v-else size="small">请点击左侧菜单列表选择</el-tag>
+						<el-tag type="success" v-if="menuId" size="small">{{
+							menuName
+						}}</el-tag>
+						<el-tag type="warning" v-else size="small"
+							>请点击左侧菜单列表选择</el-tag
+						>
 					</template>
 					<perm-table :menuId="menuId" :menuName="menuName" />
 				</el-card>

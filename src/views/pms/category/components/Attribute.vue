@@ -3,16 +3,27 @@
 		<el-card class="box-card" shadow="always">
 			<el-row>
 				<el-col :span="12">
-					<el-tag type="success" v-if="category && category.name">{{ category.name }} {{ attributeTypeName }} </el-tag>
-					<el-tag v-else type="info"><i class="el-icon-info"></i> 请选择商品分类</el-tag>
+					<el-tag type="success" v-if="category && category.name"
+						>{{ category.name }} {{ attributeTypeName }}
+					</el-tag>
+					<el-tag v-else type="info"
+						><i class="el-icon-info"></i> 请选择商品分类</el-tag
+					>
 				</el-col>
 				<el-col :span="12" style="text-align: right">
-					<el-button type="primary" :icon="Check" @click="submitForm">提交</el-button>
+					<el-button type="primary" :icon="Check" @click="submitForm"
+						>提交</el-button
+					>
 				</el-col>
 			</el-row>
 
 			<el-row style="margin-top: 10px">
-				<el-form ref="form" :model="formData" :disabled="category?.childrenLen > 0" label-width="100">
+				<el-form
+					ref="form"
+					:model="formData"
+					:disabled="category?.childrenLen > 0"
+					label-width="100"
+				>
 					<el-form-item
 						v-for="(item, index) in formData.attributes"
 						:key="index"
@@ -22,9 +33,24 @@
 					>
 						<el-input v-model="item.name" style="width: 300px" />
 
-						<el-button v-if="index === 0" type="success" :icon="Plus" circle plain @click.prevent="handleAdd()" style="margin-left: 15px" />
+						<el-button
+							v-if="index === 0"
+							type="success"
+							:icon="Plus"
+							circle
+							plain
+							@click.prevent="handleAdd()"
+							style="margin-left: 15px"
+						/>
 
-						<el-button type="danger" :icon="Delete" plain circle @click.prevent="handleDelete(index)" style="margin-left: 15px" />
+						<el-button
+							type="danger"
+							:icon="Delete"
+							plain
+							circle
+							@click.prevent="handleDelete(index)"
+							style="margin-left: 15px"
+						/>
 					</el-form-item>
 				</el-form>
 			</el-row>
@@ -55,7 +81,9 @@ const props = defineProps({
 	},
 });
 
-const attributeTypeName = computed(() => (props.attributeType === 1 ? '规格' : '属性'));
+const attributeTypeName = computed(() =>
+	props.attributeType === 1 ? '规格' : '属性'
+);
 
 const attributeNameValidator = (rule: any, value: any, callback: any) => {
 	if (!value) {
@@ -78,7 +106,9 @@ const state = reactive({
 	},
 	rules: {
 		attribute: {
-			name: [{ required: true, validator: attributeNameValidator, trigger: 'blur' }],
+			name: [
+				{ required: true, validator: attributeNameValidator, trigger: 'blur' },
+			],
 		},
 	},
 });
@@ -90,7 +120,10 @@ watch(
 	() => {
 		const categoryId = props.category.id;
 		if (categoryId) {
-			listAttributes({ categoryId: categoryId, type: props.attributeType }).then((response) => {
+			listAttributes({
+				categoryId: categoryId,
+				type: props.attributeType,
+			}).then((response) => {
 				const { data } = response;
 				if (data && data.length > 0) {
 					state.formData.attributes = response.data;

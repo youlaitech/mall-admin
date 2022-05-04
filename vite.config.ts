@@ -4,7 +4,7 @@ import viteSvgIcons from 'vite-plugin-svg-icons';
 import path from 'path';
 
 // @see: https://gitee.com/holysheng/vite2-config-description/blob/master/vite.config.ts
-export default ({ command, mode }: ConfigEnv): UserConfig => {
+export default ({ mode }: ConfigEnv): UserConfig => {
 	// 获取 .env 环境配置文件
 	const env = loadEnv(mode, process.cwd());
 
@@ -27,7 +27,8 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
 				[env.VITE_APP_BASE_API]: {
 					target: 'http://localhost:9999',
 					changeOrigin: true,
-					rewrite: (path) => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), ''),
+					rewrite: (path) =>
+						path.replace(new RegExp('^' + env.VITE_APP_BASE_API), ''),
 				},
 			},
 		},

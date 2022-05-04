@@ -7,7 +7,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listOrderPages(queryParams: OrderQueryParam): AxiosPromise<OrderPageResult> {
+export function listOrderPages(
+	queryParams: OrderQueryParam
+): AxiosPromise<OrderPageResult> {
 	return request({
 		url: '/mall-oms/api/v1/orders',
 		method: 'get',

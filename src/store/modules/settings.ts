@@ -9,9 +9,14 @@ const el = document.documentElement;
 export const useSettingStore = defineStore({
 	id: 'setting',
 	state: (): SettingState => ({
-		theme: localStorage.get('theme') || getComputedStyle(el).getPropertyValue(`--el-color-primary`),
+		theme:
+			localStorage.get('theme') ||
+			getComputedStyle(el).getPropertyValue(`--el-color-primary`),
 		showSettings: showSettings,
-		tagsView: localStorage.get('tagsView') != null ? localStorage.get('tagsView') : tagsView,
+		tagsView:
+			localStorage.get('tagsView') != null
+				? localStorage.get('tagsView')
+				: tagsView,
 		fixedHeader: fixedHeader,
 		sidebarLogo: sidebarLogo,
 	}),

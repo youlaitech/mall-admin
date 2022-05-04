@@ -7,7 +7,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listAdvertPages(queryParams: AdvertQueryParam): AxiosPromise<AdvertPageResult> {
+export function listAdvertPages(
+	queryParams: AdvertQueryParam
+): AxiosPromise<AdvertPageResult> {
 	return request({
 		url: '/mall-sms/api/v1/adverts',
 		method: 'get',

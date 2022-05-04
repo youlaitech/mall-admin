@@ -1,4 +1,9 @@
-import { RoleFormData, RoleItem, RolePageResult, RoleQueryParam } from '@/types';
+import {
+	RoleFormData,
+	RoleItem,
+	RolePageResult,
+	RoleQueryParam,
+} from '@/types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,7 +12,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listRolePages(queryParams?: RoleQueryParam): AxiosPromise<RolePageResult> {
+export function listRolePages(
+	queryParams?: RoleQueryParam
+): AxiosPromise<RolePageResult> {
 	return request({
 		url: '/youlai-admin/api/v1/roles/page',
 		method: 'get',
@@ -20,7 +27,9 @@ export function listRolePages(queryParams?: RoleQueryParam): AxiosPromise<RolePa
  *
  * @param queryParams
  */
-export function listRoles(queryParams?: RoleQueryParam): AxiosPromise<RoleItem[]> {
+export function listRoles(
+	queryParams?: RoleQueryParam
+): AxiosPromise<RoleItem[]> {
 	return request({
 		url: '/youlai-admin/api/v1/roles',
 		method: 'get',
@@ -125,7 +134,11 @@ export function listRolePerms(roleId: number, menuId: number) {
  * @param roleId
  * @param permIds
  */
-export function saveRolePerms(roleId: number, menuId: number, permIds: Array<number>) {
+export function saveRolePerms(
+	roleId: number,
+	menuId: number,
+	permIds: Array<number>
+) {
 	return request({
 		url: '/youlai-admin/api/v1/roles/' + roleId + '/permissions',
 		method: 'put',

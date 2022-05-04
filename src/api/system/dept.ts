@@ -7,7 +7,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listTableDepartments(queryParams?: DeptQueryParam): AxiosPromise<DeptItem[]> {
+export function listTableDepartments(
+	queryParams?: DeptQueryParam
+): AxiosPromise<DeptItem[]> {
 	return request({
 		url: '/youlai-admin/api/v1/depts/table',
 		method: 'get',

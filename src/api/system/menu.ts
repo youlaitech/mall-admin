@@ -17,7 +17,9 @@ export function listRoutes() {
  *
  * @param queryParams
  */
-export function listTableMenus(queryParams: MenuQueryParam): AxiosPromise<MenuItem[]> {
+export function listTableMenus(
+	queryParams: MenuQueryParam
+): AxiosPromise<MenuItem[]> {
 	return request({
 		url: '/youlai-admin/api/v1/menus/table',
 		method: 'get',

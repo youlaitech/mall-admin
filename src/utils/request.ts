@@ -14,7 +14,9 @@ const service = axios.create({
 service.interceptors.request.use(
 	(config: AxiosRequestConfig) => {
 		if (!config.headers) {
-			throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
+			throw new Error(
+				`Expected 'config' and 'config.headers' not to be undefined`
+			);
 		}
 		const { user } = useStore();
 		if (user.token) {

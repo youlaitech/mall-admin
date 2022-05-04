@@ -9,15 +9,28 @@
 				@change="handleCategoryChange"
 			/>
 			<div style="margin-top: 20px">
-				<el-link type="info" :underline="false" v-show="pathLabels.length > 0">您选择的商品分类:</el-link>
-				<el-link type="danger" :underline="false" v-for="(item, index) in pathLabels" :key="index" style="margin-left: 5px">
+				<el-link type="info" :underline="false" v-show="pathLabels.length > 0"
+					>您选择的商品分类:</el-link
+				>
+				<el-link
+					type="danger"
+					:underline="false"
+					v-for="(item, index) in pathLabels"
+					:key="index"
+					style="margin-left: 5px"
+				>
 					{{ item }}
-					<CaretRight v-show="index < pathLabels.length - 1" style="width: 1em; height: 1em; margin-left: 5px" />
+					<CaretRight
+						v-show="index < pathLabels.length - 1"
+						style="width: 1em; height: 1em; margin-left: 5px"
+					/>
 				</el-link>
 			</div>
 		</div>
 		<div class="component-container__footer">
-			<el-button type="primary" @click="handleNext">下一步，填写商品信息</el-button>
+			<el-button type="primary" @click="handleNext"
+				>下一步，填写商品信息</el-button
+			>
 		</div>
 	</div>
 </template>

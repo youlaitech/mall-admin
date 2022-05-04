@@ -91,7 +91,14 @@ function handleMenuClick(menuRow: any) {
 							<svg-icon icon-class="role" />
 							{{ role.name }}
 						</el-tag>
-						<el-tag type="warning" style="margin: 0 5px 0 0" v-else size="small"> 请选择角色</el-tag>
+						<el-tag
+							type="warning"
+							style="margin: 0 5px 0 0"
+							v-else
+							size="small"
+						>
+							请选择角色</el-tag
+						>
 
 						<el-tag type="success" v-if="menu.id" size="small">
 							<svg-icon icon-class="menu" />

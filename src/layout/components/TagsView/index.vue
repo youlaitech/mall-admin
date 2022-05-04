@@ -1,6 +1,10 @@
 <template>
 	<div class="tags-view__container">
-		<scroll-pane ref="scrollPaneRef" class="tags-view__wrapper" @scroll="handleScroll">
+		<scroll-pane
+			ref="scrollPaneRef"
+			class="tags-view__wrapper"
+			@scroll="handleScroll"
+		>
 			<router-link
 				v-for="tag in visitedViews"
 				:key="tag.path"
@@ -11,12 +15,20 @@
 				@contextmenu.prevent="openMenu(tag, $event)"
 			>
 				{{ generateTitle(tag.meta.title) }}
-				<span v-if="!isAffix(tag)" class="icon-close" @click.prevent.stop="closeSelectedTag(tag)">
+				<span
+					v-if="!isAffix(tag)"
+					class="icon-close"
+					@click.prevent.stop="closeSelectedTag(tag)"
+				>
 					<svg-icon icon-class="close" />
 				</span>
 			</router-link>
 		</scroll-pane>
-		<ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="tags-view__menu">
+		<ul
+			v-show="visible"
+			:style="{ left: left + 'px', top: top + 'px' }"
+			class="tags-view__menu"
+		>
 			<li @click="refreshSelectedTag(selectedTag)">
 				<svg-icon icon-class="refresh" />
 				刷新
@@ -46,7 +58,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, getCurrentInstance, nextTick, ref, watch, onMounted, ComponentInternalInstance } from 'vue';
+import {
+	computed,
+	getCurrentInstance,
+	nextTick,
+	ref,
+	watch,
+	onMounted,
+	ComponentInternalInstance,
+} from 'vue';
 
 import path from 'path-browserify';
 
@@ -156,7 +176,11 @@ function isAffix(tag: TagView) {
 
 function isFirstView() {
 	try {
-		return (selectedTag.value as TagView).fullPath === visitedViews.value[1].fullPath || (selectedTag.value as TagView).fullPath === '/index';
+		return (
+			(selectedTag.value as TagView).fullPath ===
+				visitedViews.value[1].fullPath ||
+			(selectedTag.value as TagView).fullPath === '/index'
+		);
 	} catch (err) {
 		return false;
 	}
@@ -164,7 +188,10 @@ function isFirstView() {
 
 function isLastView() {
 	try {
-		return (selectedTag.value as TagView).fullPath === visitedViews.value[visitedViews.value.length - 1].fullPath;
+		return (
+			(selectedTag.value as TagView).fullPath ===
+			visitedViews.value[visitedViews.value.length - 1].fullPath
+		);
 	} catch (err) {
 		return false;
 	}
@@ -206,14 +233,18 @@ function closeSelectedTag(view: TagView) {
 
 function closeLeftTags() {
 	tagsView.delLeftViews(selectedTag.value).then((res: any) => {
-		if (!res.visitedViews.find((item: any) => item.fullPath === route.fullPath)) {
+		if (
+			!res.visitedViews.find((item: any) => item.fullPath === route.fullPath)
+		) {
 			toLastView(res.visitedViews);
 		}
 	});
 }
 function closeRightTags() {
 	tagsView.delRightViews(selectedTag.value).then((res: any) => {
-		if (!res.visitedViews.find((item: any) => item.fullPath === route.fullPath)) {
+		if (
+			!res.visitedViews.find((item: any) => item.fullPath === route.fullPath)
+		) {
 			toLastView(res.visitedViews);
 		}
 	});

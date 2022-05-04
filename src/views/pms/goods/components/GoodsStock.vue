@@ -4,11 +4,29 @@
 			<el-card class="box-card">
 				<template #header>
 					<span>商品规格</span>
-					<el-button :icon="Plus" type="success" @click="handleSpecAdd" size="small" style="float: right"> 添加规格项 </el-button>
+					<el-button
+						:icon="Plus"
+						type="success"
+						@click="handleSpecAdd"
+						size="small"
+						style="float: right"
+					>
+						添加规格项
+					</el-button>
 				</template>
 
-				<el-form ref="specFormRef" :model="specForm" :inline="true" size="small">
-					<el-table ref="specTableRef" :data="specForm.specList" row-key="id" size="small">
+				<el-form
+					ref="specFormRef"
+					:model="specForm"
+					:inline="true"
+					size="small"
+				>
+					<el-table
+						ref="specTableRef"
+						:data="specForm.specList"
+						row-key="id"
+						size="small"
+					>
 						<el-table-column align="center" width="50">
 							<template>
 								<svg-icon class="drag-handler" icon-class="drag" />
@@ -16,19 +34,36 @@
 						</el-table-column>
 						<el-table-column label="规格名" width="200">
 							<template #default="scope">
-								<el-form-item :prop="'specList[' + scope.$index + '].name'" :rules="rules.spec.name">
-									<el-input type="text" v-model="scope.row.name" size="small" @input="handleSpecChange()" />
+								<el-form-item
+									:prop="'specList[' + scope.$index + '].name'"
+									:rules="rules.spec.name"
+								>
+									<el-input
+										type="text"
+										v-model="scope.row.name"
+										size="small"
+										@input="handleSpecChange()"
+									/>
 								</el-form-item>
 							</template>
 						</el-table-column>
 						<el-table-column>
 							<template #header>
 								规格值
-								<el-link type="danger" style="font-size: 12px" :underline="false">（默认第一条规格包含图片）</el-link>
+								<el-link
+									type="danger"
+									style="font-size: 12px"
+									:underline="false"
+									>（默认第一条规格包含图片）</el-link
+								>
 							</template>
 
 							<template #default="scope">
-								<div v-for="item in scope.row.values" :key="item.id" style="margin-right: 15px; display: inline-block">
+								<div
+									v-for="item in scope.row.values"
+									:key="item.id"
+									style="margin-right: 15px; display: inline-block"
+								>
 									<el-tag
 										size="small"
 										closable
@@ -37,7 +72,11 @@
 									>
 										{{ item.value }}
 									</el-tag>
-									<single-upload v-model="item.picUrl" v-if="scope.$index == 0" style="margin-top: 5px" />
+									<single-upload
+										v-model="item.picUrl"
+										v-if="scope.$index == 0"
+										style="margin-top: 5px"
+									/>
 								</div>
 
 								<el-input
@@ -48,7 +87,13 @@
 									style="width: 80px; vertical-align: top"
 									size="small"
 								/>
-								<el-button v-else @click="handleSpecValueAdd(scope.$index)" :icon="Plus" style="vertical-align: top" size="small">
+								<el-button
+									v-else
+									@click="handleSpecValueAdd(scope.$index)"
+									:icon="Plus"
+									style="vertical-align: top"
+									size="small"
+								>
 									添加规格值
 								</el-button>
 							</template>
@@ -56,7 +101,14 @@
 
 						<el-table-column width="60" label="操作">
 							<template #default="scope">
-								<el-button type="danger" :icon="Minus" size="small" circle plain @click.stop="handleSpecRemove(scope.$index)" />
+								<el-button
+									type="danger"
+									:icon="Minus"
+									size="small"
+									circle
+									plain
+									@click.stop="handleSpecRemove(scope.$index)"
+								/>
 							</template>
 						</el-table-column>
 					</el-table>
@@ -68,13 +120,28 @@
 					<span>商品库存</span>
 				</template>
 				<el-form ref="skuFormRef" :model="skuForm" size="small" :inline="true">
-					<el-table :data="skuForm.skuList" :span-method="(objectSpanMethod as any)" highlight-current-row size="small" border>
-						<el-table-column v-for="(title, index) in specTitles" :key="index" align="center" :prop="'specValue' + (index + 1)" :label="title">
+					<el-table
+						:data="skuForm.skuList"
+						:span-method="(objectSpanMethod as any)"
+						highlight-current-row
+						size="small"
+						border
+					>
+						<el-table-column
+							v-for="(title, index) in specTitles"
+							:key="index"
+							align="center"
+							:prop="'specValue' + (index + 1)"
+							:label="title"
+						>
 						</el-table-column>
 
 						<el-table-column label="商品编码" align="center">
 							<template #default="scope">
-								<el-form-item :prop="'skuList[' + scope.$index + '].skuSn'" :rules="rules.sku.skuSn">
+								<el-form-item
+									:prop="'skuList[' + scope.$index + '].skuSn'"
+									:rules="rules.sku.skuSn"
+								>
 									<el-input v-model="scope.row.skuSn" />
 								</el-form-item>
 							</template>
@@ -82,7 +149,10 @@
 
 						<el-table-column label="价格" align="center">
 							<template #default="scope">
-								<el-form-item :prop="'skuList[' + scope.$index + '].price'" :rules="rules.sku.price">
+								<el-form-item
+									:prop="'skuList[' + scope.$index + '].price'"
+									:rules="rules.sku.price"
+								>
 									<el-input v-model="scope.row.price" />
 								</el-form-item>
 							</template>
@@ -90,7 +160,10 @@
 
 						<el-table-column label="库存" align="center">
 							<template #default="scope">
-								<el-form-item :prop="'skuList[' + scope.$index + '].stockNum'" :rules="rules.sku.stockNum">
+								<el-form-item
+									:prop="'skuList[' + scope.$index + '].stockNum'"
+									:rules="rules.sku.stockNum"
+								>
 									<el-input v-model="scope.row.stockNum" />
 								</el-form-item>
 							</template>
@@ -107,7 +180,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref, toRefs, watch } from 'vue';
+import {
+	computed,
+	nextTick,
+	onMounted,
+	reactive,
+	ref,
+	toRefs,
+	watch,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { Plus, Minus } from '@element-plus/icons-vue';
 import { ElNotification, ElMessage, ElTable, ElForm } from 'element-plus';
@@ -163,14 +244,17 @@ const state = reactive({
 		sku: {
 			skuSn: [{ required: true, message: '请输入商品编号', trigger: 'blur' }],
 			price: [{ required: true, message: '请输入商品价格', trigger: 'blur' }],
-			stockNum: [{ required: true, message: '请输入商品库存', trigger: 'blur' }],
+			stockNum: [
+				{ required: true, message: '请输入商品库存', trigger: 'blur' },
+			],
 		},
 	},
 	colors: ['', 'success', 'warning', 'danger'],
 	tagInputs: [{ value: undefined, visible: false }], // 规格值标签临时值和显隐控制
 });
 
-const { specForm, skuForm, specTitles, rules, colors, tagInputs } = toRefs(state);
+const { specForm, skuForm, specTitles, rules, colors, tagInputs } =
+	toRefs(state);
 
 watch(
 	() => goodsInfo.value.categoryId,
@@ -208,7 +292,9 @@ watch(state.specForm.specList, () => {
 
 function loadData() {
 	goodsInfo.value.specList.forEach((specItem: any) => {
-		const specIndex = state.specForm.specList.findIndex((item: any) => item.name == specItem.name);
+		const specIndex = state.specForm.specList.findIndex(
+			(item: any) => item.name == specItem.name
+		);
 		if (specIndex > -1) {
 			(state.specForm.specList[specIndex] as any).values.push({
 				id: specItem.id,
@@ -218,7 +304,9 @@ function loadData() {
 		} else {
 			state.specForm.specList.push({
 				name: specItem.name,
-				values: [{ id: specItem.id, value: specItem.value, picUrl: specItem.picUrl }],
+				values: [
+					{ id: specItem.id, value: specItem.value, picUrl: specItem.picUrl },
+				],
 			});
 		}
 	});
@@ -299,7 +387,13 @@ function generateSkuList() {
 		return;
 	}
 
-	const specList = JSON.parse(JSON.stringify(state.specForm.specList.filter((item) => item.values && item.values.length > 0))); // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
+	const specList = JSON.parse(
+		JSON.stringify(
+			state.specForm.specList.filter(
+				(item) => item.values && item.values.length > 0
+			)
+		)
+	); // 深拷贝，取有属性的规格项，否则笛卡尔积运算得到的SKU列表值为空
 
 	const skuList = specList.reduce(
 		(acc: any, curr: any) => {
@@ -321,7 +415,9 @@ function generateSkuList() {
 
 	skuList.forEach((item: any) => {
 		item.specIds = item.specIds.substring(0, item.specIds.length - 1);
-		item.name = item.specValues.substring(0, item.specValues.length - 1).replaceAll('_', ' ');
+		item.name = item.specValues
+			.substring(0, item.specValues.length - 1)
+			.replaceAll('_', ' ');
 		const specIdArr = item.specIds.split('|');
 		const skus = goodsInfo.value.skuList.filter(
 			(sku: any) =>
@@ -337,12 +433,16 @@ function generateSkuList() {
 			item.price = sku.price / 100;
 			item.stockNum = sku.stockNum;
 		}
-		const specValueArr = item.specValues.substring(0, item.specValues.length - 1).split('_'); // ['黑','6+128G','官方标配']
+		const specValueArr = item.specValues
+			.substring(0, item.specValues.length - 1)
+			.split('_'); // ['黑','6+128G','官方标配']
 		specValueArr.forEach((v: any, i: any) => {
 			const key = 'specValue' + (i + 1);
 			item[key] = v;
 			if (i == 0 && state.specForm.specList.length > 0) {
-				const valueIndex = state.specForm.specList[0].values.findIndex((specValue: any) => specValue.value == v);
+				const valueIndex = state.specForm.specList[0].values.findIndex(
+					(specValue: any) => specValue.value == v
+				);
 				if (valueIndex > -1) {
 					item.picUrl = state.specForm.specList[0].values[valueIndex].picUrl;
 				}
@@ -394,7 +494,9 @@ function handleSpecValueAdd(specIndex: any) {
  */
 function handleSpecValueRemove(rowIndex: any, specValueId: any) {
 	const specList = JSON.parse(JSON.stringify(state.specForm.specList));
-	const removeIndex = specList[rowIndex].values.map((item: any) => item.id).indexOf(specValueId);
+	const removeIndex = specList[rowIndex].values
+		.map((item: any) => item.id)
+		.indexOf(specValueId);
 	specList[rowIndex].values.splice(removeIndex, 1);
 	state.specForm.specList = specList;
 	generateSkuList();
@@ -408,7 +510,11 @@ function handleSpecValueRemove(rowIndex: any, specValueId: any) {
 function handleSpecValueInput(rowIndex: any) {
 	const currSpecValue = state.tagInputs[rowIndex].value;
 	const specValues = state.specForm.specList[rowIndex].values;
-	if (specValues && specValues.length > 0 && specValues.map((item: any) => item.value).includes(currSpecValue)) {
+	if (
+		specValues &&
+		specValues.length > 0 &&
+		specValues.map((item: any) => item.value).includes(currSpecValue)
+	) {
 		ElMessage.warning('规格值重复，请重新输入');
 		return false;
 	}
@@ -426,7 +532,9 @@ function handleSpecValueInput(rowIndex: any) {
 				id: 'tid_' + (rowIndex + 1) + '_' + ++maxSpecValueIndex,
 			};
 		} else {
-			state.specForm.specList[rowIndex].values = [{ value: currSpecValue, id: 'tid_' + (rowIndex + 1) + '_1' }];
+			state.specForm.specList[rowIndex].values = [
+				{ value: currSpecValue, id: 'tid_' + (rowIndex + 1) + '_1' },
+			];
 		}
 	}
 	state.tagInputs[rowIndex].value = undefined;
@@ -442,13 +550,21 @@ function handleSpecValueInput(rowIndex: any) {
 
 const objectSpanMethod = ({ rowIndex, columnIndex }: any) => {
 	let mergeRows = [1, 1, 1]; // 分别对应规格1、规格2、规格3列合并的行数
-	const specLen = state.specForm.specList.filter((item) => item.values && item.values.length > 0).length;
+	const specLen = state.specForm.specList.filter(
+		(item) => item.values && item.values.length > 0
+	).length;
 	if (specLen == 2) {
-		const values_len_2 = state.specForm.specList[1].values ? state.specForm.specList[1].values.length : 1; // 第2个规格项的规格值的数量
+		const values_len_2 = state.specForm.specList[1].values
+			? state.specForm.specList[1].values.length
+			: 1; // 第2个规格项的规格值的数量
 		mergeRows = [values_len_2, 1, 1];
 	} else if (specLen == 3) {
-		const values_len_2 = state.specForm.specList[1].values ? state.specForm.specList[1].values.length : 1; // 第2个规格项的规格值的数量
-		const values_len_3 = state.specForm.specList[2].values ? state.specForm.specList[2].values.length : 1; // 第3个规格项的规格值的数量
+		const values_len_2 = state.specForm.specList[1].values
+			? state.specForm.specList[1].values.length
+			: 1; // 第2个规格项的规格值的数量
+		const values_len_3 = state.specForm.specList[2].values
+			? state.specForm.specList[2].values.length
+			: 1; // 第3个规格项的规格值的数量
 		mergeRows = [values_len_2 * values_len_3, values_len_3, 1];
 	}
 	if (columnIndex == 0) {

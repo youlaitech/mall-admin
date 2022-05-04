@@ -2,9 +2,19 @@
 	<div ref="rightPanel" :class="{ show: show }" class="rightPanel-container">
 		<div class="rightPanel-background" />
 		<div class="rightPanel">
-			<div class="handle-button" :style="{ top: buttonTop + 'px', 'background-color': theme }" @click="show = !show">
-				<Close style="width: 1em; height: 1em; vertical-align: middle" v-show="show" />
-				<Setting style="width: 1em; height: 1em; vertical-align: middle" v-show="!show" />
+			<div
+				class="handle-button"
+				:style="{ top: buttonTop + 'px', 'background-color': theme }"
+				@click="show = !show"
+			>
+				<Close
+					style="width: 1em; height: 1em; vertical-align: middle"
+					v-show="show"
+				/>
+				<Setting
+					style="width: 1em; height: 1em; vertical-align: middle"
+					v-show="!show"
+				/>
 			</div>
 			<div class="rightPanel-items">
 				<slot />

@@ -10,21 +10,43 @@ export default {
 		<!-- 搜索表单 -->
 		<el-form ref="queryFormRef" :model="state.queryParams" :inline="true">
 			<el-form-item>
-				<el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-				<el-button type="danger" :icon="Delete" :disabled="state.multiple" @click="handleDelete">删除 </el-button>
+				<el-button type="success" :icon="Plus" @click="handleAdd"
+					>新增</el-button
+				>
+				<el-button
+					type="danger"
+					:icon="Delete"
+					:disabled="state.multiple"
+					@click="handleDelete"
+					>删除
+				</el-button>
 			</el-form-item>
 
 			<el-form-item prop="name">
-				<el-input v-model="state.queryParams.name" placeholder="字典名称" clearable @keyup.enter="handleQuery" />
+				<el-input
+					v-model="state.queryParams.name"
+					placeholder="字典名称"
+					clearable
+					@keyup.enter="handleQuery"
+				/>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" :icon="Search" @click="handleQuery()">搜索</el-button>
+				<el-button type="primary" :icon="Search" @click="handleQuery()"
+					>搜索</el-button
+				>
 				<el-button :icon="Refresh" @click="resetQuery()">重置</el-button>
 			</el-form-item>
 		</el-form>
 
 		<!-- 数据表格 -->
-		<el-table highlight-current-row :data="dictList" v-loading="loading" @row-click="handleRowClick" @selection-change="handleSelectionChange" border>
+		<el-table
+			highlight-current-row
+			:data="dictList"
+			v-loading="loading"
+			@row-click="handleRowClick"
+			@selection-change="handleSelectionChange"
+			border
+		>
 			<el-table-column type="selection" width="55" align="center" />
 			<el-table-column label="字典名称" prop="name" width="120" />
 			<el-table-column label="字典编码" prop="code" />
@@ -37,17 +59,45 @@ export default {
 
 			<el-table-column label="操作" align="center" width="150">
 				<template #default="scope">
-					<el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)" />
-					<el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)" />
+					<el-button
+						type="primary"
+						:icon="Edit"
+						circle
+						plain
+						@click.stop="handleUpdate(scope.row)"
+					/>
+					<el-button
+						type="danger"
+						:icon="Delete"
+						circle
+						plain
+						@click.stop="handleDelete(scope.row)"
+					/>
 				</template>
 			</el-table-column>
 		</el-table>
 
-		<pagination v-if="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="handleQuery" />
+		<pagination
+			v-if="total > 0"
+			:total="total"
+			v-model:page="queryParams.pageNum"
+			v-model:limit="queryParams.pageSize"
+			@pagination="handleQuery"
+		/>
 
 		<!-- 弹窗表单 -->
-		<el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" @close="cancel">
-			<el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
+		<el-dialog
+			:title="dialog.title"
+			v-model="dialog.visible"
+			width="500px"
+			@close="cancel"
+		>
+			<el-form
+				ref="dataFormRef"
+				:model="formData"
+				:rules="rules"
+				label-width="80px"
+			>
 				<el-form-item label="字典名称" prop="name">
 					<el-input v-model="formData.name" placeholder="请输入字典名称" />
 				</el-form-item>
@@ -61,7 +111,12 @@ export default {
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="备注" prop="remark">
-					<el-input v-model="formData.remark" type="textarea" placeholder="请输入内容" :autosize="{ minRows: 2, maxRows: 4 }" />
+					<el-input
+						v-model="formData.remark"
+						type="textarea"
+						placeholder="请输入内容"
+						:autosize="{ minRows: 2, maxRows: 4 }"
+					/>
 				</el-form-item>
 			</el-form>
 			<template #footer>
@@ -76,7 +131,13 @@ export default {
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue';
-import { listDictPages, getDictFormDetail, addDict, updateDict, deleteDict } from '@/api/system/dict';
+import {
+	listDictPages,
+	getDictFormDetail,
+	addDict,
+	updateDict,
+	deleteDict,
+} from '@/api/system/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Dialog, Dict, DictFormData, DictQueryParam } from '@/types';
@@ -110,7 +171,8 @@ const state = reactive({
 	},
 });
 
-const { total, dialog, loading, dictList, formData, rules, queryParams } = toRefs(state);
+const { total, dialog, loading, dictList, formData, rules, queryParams } =
+	toRefs(state);
 
 function handleQuery() {
 	emit('dictClick', null);

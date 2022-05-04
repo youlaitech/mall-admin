@@ -45,7 +45,8 @@ const state = reactive({
 	refreshTree: true,
 });
 
-const { expandedKeys, menuOptions, checkStrictly, isExpandAll, refreshTree } = toRefs(state);
+const { expandedKeys, menuOptions, checkStrictly, isExpandAll, refreshTree } =
+	toRefs(state);
 
 /**
  * 加载菜单树
@@ -75,7 +76,9 @@ function toggleExpandAll() {
  * 保存角色菜单
  */
 function handleSubmit() {
-	const checkedMenuIds = menuRef.value.getCheckedNodes(false, true).map((node: any) => node.value);
+	const checkedMenuIds = menuRef.value
+		.getCheckedNodes(false, true)
+		.map((node: any) => node.value);
 	updateRoleMenu(props.role.id, checkedMenuIds).then(() => {
 		ElMessage.success('提交成功');
 	});
@@ -90,10 +93,14 @@ onMounted(() => {
 	<div class="app-container">
 		<el-row>
 			<el-col :span="12">
-				<el-button plain :icon="Switch" @click="toggleExpandAll">展开/折叠</el-button>
+				<el-button plain :icon="Switch" @click="toggleExpandAll"
+					>展开/折叠</el-button
+				>
 			</el-col>
 			<el-col :span="12" style="text-align: right">
-				<el-button type="primary" :icon="Position" @click="handleSubmit">提交</el-button>
+				<el-button type="primary" :icon="Position" @click="handleSubmit"
+					>提交</el-button
+				>
 			</el-col>
 		</el-row>
 

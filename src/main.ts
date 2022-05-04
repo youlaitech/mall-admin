@@ -34,4 +34,10 @@ Object.keys(directive).forEach((key) => {
 app.config.globalProperties.$listDictsByCode = listDictsByCode;
 
 // 注册全局组件
-app.component('Pagination', Pagination).use(createPinia()).use(router).use(ElementPlus).use(i18n).mount('#app');
+app
+	.component('Pagination', Pagination)
+	.use(createPinia())
+	.use(router)
+	.use(ElementPlus)
+	.use(i18n)
+	.mount('#app');

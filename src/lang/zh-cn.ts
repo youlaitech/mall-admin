@@ -11,7 +11,8 @@ export default {
 		password: '密码',
 		login: '登 录',
 		code: '请输入验证码',
-		copyright: 'Copyright © 2021 - 2022 youlai.tech All Rights Reserved. 有来技术 版权所有',
+		copyright:
+			'Copyright © 2021 - 2022 youlai.tech All Rights Reserved. 有来技术 版权所有',
 		icp: 'ICP备案号:皖ICP备20006496号-2',
 	},
 	navbar: {

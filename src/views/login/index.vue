@@ -1,6 +1,13 @@
 <template>
 	<div class="login-container">
-		<el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+		<el-form
+			ref="loginFormRef"
+			:model="loginForm"
+			:rules="loginRules"
+			class="login-form"
+			auto-complete="on"
+			label-position="left"
+		>
 			<div class="title-container">
 				<h3 class="title">{{ $t('login.title') }}</h3>
 				<lang-select class="set-language" />
@@ -21,7 +28,11 @@
 				/>
 			</el-form-item>
 
-			<el-tooltip :disabled="capslockTooltipDisabled" content="Caps lock is On" placement="right">
+			<el-tooltip
+				:disabled="capslockTooltipDisabled"
+				content="Caps lock is On"
+				placement="right"
+			>
 				<el-form-item prop="password">
 					<span class="svg-container">
 						<svg-icon icon-class="password" />
@@ -40,7 +51,9 @@
 						@keyup.enter="handleLogin"
 					/>
 					<span class="show-pwd" @click="showPwd">
-						<svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+						<svg-icon
+							:icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+						/>
 					</span>
 				</el-form-item>
 			</el-tooltip>
@@ -50,19 +63,36 @@
 				<span class="svg-container">
 					<svg-icon icon-class="validCode" />
 				</span>
-				<el-input v-model="loginForm.code" auto-complete="off" :placeholder="$t('login.code')" style="width: 65%" @keyup.enter="handleLogin" />
+				<el-input
+					v-model="loginForm.code"
+					auto-complete="off"
+					:placeholder="$t('login.code')"
+					style="width: 65%"
+					@keyup.enter="handleLogin"
+				/>
 
 				<div class="captcha">
-					<img :src="captchaBase64" @click="handleCaptchaGenerate" height="38px" />
+					<img
+						:src="captchaBase64"
+						@click="handleCaptchaGenerate"
+						height="38px"
+					/>
 				</div>
 			</el-form-item>
 
-			<el-button size="default" :loading="loading" type="primary" style="width: 100%; margin-bottom: 30px" @click.prevent="handleLogin"
+			<el-button
+				size="default"
+				:loading="loading"
+				type="primary"
+				style="width: 100%; margin-bottom: 30px"
+				@click.prevent="handleLogin"
 				>{{ $t('login.login') }}
 			</el-button>
 
 			<div class="tips">
-				<span style="margin-right: 20px">{{ $t('login.username') }}: admin</span>
+				<span style="margin-right: 20px"
+					>{{ $t('login.username') }}: admin</span
+				>
 				<span> {{ $t('login.password') }}: 123456</span>
 			</div>
 		</el-form>
@@ -107,7 +137,9 @@ const state = reactive({
 	} as LoginFormData,
 	loginRules: {
 		username: [{ required: true, trigger: 'blur' }],
-		password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+		password: [
+			{ required: true, trigger: 'blur', validator: validatePassword },
+		],
 	},
 	loading: false,
 	passwordType: 'password',
@@ -127,11 +159,20 @@ function validatePassword(rule: any, value: any, callback: any) {
 	}
 }
 
-const { loginForm, loginRules, loading, passwordType, captchaBase64, capslockTooltipDisabled, showCopyright } = toRefs(state);
+const {
+	loginForm,
+	loginRules,
+	loading,
+	passwordType,
+	captchaBase64,
+	capslockTooltipDisabled,
+	showCopyright,
+} = toRefs(state);
 
 function checkCapslock(e: any) {
 	const { key } = e;
-	state.capslockTooltipDisabled = key && key.length === 1 && key >= 'A' && key <= 'Z';
+	state.capslockTooltipDisabled =
+		key && key.length === 1 && key >= 'A' && key <= 'Z';
 }
 
 function showPwd() {

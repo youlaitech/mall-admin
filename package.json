@@ -28,7 +28,7 @@
 		"vue-router": "^4.0.12"
 	},
 	"devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.19.0",
+		"@typescript-eslint/eslint-plugin": "^5.19.0",
 		"@typescript-eslint/parser": "^5.19.0",
 		"@commitlint/cli": "^16.2.3",
 		"@commitlint/config-conventional": "^16.2.1",
@@ -48,7 +48,7 @@
 		"vite-plugin-svg-icons": "^1.1.0",
 		"vue-tsc": "^0.34.7"
 	},
-  "repository": "https://gitee.com/youlaiorg/mall-admin-web.git",
-  "author": "有来技术团队",
-  "license": "Apache-2.0"
+	"repository": "https://gitee.com/youlaiorg/mall-admin-web.git",
+	"author": "有来技术团队",
+	"license": "Apache-2.0"
 }

@@ -1,16 +1,45 @@
 <template>
 	<div class="app-container">
-		<el-steps :active="active" process-status="finish" finish-status="success" simple>
+		<el-steps
+			:active="active"
+			process-status="finish"
+			finish-status="success"
+			simple
+		>
 			<el-step title="选择商品分类" />
 			<el-step title="填写商品信息" />
 			<el-step title="设置商品属性" />
 			<el-step title="设置商品库存" />
 		</el-steps>
 
-		<GoodsCategory v-show="active == 0" v-model="goodsInfo" v-if="loaded == true" @prev="prev" @next="next" />
-		<GoodsInfo v-show="active == 1" v-model="goodsInfo" v-if="loaded == true" @prev="prev" @next="next" />
-		<GoodsAttribute v-show="active == 2" v-model="goodsInfo" v-if="loaded == true" @prev="prev" @next="next" />
-		<GoodsStock v-show="active == 3" v-model="goodsInfo" v-if="loaded == true" @prev="prev" @next="next" />
+		<GoodsCategory
+			v-show="active == 0"
+			v-model="goodsInfo"
+			v-if="loaded == true"
+			@prev="prev"
+			@next="next"
+		/>
+		<GoodsInfo
+			v-show="active == 1"
+			v-model="goodsInfo"
+			v-if="loaded == true"
+			@prev="prev"
+			@next="next"
+		/>
+		<GoodsAttribute
+			v-show="active == 2"
+			v-model="goodsInfo"
+			v-if="loaded == true"
+			@prev="prev"
+			@next="next"
+		/>
+		<GoodsStock
+			v-show="active == 3"
+			v-model="goodsInfo"
+			v-if="loaded == true"
+			@prev="prev"
+			@next="next"
+		/>
 	</div>
 </template>
 

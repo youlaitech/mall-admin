@@ -25,7 +25,9 @@ export const hasPerm: Directive = {
 				el.parentNode && el.parentNode.removeChild(el);
 			}
 		} else {
-			throw new Error("need perms! Like v-has-perm=\"['sys:user:add','sys:user:edit']\"");
+			throw new Error(
+				"need perms! Like v-has-perm=\"['sys:user:add','sys:user:edit']\""
+			);
 		}
 	},
 };

@@ -86,17 +86,32 @@
 		<!-- Echarts 图表 -->
 		<el-row :gutter="40" style="margin-top: 20px">
 			<el-col :sm="24" :lg="8" class="card-panel__col">
-				<BarChart id="barChart" height="400px" width="100%" class="chart-container" />
+				<BarChart
+					id="barChart"
+					height="400px"
+					width="100%"
+					class="chart-container"
+				/>
 			</el-col>
 
 			<el-col :xs="24" :sm="12" :lg="8" class="card-panel__col">
-				<PieChart id="pieChart" height="400px" width="100%" class="chart-container" />
+				<PieChart
+					id="pieChart"
+					height="400px"
+					width="100%"
+					class="chart-container"
+				/>
 				<!--订单漏斗图-->
 				<!--<FunnelChart id="funnelChart" height="400px" width="100%" class="chart-container"/>-->
 			</el-col>
 
 			<el-col :xs="24" :sm="12" :lg="8" class="card-panel__col">
-				<RadarChart id="radarChart" height="400px" width="100%" class="chart-container" />
+				<RadarChart
+					id="radarChart"
+					height="400px"
+					width="100%"
+					class="chart-container"
+				/>
 			</el-col>
 		</el-row>
 	</div>

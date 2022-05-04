@@ -1,7 +1,12 @@
 <template>
 	<div style="border: 1px solid #ccc">
 		<!-- 工具栏 -->
-		<Toolbar :editor="editorRef" :defaultConfig="toolbarConfig" style="border-bottom: 1px solid #ccc" :mode="mode" />
+		<Toolbar
+			:editor="editorRef"
+			:defaultConfig="toolbarConfig"
+			style="border-bottom: 1px solid #ccc"
+			:mode="mode"
+		/>
 		<!-- 编辑器 -->
 		<Editor
 			:defaultConfig="editorConfig"

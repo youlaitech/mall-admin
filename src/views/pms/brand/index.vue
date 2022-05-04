@@ -10,7 +10,13 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm, ElTable, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { BrandFormData, BrandItem, BrandQueryParam, Dialog } from '@/types';
-import { listBrandPages, getBrandFormDetail, updateBrand, addBrand, deleteBrands } from '@/api/pms/brand';
+import {
+	listBrandPages,
+	getBrandFormDetail,
+	updateBrand,
+	addBrand,
+	deleteBrands,
+} from '@/api/pms/brand';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
 
 const queryFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
@@ -43,7 +49,16 @@ const state = reactive({
 	},
 });
 
-const { loading, multiple, queryParams, brandList, total, dialog, formData, rules } = toRefs(state);
+const {
+	loading,
+	multiple,
+	queryParams,
+	brandList,
+	total,
+	dialog,
+	formData,
+	rules,
+} = toRefs(state);
 
 function handleQuery() {
 	state.loading = true;
@@ -143,8 +158,16 @@ onMounted(() => {
 		<!-- 搜索表单 -->
 		<el-form ref="queryFormRef" :model="queryParams" :inline="true">
 			<el-form-item>
-				<el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-				<el-button type="danger" :icon="Delete" click="handleDelete" :disabled="multiple">删除</el-button>
+				<el-button type="success" :icon="Plus" @click="handleAdd"
+					>新增</el-button
+				>
+				<el-button
+					type="danger"
+					:icon="Delete"
+					click="handleDelete"
+					:disabled="multiple"
+					>删除</el-button
+				>
 			</el-form-item>
 
 			<el-form-item prop="name">
@@ -152,13 +175,20 @@ onMounted(() => {
 			</el-form-item>
 
 			<el-form-item>
-				<el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
+				<el-button type="primary" :icon="Search" @click="handleQuery"
+					>搜索</el-button
+				>
 				<el-button :icon="Refresh" @click="resetQuery">重置</el-button>
 			</el-form-item>
 		</el-form>
 
 		<!-- 数据表格 -->
-		<el-table v-loading="loading" :data="brandList" @selection-change="handleSelectionChange" border>
+		<el-table
+			v-loading="loading"
+			:data="brandList"
+			@selection-change="handleSelectionChange"
+			border
+		>
 			<el-table-column type="selection" min-width="5%" />
 			<el-table-column prop="name" label="品牌名称" min-width="10" />
 			<el-table-column prop="logoUrl" label="LOGO" min-width="10">
@@ -166,7 +196,10 @@ onMounted(() => {
 					<el-popover placement="right" :width="400" trigger="hover">
 						<img :src="scope.row.logoUrl" width="400" height="400" />
 						<template #reference>
-							<img :src="scope.row.logoUrl" style="max-height: 60px; max-width: 60px" />
+							<img
+								:src="scope.row.logoUrl"
+								style="max-height: 60px; max-width: 60px"
+							/>
 						</template>
 					</el-popover>
 				</template>
@@ -176,18 +209,46 @@ onMounted(() => {
 
 			<el-table-column label="操作" width="150">
 				<template #default="scope">
-					<el-button @click="handleUpdate(scope.row)" type="primary" :icon="Edit" circle plain />
-					<el-button type="danger" :icon="Delete" circle plain @click="handleDelete(scope.row)" />
+					<el-button
+						@click="handleUpdate(scope.row)"
+						type="primary"
+						:icon="Edit"
+						circle
+						plain
+					/>
+					<el-button
+						type="danger"
+						:icon="Delete"
+						circle
+						plain
+						@click="handleDelete(scope.row)"
+					/>
 				</template>
 			</el-table-column>
 		</el-table>
 
 		<!-- 分页工具条 -->
-		<pagination v-if="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="handleQuery" />
+		<pagination
+			v-if="total > 0"
+			:total="total"
+			v-model:page="queryParams.pageNum"
+			v-model:limit="queryParams.pageSize"
+			@pagination="handleQuery"
+		/>
 
 		<!-- 表单弹窗 -->
-		<el-dialog :title="dialog.title" v-model="dialog.visible" top="5vh" width="600px">
-			<el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
+		<el-dialog
+			:title="dialog.title"
+			v-model="dialog.visible"
+			top="5vh"
+			width="600px"
+		>
+			<el-form
+				ref="dataFormRef"
+				:model="formData"
+				:rules="rules"
+				label-width="100px"
+			>
 				<el-form-item label="品牌名称" prop="name">
 					<el-input v-model="formData.name" auto-complete="off" />
 				</el-form-item>

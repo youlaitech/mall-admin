@@ -10,12 +10,25 @@ export default {
 import { onMounted, reactive, ref, toRefs } from 'vue';
 
 // API依赖
-import { getDeptDetail, deleteDept, updateDept, addDept, listSelectDepartments, listTableDepartments } from '@/api/system/dept';
+import {
+	getDeptDetail,
+	deleteDept,
+	updateDept,
+	addDept,
+	listSelectDepartments,
+	listTableDepartments,
+} from '@/api/system/dept';
 
 // 组件依赖
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import { DeptFormData, DeptItem, DeptQueryParam, Dialog, Option } from '@/types';
+import {
+	DeptFormData,
+	DeptItem,
+	DeptQueryParam,
+	Dialog,
+	Option,
+} from '@/types';
 
 // DOM元素的引用声明定义
 const queryFormRef = ref(ElForm);
@@ -42,13 +55,24 @@ const state = reactive({
 	} as DeptFormData,
 	// 表单参数校验
 	rules: {
-		parentId: [{ required: true, message: '上级部门不能为空', trigger: 'blur' }],
+		parentId: [
+			{ required: true, message: '上级部门不能为空', trigger: 'blur' },
+		],
 		name: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
 		sort: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
 	},
 });
 
-const { single, loading, deptList, deptOptions, queryParams, formData, rules, dialog } = toRefs(state);
+const {
+	single,
+	loading,
+	deptList,
+	deptOptions,
+	queryParams,
+	formData,
+	rules,
+	dialog,
+} = toRefs(state);
 
 /**
  * 部门查询
@@ -182,22 +206,45 @@ onMounted(() => {
 	<div class="app-container">
 		<el-form ref="queryFormRef" :model="queryParams" :inline="true">
 			<el-form-item>
-				<el-button type="success" :icon="Plus" @click="handleAdd">新增</el-button>
-				<el-button type="danger" :icon="Delete" :disabled="single" @click="handleDelete">删除 </el-button>
+				<el-button type="success" :icon="Plus" @click="handleAdd"
+					>新增</el-button
+				>
+				<el-button
+					type="danger"
+					:icon="Delete"
+					:disabled="single"
+					@click="handleDelete"
+					>删除
+				</el-button>
 			</el-form-item>
 
 			<el-form-item prop="name">
-				<el-input v-model="queryParams.name" placeholder="请输入部门名称" @keyup.enter="handleQuery" />
+				<el-input
+					v-model="queryParams.name"
+					placeholder="请输入部门名称"
+					@keyup.enter="handleQuery"
+				/>
 			</el-form-item>
 
 			<el-form-item prop="status">
-				<el-select v-model="queryParams.status" placeholder="部门状态" clearable>
+				<el-select
+					v-model="queryParams.status"
+					placeholder="部门状态"
+					clearable
+				>
 					<el-option :value="1" label="正常" />
 					<el-option :value="0" label="禁用" />
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button class="filter-item" type="primary" :icon="Search" @click="handleQuery"> 搜索 </el-button>
+				<el-button
+					class="filter-item"
+					type="primary"
+					:icon="Search"
+					@click="handleQuery"
+				>
+					搜索
+				</el-button>
 				<el-button :icon="Refresh" @click="resetQuery"> 重置 </el-button>
 			</el-form-item>
 		</el-form>
@@ -223,25 +270,67 @@ onMounted(() => {
 
 			<el-table-column label="操作" align="center" width="150">
 				<template #default="scope">
-					<el-button type="primary" :icon="Edit" circle plain @click.stop="handleUpdate(scope.row)"> </el-button>
-					<el-button type="success" :icon="Plus" circle plain @click.stop="handleAdd(scope.row)"> </el-button>
+					<el-button
+						type="primary"
+						:icon="Edit"
+						circle
+						plain
+						@click.stop="handleUpdate(scope.row)"
+					>
+					</el-button>
+					<el-button
+						type="success"
+						:icon="Plus"
+						circle
+						plain
+						@click.stop="handleAdd(scope.row)"
+					>
+					</el-button>
 
-					<el-button type="danger" :icon="Delete" circle plain @click.stop="handleDelete(scope.row)"> </el-button>
+					<el-button
+						type="danger"
+						:icon="Delete"
+						circle
+						plain
+						@click.stop="handleDelete(scope.row)"
+					>
+					</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
 
 		<!-- 添加或修改部门对话框 -->
-		<el-dialog :title="dialog.title" v-model="dialog.visible" width="600px" @closed="cancel">
-			<el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
+		<el-dialog
+			:title="dialog.title"
+			v-model="dialog.visible"
+			width="600px"
+			@closed="cancel"
+		>
+			<el-form
+				ref="dataFormRef"
+				:model="formData"
+				:rules="rules"
+				label-width="80px"
+			>
 				<el-form-item label="上级部门" prop="parentId">
-					<el-tree-select v-model="formData.parentId" placeholder="选择上级部门" :data="deptOptions" filterable check-strictly />
+					<el-tree-select
+						v-model="formData.parentId"
+						placeholder="选择上级部门"
+						:data="deptOptions"
+						filterable
+						check-strictly
+					/>
 				</el-form-item>
 				<el-form-item label="部门名称" prop="name">
 					<el-input v-model="formData.name" placeholder="请输入部门名称" />
 				</el-form-item>
 				<el-form-item label="显示排序" prop="sort">
-					<el-input-number v-model="formData.sort" controls-position="right" style="width: 100px" :min="0" />
+					<el-input-number
+						v-model="formData.sort"
+						controls-position="right"
+						style="width: 100px"
+						:min="0"
+					/>
 				</el-form-item>
 				<el-form-item label="部门状态">
 					<el-radio-group v-model="formData.status">

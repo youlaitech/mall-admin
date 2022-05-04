@@ -21,7 +21,10 @@ const hasPermission = (roles: string[], route: RouteRecordRaw) => {
 	return false;
 };
 
-export const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
+export const filterAsyncRoutes = (
+	routes: RouteRecordRaw[],
+	roles: string[]
+) => {
 	const res: RouteRecordRaw[] = [];
 	routes.forEach((route) => {
 		const tmp = { ...route } as any;

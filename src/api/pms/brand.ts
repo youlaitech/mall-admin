@@ -1,4 +1,9 @@
-import { BrandFormData, BrandItem, BrandPageResult, BrandQueryParam } from '@/types';
+import {
+	BrandFormData,
+	BrandItem,
+	BrandPageResult,
+	BrandQueryParam,
+} from '@/types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,7 +12,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listBrandPages(queryParams: BrandQueryParam): AxiosPromise<BrandPageResult> {
+export function listBrandPages(
+	queryParams: BrandQueryParam
+): AxiosPromise<BrandPageResult> {
 	return request({
 		url: '/mall-pms/api/v1/brands/page',
 		method: 'get',
@@ -20,7 +27,9 @@ export function listBrandPages(queryParams: BrandQueryParam): AxiosPromise<Brand
  *
  * @param queryParams
  */
-export function listBrands(queryParams?: BrandQueryParam): AxiosPromise<BrandItem[]> {
+export function listBrands(
+	queryParams?: BrandQueryParam
+): AxiosPromise<BrandItem[]> {
 	return request({
 		url: '/mall-pms/api/v1/brands',
 		method: 'get',

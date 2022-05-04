@@ -1,10 +1,20 @@
 <template>
 	<div class="component-container">
 		<div class="component-container__main">
-			<el-form ref="dataFormRef" :rules="rules" :model="goodsInfo" label-width="120px">
+			<el-form
+				ref="dataFormRef"
+				:rules="rules"
+				:model="goodsInfo"
+				label-width="120px"
+			>
 				<el-form-item label="商品品牌" prop="brandId">
 					<el-select v-model="goodsInfo.brandId" style="width: 400px" clearable>
-						<el-option v-for="item in brandOptions" :key="item.id" :label="item.name" :value="item.id" />
+						<el-option
+							v-for="item in brandOptions"
+							:key="item.id"
+							:label="item.name"
+							:value="item.id"
+						/>
 					</el-select>
 				</el-form-item>
 
@@ -21,21 +31,42 @@
 				</el-form-item>
 
 				<el-form-item label="商品简介">
-					<el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" v-model="goodsInfo.description" />
+					<el-input
+						type="textarea"
+						:autosize="{ minRows: 3, maxRows: 6 }"
+						v-model="goodsInfo.description"
+					/>
 				</el-form-item>
 
 				<el-form-item label="商品相册">
 					<el-card
 						v-for="(item, index) in pictures"
 						:key="index"
-						style="width: 170px; display: inline-block; margin-left: 10px; text-align: center"
+						style="
+							width: 170px;
+							display: inline-block;
+							margin-left: 10px;
+							text-align: center;
+						"
 						:body-style="{ padding: '10px' }"
 					>
 						<single-upload v-model="item.url" :show-close="true" />
 
 						<div v-if="item.url">
-							<el-button type="text" class="button" v-if="item.main == true" style="color: #ff4d51">商品主图</el-button>
-							<el-button type="text" class="button" v-else @click="changeMainPicture(index)">设为主图</el-button>
+							<el-button
+								type="text"
+								class="button"
+								v-if="item.main == true"
+								style="color: #ff4d51"
+								>商品主图</el-button
+							>
+							<el-button
+								type="text"
+								class="button"
+								v-else
+								@click="changeMainPicture(index)"
+								>设为主图</el-button
+							>
 						</div>
 
 						<div v-else>
@@ -52,7 +83,9 @@
 		</div>
 		<div class="component-container__footer">
 			<el-button @click="handlePrev">上一步，选择商品分类</el-button>
-			<el-button type="primary" @click="handleNext">下一步，设置商品属性</el-button>
+			<el-button type="primary" @click="handleNext"
+				>下一步，设置商品属性</el-button
+			>
 		</div>
 	</div>
 </template>
@@ -129,7 +162,9 @@ function loadData() {
  */
 function changeMainPicture(changeIndex: number) {
 	const currMainPicture = JSON.parse(JSON.stringify(state.pictures[0]));
-	const nextMainPicture = JSON.parse(JSON.stringify(state.pictures[changeIndex]));
+	const nextMainPicture = JSON.parse(
+		JSON.stringify(state.pictures[changeIndex])
+	);
 
 	state.pictures[0].url = nextMainPicture.url;
 	state.pictures[changeIndex].url = currMainPicture.url;
@@ -143,11 +178,15 @@ function handleNext() {
 	dataFormRef.value.validate((valid: any) => {
 		if (valid) {
 			// 商品图片
-			const mainPicUrl = state.pictures.filter((item) => item.main == true && item.url).map((item) => item.url);
+			const mainPicUrl = state.pictures
+				.filter((item) => item.main == true && item.url)
+				.map((item) => item.url);
 			if (mainPicUrl && mainPicUrl.length > 0) {
 				goodsInfo.value.picUrl = mainPicUrl[0];
 			}
-			const subPicUrl = state.pictures.filter((item) => item.main == false && item.url).map((item) => item.url);
+			const subPicUrl = state.pictures
+				.filter((item) => item.main == false && item.url)
+				.map((item) => item.url);
 			if (subPicUrl && subPicUrl.length > 0) {
 				goodsInfo.value.subPicUrls = subPicUrl;
 			}

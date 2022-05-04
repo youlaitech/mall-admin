@@ -132,12 +132,23 @@ onMounted(() => {
 			</el-form-item>
 
 			<el-form-item>
-				<el-select v-model="queryParams.status" class="filter-item" placeholder="订单状态">
-					<el-option v-for="(key, value) in orderStatusMap" :key="key" :label="key" :value="value" />
+				<el-select
+					v-model="queryParams.status"
+					class="filter-item"
+					placeholder="订单状态"
+				>
+					<el-option
+						v-for="(key, value) in orderStatusMap"
+						:key="key"
+						:label="key"
+						:value="value"
+					/>
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" :icon="Search" @click="handleQuery">查询</el-button>
+				<el-button type="primary" :icon="Search" @click="handleQuery"
+					>查询</el-button
+				>
 				<el-button :icon="Refresh" @click="resetQuery">重置</el-button>
 			</el-form-item>
 		</el-form>
@@ -208,7 +219,13 @@ onMounted(() => {
 		</el-table>
 
 		<!-- 分页工具条 -->
-		<pagination v-if="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="handleQuery" />
+		<pagination
+			v-if="total > 0"
+			:total="total"
+			v-model:page="queryParams.pageNum"
+			v-model:limit="queryParams.pageSize"
+			@pagination="handleQuery"
+		/>
 	</div>
 </template>
 

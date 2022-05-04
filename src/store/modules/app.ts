@@ -8,7 +8,9 @@ const useAppStore = defineStore({
 	state: (): AppState => ({
 		device: 'desktop',
 		sidebar: {
-			opened: localStorage.get('sidebarStatus') ? !!+localStorage.get('sidebarStatus') : true,
+			opened: localStorage.get('sidebarStatus')
+				? !!+localStorage.get('sidebarStatus')
+				: true,
 			withoutAnimation: false,
 		},
 		language: getLanguage(),

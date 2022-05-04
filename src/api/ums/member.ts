@@ -7,7 +7,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listMemebersPage(queryParams: MemberQueryParam): AxiosPromise<MemberPageResult> {
+export function listMemebersPage(
+	queryParams: MemberQueryParam
+): AxiosPromise<MemberPageResult> {
 	return request({
 		url: '/mall-ums/api/v1/members',
 		method: 'get',

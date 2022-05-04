@@ -16,7 +16,11 @@
 			</el-icon>
 
 			<!-- 删除图标 -->
-			<el-icon v-if="props.showClose && imgUrl" class="single-uploader__remove" @click.stop="handleRemove(imgUrl)">
+			<el-icon
+				v-if="props.showClose && imgUrl"
+				class="single-uploader__remove"
+				@click.stop="handleRemove(imgUrl)"
+			>
 				<Close />
 			</el-icon>
 		</el-upload>
@@ -26,7 +30,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Plus, Close } from '@element-plus/icons-vue';
-import { ElMessage, ElUpload, UploadRawFile, UploadRequestOptions } from 'element-plus';
+import {
+	ElMessage,
+	ElUpload,
+	UploadRawFile,
+	UploadRequestOptions,
+} from 'element-plus';
 import { uploadFile, deleteFile } from '@/api/system/file';
 
 const emit = defineEmits(['update:modelValue']);

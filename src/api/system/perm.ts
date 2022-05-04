@@ -1,4 +1,9 @@
-import { PermFormData, PermItem, PermPageResult, PermQueryParam } from '@/types';
+import {
+	PermFormData,
+	PermItem,
+	PermPageResult,
+	PermQueryParam,
+} from '@/types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,7 +12,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listPermPages(queryParams: PermQueryParam): AxiosPromise<PermPageResult> {
+export function listPermPages(
+	queryParams: PermQueryParam
+): AxiosPromise<PermPageResult> {
 	return request({
 		url: '/youlai-admin/api/v1/permissions/page',
 		method: 'get',
@@ -20,7 +27,9 @@ export function listPermPages(queryParams: PermQueryParam): AxiosPromise<PermPag
  *
  * @param queryParams
  */
-export function listPerms(queryParams: PermQueryParam): AxiosPromise<PermItem[]> {
+export function listPerms(
+	queryParams: PermQueryParam
+): AxiosPromise<PermItem[]> {
 	return request({
 		url: '/youlai-admin/api/v1/permissions',
 		method: 'get',

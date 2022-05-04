@@ -1,4 +1,12 @@
-import { DictFormData, DictItemFormData, DictItemPageResult, DictItemQueryParam, DictPageResult, DictQueryParam, Option } from '@/types';
+import {
+	DictFormData,
+	DictItemFormData,
+	DictItemPageResult,
+	DictItemQueryParam,
+	DictPageResult,
+	DictQueryParam,
+	Option,
+} from '@/types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,7 +15,9 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listDictPages(queryParams: DictQueryParam): AxiosPromise<DictPageResult> {
+export function listDictPages(
+	queryParams: DictQueryParam
+): AxiosPromise<DictPageResult> {
 	return request({
 		url: '/youlai-admin/api/v2/dict/page',
 		method: 'get',
@@ -70,7 +80,9 @@ export function deleteDict(ids: string) {
  *
  * @param queryParams
  */
-export function listDictItemPages(queryParams: DictItemQueryParam): AxiosPromise<DictItemPageResult> {
+export function listDictItemPages(
+	queryParams: DictItemQueryParam
+): AxiosPromise<DictItemPageResult> {
 	return request({
 		url: '/youlai-admin/api/v2/dict/items/page',
 		method: 'get',
