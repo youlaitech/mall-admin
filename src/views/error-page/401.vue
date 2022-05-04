@@ -22,7 +22,7 @@
 				<img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream." />
 			</el-col>
 		</el-row>
-		<el-dialog :visible.sync="dialogVisible" title="随便看">
+		<el-dialog v-model:visible="dialogVisible" title="随便看">
 			<img :src="ewizardClap" class="pan-img" />
 		</el-dialog>
 	</div>
