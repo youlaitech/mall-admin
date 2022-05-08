@@ -45,7 +45,8 @@
 		"sass": "^1.43.4",
 		"typescript": "^4.5.4",
 		"vite": "^2.9.7",
-		"vite-plugin-svg-icons": "^1.1.0",
+    "fast-glob": "^3.2.11",
+		"vite-plugin-svg-icons": "^2.0.1",
 		"vue-tsc": "^0.34.7"
 	},
 	"repository": "https://gitee.com/youlaiorg/mall-admin-web.git",
