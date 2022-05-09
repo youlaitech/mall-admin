@@ -53,25 +53,23 @@
             <single-upload v-model="item.url" :show-close="true" />
 
             <div v-if="item.url">
-              <el-button
-                type="text"
+              <el-link
+                type="danger"
                 class="button"
                 v-if="item.main == true"
-                style="color: #ff4d51"
-                >商品主图</el-button
+                >商品主图</el-link
               >
-              <el-button
-                type="text"
+              <el-link
+                type="info"
                 class="button"
                 v-else
                 @click="changeMainPicture(index)"
-                >设为主图</el-button
-              >
+                >设为主图</el-link>
             </div>
 
             <div v-else>
               <!-- 占位 -->
-              <el-button type="text" />
+              <el-link type="info" />
             </div>
           </el-card>
         </el-form-item>

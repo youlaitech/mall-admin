@@ -1,6 +1,6 @@
 import { UserConfig, ConfigEnv, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import viteSvgIcons from 'vite-plugin-svg-icons';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import path from 'path';
 
 // @see: https://gitee.com/holysheng/vite2-config-description/blob/master/vite.config.ts
@@ -11,12 +11,12 @@ export default ({ mode }: ConfigEnv): UserConfig => {
   return {
     plugins: [
       vue(),
-      viteSvgIcons({
+      createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
         // 指定symbolId格式
-        symbolId: 'icon-[dir]-[name]',
-      }),
+        symbolId: 'icon-[dir]-[name]'
+      })
     ],
     // 本地反向代理解决浏览器跨域限制
     server: {
@@ -27,16 +27,16 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         [env.VITE_APP_BASE_API]: {
           target: 'http://localhost:9999',
           changeOrigin: true,
-          rewrite: (path) =>
-            path.replace(new RegExp('^' + env.VITE_APP_BASE_API), ''),
-        },
-      },
+          rewrite: path =>
+            path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
+        }
+      }
     },
     resolve: {
-      // Vite 路径别名配置
+      // Vite路径别名配置
       alias: {
-        '@': path.resolve('./src'), // @代替src
-      },
-    },
+        '@': path.resolve('./src') // @代替src
+      }
+    }
   };
 };
