@@ -19,15 +19,10 @@ const useUserStore = defineStore({
       this.$reset();
     },
     /**
-     * 用户登录请求
-     * @param userInfo 登录用户信息
-     *  username: 用户名
-     *  password: 密码
-     *  code: 验证码
-     *  uuid: 匹配正确验证码的 key
+     * 登录
      */
-    login(userInfo: LoginFormData) {
-      const { username, password, code, uuid } = userInfo;
+    login(loginData: LoginFormData) {
+      const { username, password, code, uuid } = loginData;
       return new Promise((resolve, reject) => {
         login({
           username: username.trim(),
