@@ -1,7 +1,7 @@
 <p align="center">
     <img src="https://img.shields.io/badge/Vue-3.2.25-brightgreen.svg"/>
     <img src="https://img.shields.io/badge/Vite-2.9.7-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.1.9-blue.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.1.8-blue.svg"/>
     <a src="https://github.com/hxrui" target="_blank">
         <img src="https://img.shields.io/github/stars/youlaitech/youlai-mall.svg?style=social&label=Stars"/>
     </a>
@@ -15,7 +15,7 @@
     </a>
 </p>
 <p align="center">
-<strong>在线预览：</strong><a target="_blank" href="http://www.youlai.tech">www.youlai.tech</a> 
+<a target="_blank" href="http://admin.youlai.tech">在线预览</a> |  <a target="_blank" href="https://www.youlai.tech">官方文档</a> 
 </p>
 
 ## 项目介绍
@@ -45,7 +45,7 @@
 
 ## 项目预览
 
-在线预览地址: [www.youlai.tech](http://www.youlai.tech)
+在线预览地址: [admin.youlai.tech](http://admin.youlai.tech)
 
 | ![控制台](https://www.youlai.tech/files/blog/dashboard.png) | ![国际化](https://www.youlai.tech/files/blog/i18n.gif)    |
 | ----------------------------------------------------------- | --------------------------------------------------------- |
@@ -126,7 +126,7 @@ npm install
       location /prod-api/ {
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_pass http://www.youlai.tech:9999/;
+          proxy_pass https://api.youlai.tech/;
       }
   }
 
