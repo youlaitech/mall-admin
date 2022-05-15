@@ -65,7 +65,7 @@ import {
   ref,
   watch,
   onMounted,
-  ComponentInternalInstance,
+  ComponentInternalInstance
 } from 'vue';
 
 import path from 'path-browserify';
@@ -80,7 +80,7 @@ import useStore from '@/store';
 
 const { tagsView, permission } = useStore();
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance; // 获取当前组件实例
+const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const router = useRouter();
 const route = useRoute();
 
@@ -94,12 +94,19 @@ const scrollPaneRef = ref();
 const left = ref(0);
 const top = ref(0);
 
-watch(route, () => {
-  addTags();
-  moveToCurrentTag();
-});
+watch(
+  route,
+  () => {
+    addTags();
+    moveToCurrentTag();
+  },
+  {
+    //初始化立即执行
+    immediate: true
+  }
+);
 
-watch(visible, (value) => {
+watch(visible, value => {
   if (value) {
     document.body.addEventListener('click', closeMenu);
   } else {
@@ -110,14 +117,14 @@ watch(visible, (value) => {
 function filterAffixTags(routes: RouteRecordRaw[], basePath = '/') {
   let tags: TagView[] = [];
 
-  routes.forEach((route) => {
+  routes.forEach(route => {
     if (route.meta && route.meta.affix) {
       const tagPath = path.resolve(basePath, route.path);
       tags.push({
         fullPath: tagPath,
         path: tagPath,
         name: route.name,
-        meta: { ...route.meta },
+        meta: { ...route.meta }
       });
     }
 
@@ -201,7 +208,7 @@ function refreshSelectedTag(view: TagView) {
   tagsView.delCachedView(view);
   const { fullPath } = view;
   nextTick(() => {
-    router.replace({ path: '/redirect' + fullPath }).catch((err) => {
+    router.replace({ path: '/redirect' + fullPath }).catch(err => {
       console.warn(err);
     });
   });
