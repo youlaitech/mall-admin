@@ -210,7 +210,7 @@ function handleLogin() {
 function handleCaptchaGenerate() {
   getCaptcha().then(({ data }) => {
     const { img, uuid } = data;
-    state.captchaBase64 = 'data:image/gif;base64,' + img;
+    state.captchaBase64 = img;
     state.loginForm.uuid = uuid;
   });
 }
@@ -283,7 +283,7 @@ $cursor: #fff;
 
   .el-input {
     display: inline-block;
-    height: 47px;
+    height: 36px;
     width: 85%;
     .el-input__wrapper {
       padding: 0;
@@ -294,9 +294,8 @@ $cursor: #fff;
         border: 0px;
         -webkit-appearance: none;
         border-radius: 0px;
-        padding: 12px 5px 12px 15px;
         color: $light_gray;
-        height: 47px;
+        height: 36px;
         caret-color: $cursor;
 
         &:-webkit-autofill {
@@ -367,7 +366,7 @@ $light_gray: #eee;
   }
 
   .svg-container {
-    padding: 6px 5px 6px 15px;
+    padding: 5px 10px;
     color: $dark_gray;
     vertical-align: middle;
     width: 30px;
@@ -402,7 +401,7 @@ $light_gray: #eee;
     top: 0;
 
     img {
-      height: 52px;
+      height: 42px;
       cursor: pointer;
       vertical-align: middle;
     }
