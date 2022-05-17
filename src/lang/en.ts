@@ -6,7 +6,7 @@ export default {
   },
   // 登录页面国际化
   login: {
-    title: 'youlai-mall-admin(vue3)',
+    title: 'youlai-mall-admin',
     username: 'Username',
     password: 'Password',
     login: 'Login',
