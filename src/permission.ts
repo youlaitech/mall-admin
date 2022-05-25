@@ -20,7 +20,11 @@ router.beforeEach(async (to, from, next) => {
     } else {
       const hasGetUserInfo = user.roles.length > 0;
       if (hasGetUserInfo) {
-        next();
+        if (to.matched.length === 0) {
+          from.name ? next({ name: from.name }) : next('/401');
+        } else {
+          next();
+        }
       } else {
         try {
           await user.getUserInfo();
