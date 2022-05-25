@@ -68,12 +68,12 @@ function initChart() {
       // shape: 'circle',
       radius: '60%',
       indicator: [
-        { name: '家用电器', max: 6500 },
-        { name: '服装箱包', max: 16000 },
-        { name: '运动户外', max: 30000 },
-        { name: '手机数码', max: 38000 },
-        { name: '汽车用品', max: 52000 },
-        { name: '家具厨具', max: 25000 },
+        { name: '家用电器'},
+        { name: '服装箱包' },
+        { name: '运动户外' },
+        { name: '手机数码' },
+        { name: '汽车用品' },
+        { name: '家具厨具' },
       ],
     },
     series: [
@@ -82,12 +82,10 @@ function initChart() {
         type: 'radar',
         itemStyle: {
           borderRadius: 6,
-          normal: {
-            color: function (params: any) {
-              //自定义颜色
-              const colorList = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C'];
-              return colorList[params.dataIndex];
-            },
+          color: function (params: any) {
+            //自定义颜色
+            const colorList = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C'];
+            return colorList[params.dataIndex];
           },
         },
         data: [
