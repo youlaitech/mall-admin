@@ -8,6 +8,7 @@
       <router-link
         v-for="tag in visitedViews"
         :key="tag.path"
+        :data-path="tag.path"
         :class="isActive(tag) ? 'active' : ''"
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         class="tags-view__item"
