@@ -77,7 +77,7 @@ function initChart() {
     xAxis: [
       {
         type: 'category',
-        data: ['上海', '北京', '浙江', '广东', '深圳', '四川', '湖北', '安徽'],
+        data: [ '浙江', '北京', '上海', '广东','深圳'],
         axisPointer: {
           type: 'shadow',
         },
@@ -107,7 +107,7 @@ function initChart() {
       {
         name: '收入',
         type: 'bar',
-        data: [8000, 8200, 7000, 6200, 6500, 5500, 4500, 4200, 3800],
+        data: [7000, 7100, 7200, 7300,7400],
         barWidth: 20,
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -120,7 +120,7 @@ function initChart() {
       {
         name: '毛利润',
         type: 'bar',
-        data: [6700, 6800, 6300, 5213, 4500, 4200, 4200, 3800],
+        data: [ 8000,8200, 8400, 8600, 8800],
         barWidth: 20,
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -134,7 +134,7 @@ function initChart() {
         name: '收入增长率',
         type: 'line',
         yAxisIndex: 1,
-        data: [65, 67, 65, 53, 47, 45, 43, 42, 41],
+        data: [  60,65, 70, 75, 80],
         itemStyle: {
           color: '#67C23A',
         },
@@ -143,7 +143,7 @@ function initChart() {
         name: '利润增长率',
         type: 'line',
         yAxisIndex: 1,
-        data: [80, 81, 78, 67, 65, 60, 56, 51, 45],
+        data: [  70,75, 80, 85, 90],
         itemStyle: {
           color: '#409EFF',
         },
