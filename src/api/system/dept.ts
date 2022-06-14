@@ -1,4 +1,9 @@
-import { DeptFormData, DeptItem, DeptQueryParam, Option } from '@/types';
+import {
+  DeptFormData,
+  DeptItem,
+  DeptQueryParam,
+} from '@/types/api/system/dept';
+import { Option } from '@/types/common';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,11 +12,11 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listTableDepartments(
+export function listDepartments(
   queryParams?: DeptQueryParam
 ): AxiosPromise<DeptItem[]> {
   return request({
-    url: '/youlai-admin/api/v1/depts/table',
+    url: '/youlai-admin/api/v1/depts',
     method: 'get',
     params: queryParams,
   });
@@ -22,7 +27,7 @@ export function listTableDepartments(
  */
 export function listSelectDepartments(): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v1/depts/select',
+    url: '/youlai-admin/api/v1/depts/select_list',
     method: 'get',
   });
 }
@@ -32,9 +37,9 @@ export function listSelectDepartments(): AxiosPromise<Option[]> {
  *
  * @param id
  */
-export function getDeptDetail(id: string): AxiosPromise<DeptFormData> {
+export function getDeptForrmData(id: string): AxiosPromise<DeptFormData> {
   return request({
-    url: '/youlai-admin/api/v1/depts/' + id,
+    url: '/youlai-admin/api/v1/depts/' + id + '/form_data',
     method: 'get',
   });
 }

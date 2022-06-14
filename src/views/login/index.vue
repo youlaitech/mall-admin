@@ -61,7 +61,7 @@
       <!-- 验证码 -->
       <el-form-item prop="code">
         <span class="svg-container">
-          <svg-icon icon-class="validCode" />
+          <svg-icon icon-class="valid_code" />
         </span>
         <el-input
           v-model="loginForm.code"
@@ -119,7 +119,7 @@ import useStore from '@/store';
 // API依赖
 import { getCaptcha } from '@/api/login';
 import { useRoute } from 'vue-router';
-import { LoginFormData } from '@/types';
+import { LoginFormData } from '@/types/api/system/login';
 
 const { user } = useStore();
 const route = useRoute();

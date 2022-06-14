@@ -18,9 +18,9 @@ import {
   Delete,
   View,
 } from '@element-plus/icons-vue';
-import { listGoodsPages, deleteGoods } from '@/api/pms/goods';
+import { listPageGoods, deleteGoods } from '@/api/pms/goods';
 import { listCascadeCategories } from '@/api/pms/category';
-import { GoodsItem, GoodsQueryParam } from '@/types';
+import { GoodsItem, GoodsQueryParam } from '@/types/api/pms/goods';
 import { moneyFormatter } from '@/utils/filter';
 
 const dataTableRef = ref(ElTable);
@@ -59,7 +59,7 @@ const {
 
 function handleQuery() {
   state.loading = true;
-  listGoodsPages(state.queryParams).then(({ data }) => {
+  listPageGoods(state.queryParams).then(({ data }) => {
     state.goodsList = data.list;
     state.total = data.total;
     state.loading = false;

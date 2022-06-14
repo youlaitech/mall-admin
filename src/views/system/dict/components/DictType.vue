@@ -1,7 +1,6 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'dict',
+  name: 'dictType',
 };
 </script>
 
@@ -132,15 +131,21 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import {
-  listDictPages,
-  getDictFormDetail,
-  addDict,
-  updateDict,
-  deleteDict,
+  listPageDictTypes,
+  getDictFormData,
+  addDictType,
+  updateDictType,
+  deleteDictTypes,
 } from '@/api/system/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import { Dialog, Dict, DictFormData, DictQueryParam } from '@/types';
+
+import { Dialog } from '@/types/common';
+import {
+  Dict,
+  DictFormTypeData,
+  DictQueryParam,
+} from '@/types/api/system/dict';
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -164,7 +169,7 @@ const state = reactive({
   dialog: { visible: false } as Dialog,
   formData: {
     status: 1,
-  } as DictFormData,
+  } as DictFormTypeData,
   rules: {
     name: [{ required: true, message: '请输入字典名称', trigger: 'blur' }],
     code: [{ required: true, message: '请输入字典编码', trigger: 'blur' }],
@@ -177,7 +182,7 @@ const { total, dialog, loading, dictList, formData, rules, queryParams } =
 function handleQuery() {
   emit('dictClick', null);
   state.loading = true;
-  listDictPages(state.queryParams).then(({ data }) => {
+  listPageDictTypes(state.queryParams).then(({ data }) => {
     state.dictList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -208,7 +213,7 @@ function handleUpdate(row: any) {
     visible: true,
   };
   const id = row.id || state.ids;
-  getDictFormDetail(id).then(({ data }) => {
+  getDictFormData(id).then(({ data }) => {
     state.formData = data;
   });
 }
@@ -217,13 +222,13 @@ function submitForm() {
   dataFormRef.value.validate((isValid: boolean) => {
     if (isValid) {
       if (state.formData.id) {
-        updateDict(state.formData.id, state.formData).then(() => {
+        updateDictType(state.formData.id, state.formData).then(() => {
           ElMessage.success('修改成功');
           cancel();
           handleQuery();
         });
       } else {
-        addDict(state.formData).then(() => {
+        addDictType(state.formData).then(() => {
           ElMessage.success('新增成功');
           cancel();
           handleQuery();
@@ -247,7 +252,7 @@ function handleDelete(row: any) {
     type: 'warning',
   })
     .then(() => {
-      deleteDict(ids).then(() => {
+      deleteDictTypes(ids).then(() => {
         ElMessage.success('删除成功');
         handleQuery();
       });

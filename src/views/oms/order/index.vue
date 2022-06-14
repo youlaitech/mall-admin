@@ -1,4 +1,3 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
   name: 'order',
@@ -8,7 +7,9 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm } from 'element-plus';
-import { Dialog, Order, OrderQueryParam } from '@/types';
+import { Order, OrderQueryParam } from '@/types/api/oms/order';
+import { Dialog } from '@/types/common';
+
 import { listOrderPages, getOrderDetail } from '@/api/oms/order';
 import { Search, Refresh } from '@element-plus/icons-vue';
 
@@ -45,7 +46,7 @@ const state = reactive({
   ids: [],
   single: true,
   multiple: true,
-  dateRange: [],
+  dateRange: [] as any,
   queryParams: {
     pageNum: 1,
     pageSize: 10,

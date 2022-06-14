@@ -5,7 +5,7 @@ import {
   UserInfo,
   UserPageResult,
   UserQueryParam,
-} from '@/types';
+} from '@/types/api/system/user';
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
@@ -26,7 +26,7 @@ export function listUsersPage(
   queryParams: UserQueryParam
 ): AxiosPromise<UserPageResult> {
   return request({
-    url: '/youlai-admin/api/v1/users/page',
+    url: '/youlai-admin/api/v1/users',
     method: 'get',
     params: queryParams,
   });
@@ -37,9 +37,9 @@ export function listUsersPage(
  *
  * @param userId
  */
-export function getUserDetail(userId: number): AxiosPromise<UserFormData> {
+export function getUserFormData(userId: number): AxiosPromise<UserFormData> {
   return request({
-    url: '/youlai-admin/api/v1/users/' + userId,
+    url: '/youlai-admin/api/v1/users/' + userId + '/form_data',
     method: 'get',
   });
 }

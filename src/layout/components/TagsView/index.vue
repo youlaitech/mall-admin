@@ -66,13 +66,13 @@ import {
   ref,
   watch,
   onMounted,
-  ComponentInternalInstance
+  ComponentInternalInstance,
 } from 'vue';
 
 import path from 'path-browserify';
 
 import { RouteRecordRaw, useRoute, useRouter } from 'vue-router';
-import { TagView } from '@/types';
+import { TagView } from '@/types/store/tagsview';
 
 import ScrollPane from './ScrollPane.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
@@ -103,11 +103,11 @@ watch(
   },
   {
     //初始化立即执行
-    immediate: true
+    immediate: true,
   }
 );
 
-watch(visible, value => {
+watch(visible, (value) => {
   if (value) {
     document.body.addEventListener('click', closeMenu);
   } else {
@@ -118,14 +118,14 @@ watch(visible, value => {
 function filterAffixTags(routes: RouteRecordRaw[], basePath = '/') {
   let tags: TagView[] = [];
 
-  routes.forEach(route => {
+  routes.forEach((route) => {
     if (route.meta && route.meta.affix) {
       const tagPath = path.resolve(basePath, route.path);
       tags.push({
         fullPath: tagPath,
         path: tagPath,
         name: route.name,
-        meta: { ...route.meta }
+        meta: { ...route.meta },
       });
     }
 
@@ -167,7 +167,7 @@ function moveToCurrentTag() {
         }
       }
     }
-  })
+  });
 }
 
 function isActive(tag: TagView) {
@@ -205,7 +205,7 @@ function refreshSelectedTag(view: TagView) {
   tagsView.delCachedView(view);
   const { fullPath } = view;
   nextTick(() => {
-    router.replace({ path: '/redirect' + fullPath }).catch(err => {
+    router.replace({ path: '/redirect' + fullPath }).catch((err) => {
       console.warn(err);
     });
   });
@@ -255,7 +255,7 @@ function closeRightTags() {
 }
 
 function closeOtherTags() {
-  router.push(selectedTag.value)
+  router.push(selectedTag.value);
   tagsView.delOtherViews(selectedTag.value).then(() => {
     moveToCurrentTag();
   });
@@ -334,8 +334,19 @@ onMounted(() => {
       }
 
       &.active {
-        background-color: var(--el-color-primary-light-9);
-        color: var(--el-color-primary);
+        background-color: var(--el-color-primary);
+        color: var(--el-color-primary-light-9);
+        border-color: var(--el-color-primary);
+        &::before {
+          content: '';
+          background: #fff;
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          position: relative;
+          margin-right: 5px;
+        }
       }
 
       .icon-close {

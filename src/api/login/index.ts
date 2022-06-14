@@ -1,4 +1,8 @@
-import { Captcha, LoginFormData, LoginResponseData } from '@/types';
+import {
+  Captcha,
+  LoginFormData,
+  LoginResponseData,
+} from '@/types/api/system/login';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 

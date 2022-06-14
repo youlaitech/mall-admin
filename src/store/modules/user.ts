@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
-import { LoginFormData, UserState } from '@/types';
+import { LoginFormData } from '@/types/api/system/login';
+import { UserState } from '@/types/store/user';
+
 import { localStorage } from '@/utils/storage';
 import { login, logout } from '@/api/login';
 import { getUserInfo } from '@/api/system/user';

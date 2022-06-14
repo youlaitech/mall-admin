@@ -1,4 +1,3 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
   name: 'brand',
@@ -9,7 +8,12 @@ export default {
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm, ElTable, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
-import { BrandFormData, BrandItem, BrandQueryParam, Dialog } from '@/types';
+import {
+  BrandFormData,
+  BrandItem,
+  BrandQueryParam,
+} from '@/types/api/pms/brand';
+import { Dialog } from '@/types/common';
 import {
   listBrandPages,
   getBrandFormDetail,

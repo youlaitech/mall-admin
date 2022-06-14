@@ -170,7 +170,7 @@
                 @click="iconSelectVisible = true"
               >
                 <template #prefix>
-                  <svg-icon :icon-class="formData.icon" style="margin: auto" />
+                  <svg-icon :icon-class="formData.icon" />
                 </template>
               </el-input>
             </template>
@@ -220,16 +220,16 @@ import { reactive, ref, onMounted, toRefs } from 'vue';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox, ElPopover } from 'element-plus';
 
+import { Dialog, Option } from '@/types/common';
+
 import {
-  Dialog,
-  Option,
   MenuFormData,
   MenuItem,
   MenuQueryParam,
-} from '@/types';
+} from '@/types/api/system/menu';
 // API 依赖
 import {
-  listTableMenus,
+  listMenus,
   getMenuDetail,
   listSelectMenus,
   addMenu,
@@ -302,7 +302,7 @@ function handleQuery() {
   // 重置父组件
   emit('menuClick', null);
   state.loading = true;
-  listTableMenus(state.queryParams).then(({ data }) => {
+  listMenus(state.queryParams).then(({ data }) => {
     state.menuList = data;
     state.loading = false;
   });

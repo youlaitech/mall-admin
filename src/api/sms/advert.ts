@@ -1,4 +1,8 @@
-import { AdvertFormData, AdvertPageResult, AdvertQueryParam } from '@/types';
+import {
+  AdvertFormData,
+  AdvertPageResult,
+  AdvertQueryParam,
+} from '@/types/api/sms/advert';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,7 +11,7 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listAdvertPages(
+export function listAdvertsPage(
   queryParams: AdvertQueryParam
 ): AxiosPromise<AdvertPageResult> {
   return request({

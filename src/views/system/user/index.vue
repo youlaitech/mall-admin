@@ -1,4 +1,3 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
   name: 'user',
@@ -19,7 +18,7 @@ import {
 // 导入API
 import {
   listUsersPage,
-  getUserDetail,
+  getUserFormData,
   deleteUsers,
   addUser,
   updateUser,
@@ -29,7 +28,7 @@ import {
   importUser,
 } from '@/api/system/user';
 import { listSelectDepartments } from '@/api/system/dept';
-import { listRoles } from '@/api/system/role';
+import { listSelectRoles } from '@/api/system/role';
 
 // 组件依赖
 import {
@@ -54,11 +53,10 @@ import {
   UserItem,
   UserQueryParam,
   UserFormData,
-  Option,
-  RoleItem,
-  Dialog,
   UserImportFormData,
-} from '@/types';
+} from '@/types/api/system/user';
+
+import { Option, Dialog } from '@/types/common';
 
 // DOM元素的引用声明定义 ，变量名和DOM的ref属性值一致
 const deptTreeRef = ref(ElTree); // 部门树
@@ -92,7 +90,7 @@ const state = reactive({
   // 性别状态字典
   genderOptions: [] as any[],
   // 角色选项
-  roleOptions: [] as RoleItem[],
+  roleOptions: [] as Option[],
   // 表单参数
   formData: {
     status: 1,
@@ -108,7 +106,7 @@ const state = reactive({
     nickname: [
       { required: true, message: '用户昵称不能为空', trigger: 'blur' },
     ],
-    deptId: [{ required: true, message: '归属部门不能为空', trigger: 'blur' }],
+    deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
     roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
     email: [
       {
@@ -186,7 +184,7 @@ function handleDeptNodeClick(data: { [key: string]: any }) {
  * 加载角色数据
  */
 async function loadRoleOptions() {
-  listRoles().then((response) => {
+  listSelectRoles().then((response) => {
     state.roleOptions = response.data;
   });
 }
@@ -294,7 +292,7 @@ async function handleUpdate(row: { [key: string]: any }) {
     title: '修改用户',
     visible: true,
   };
-  getUserDetail(userId).then(({ data }) => {
+  getUserFormData(userId).then(({ data }) => {
     state.formData = data;
   });
 }
@@ -368,13 +366,13 @@ async function loadDeptOptions() {
  * 加载性别字典
  */
 function loadGenderOptions() {
-  proxy.$listDictsByCode('gender').then((response: any) => {
+  proxy.$getDictItemsByTypeCode('gender').then((response: any) => {
     state.genderOptions = response?.data;
   });
 }
 
 /**
- * 下载用户导入模板
+ * 下载导入模板
  */
 function handleDownloadTemplate() {
   downloadTemplate().then((response: any) => {
@@ -395,7 +393,7 @@ function handleDownloadTemplate() {
 }
 
 /**
- * 导入用户表单弹窗
+ * 显示导入弹窗
  */
 async function showImportDialog() {
   await loadDeptOptions();
@@ -617,7 +615,7 @@ onMounted(() => {
             />
             <el-table-column label="用户昵称" align="center" prop="nickname" />
 
-            <el-table-column label="性别" align="center" prop="gender" />
+            <el-table-column label="性别" align="center" prop="genderLabel" />
 
             <el-table-column label="部门" align="center" prop="deptName" />
             <el-table-column
@@ -754,9 +752,9 @@ onMounted(() => {
           <el-select v-model="formData.roleIds" multiple placeholder="请选择">
             <el-option
               v-for="item in roleOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             />
           </el-select>
         </el-form-item>
@@ -800,9 +798,9 @@ onMounted(() => {
           >
             <el-option
               v-for="item in roleOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             />
           </el-select>
         </el-form-item>

@@ -1,4 +1,3 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
   name: 'member',
@@ -11,7 +10,7 @@ import { ElTable } from 'element-plus';
 import { Search, Refresh } from '@element-plus/icons-vue';
 
 import { listMemebersPage } from '@/api/ums/member';
-import { MemberQueryParam, MemberItem } from '@/types';
+import { MemberQueryParam, MemberItem } from '@/types/api/ums/member';
 
 const state = reactive({
   // 遮罩层

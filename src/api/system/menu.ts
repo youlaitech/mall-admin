@@ -1,4 +1,9 @@
-import { MenuFormData, MenuItem, MenuQueryParam, Option } from '@/types';
+import {
+  MenuFormData,
+  MenuItem,
+  MenuQueryParam,
+} from '@/types/api/system/menu';
+import { Option } from '@/types/common';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,7 +12,7 @@ import { AxiosPromise } from 'axios';
  */
 export function listRoutes() {
   return request({
-    url: '/youlai-admin/api/v1/menus/route',
+    url: '/youlai-admin/api/v1/menus/route_list',
     method: 'get',
   });
 }
@@ -17,22 +22,32 @@ export function listRoutes() {
  *
  * @param queryParams
  */
-export function listTableMenus(
+export function listMenus(
   queryParams: MenuQueryParam
 ): AxiosPromise<MenuItem[]> {
   return request({
-    url: '/youlai-admin/api/v1/menus/table',
+    url: '/youlai-admin/api/v1/menus',
     method: 'get',
     params: queryParams,
   });
 }
 
 /**
- * 获取菜单下拉列表
+ * 获取菜单下拉树形列表
  */
 export function listSelectMenus(): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v1/menus/select',
+    url: '/youlai-admin/api/v1/menus/select_list',
+    method: 'get',
+  });
+}
+
+/**
+ * 获取菜单权限树形列表
+ */
+export function getResource(): AxiosPromise<any> {
+  return request({
+    url: '/youlai-admin/api/v1/menus/resources',
     method: 'get',
   });
 }

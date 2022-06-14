@@ -18,7 +18,7 @@ import {
 } from '@element-plus/icons-vue';
 import { payOrder, getSeataData, resetSeataData } from '@/api/lab/seata';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { SeataFormData } from '@/types';
+import { SeataFormData } from '@/types/api/lab/seata';
 
 const state = reactive({
   // 保留改变前数据

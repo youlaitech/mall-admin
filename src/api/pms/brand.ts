@@ -3,7 +3,7 @@ import {
   BrandItem,
   BrandPageResult,
   BrandQueryParam,
-} from '@/types';
+} from '@/types/api/pms/brand';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 

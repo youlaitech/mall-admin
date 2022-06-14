@@ -18,13 +18,13 @@ import {
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
+import { Dialog, Option } from '@/types/common';
+
 import {
-  Dialog,
   PermFormData,
   PermItem,
   PermQueryParam,
-  Option,
-} from '@/types';
+} from '@/types/api/system/perm';
 
 const { proxy }: any = getCurrentInstance();
 
@@ -125,11 +125,11 @@ function handleSelectionChange(selection: any) {
  * 加载字典数据
  */
 function loadDictOptions() {
-  proxy.$listDictsByCode('micro_service').then((response: any) => {
+  proxy.$getDictItemsByTypeCode('micro_service').then((response: any) => {
     state.microServiceOptions = response.data;
   });
 
-  proxy.$listDictsByCode('request_method').then((response: any) => {
+  proxy.$getDictItemsByTypeCode('request_method').then((response: any) => {
     state.requestMethodOptions = response.data;
   });
 }

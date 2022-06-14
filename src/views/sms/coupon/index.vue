@@ -1,25 +1,28 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
-  name: 'role',
+  name: 'advert',
 };
 </script>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue';
-import {
-  listRolePages,
-  updateRole,
-  getRoleFormDetail,
-  addRole,
-  deleteRoles,
-} from '@/api/system/role';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
-import { RoleFormData, RoleItem, RoleQueryParam } from '@/types';
+import {
+  listCouponsPage,
+  getCouponFormDetail,
+  updateCoupon,
+  addCoupon,
+  deleteCoupons,
+} from '@/api/sms/coupon';
+import { Dialog } from '@/types/common';
+import {
+  CouponItem,
+  CouponQueryParam,
+  CouponFormData,
+} from '@/types/api/sms/coupon';
 
-const emit = defineEmits(['roleClick']);
-const queryFormRef = ref(ElForm);
+const queryFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
 const dataFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
 
 const state = reactive({
@@ -30,20 +33,20 @@ const state = reactive({
   single: true,
   // 非多个禁用
   multiple: true,
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-  } as RoleQueryParam,
-  roleList: [] as RoleItem[],
+  queryParams: { pageNum: 1, pageSize: 10 } as CouponQueryParam,
+  couponList: [] as CouponItem[],
   total: 0,
-  dialog: {
-    title: '',
-    visible: false,
-  },
-  formData: {} as RoleFormData,
+  dialog: {} as Dialog,
+  formData: {
+    id: undefined,
+    name: '',
+    type: '',
+  } as CouponFormData,
   rules: {
-    name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
+    title: [{ required: true, message: '请输入优惠券名称', trigger: 'blur' }],
+    beginTime: [{ required: true, message: '请填写开始时间', trigger: 'blur' }],
+    endTime: [{ required: true, message: '请填写结束时间', trigger: 'blur' }],
+    picUrl: [{ required: true, message: '请上传优惠券图片', trigger: 'blur' }],
   },
 });
 
@@ -51,7 +54,7 @@ const {
   loading,
   multiple,
   queryParams,
-  roleList,
+  couponList,
   total,
   dialog,
   formData,
@@ -59,10 +62,9 @@ const {
 } = toRefs(state);
 
 function handleQuery() {
-  emit('roleClick', {});
   state.loading = true;
-  listRolePages(state.queryParams).then(({ data }) => {
-    state.roleList = data.list;
+  listCouponsPage(state.queryParams).then(({ data }) => {
+    state.couponList = data.list;
     state.total = data.total;
     state.loading = false;
   });
@@ -79,39 +81,36 @@ function handleSelectionChange(selection: any) {
   state.multiple = !selection.length;
 }
 
-function handleRowClick(row: any) {
-  emit('roleClick', row);
-}
-
 function handleAdd() {
   state.dialog = {
-    title: '添加角色',
+    title: '添加优惠券',
     visible: true,
   };
 }
 
 function handleUpdate(row: any) {
   state.dialog = {
-    title: '修改角色',
+    title: '修改优惠券',
     visible: true,
   };
-  const roleId = row.id || state.ids;
-  getRoleFormDetail(roleId).then(({ data }) => {
-    state.formData = data;
+  const advertId = row.id || state.ids;
+  getCouponFormDetail(advertId).then((response) => {
+    state.formData = response.data;
   });
 }
 
 function submitForm() {
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
-      if (state.formData.id) {
-        updateRole(state.formData.id as any, state.formData).then(() => {
+      const avertId = state.formData.id;
+      if (avertId) {
+        updateCoupon(avertId, state.formData).then(() => {
           ElMessage.success('修改成功');
           cancel();
           handleQuery();
         });
       } else {
-        addRole(state.formData).then(() => {
+        addCoupon(state.formData).then(() => {
           ElMessage.success('新增成功');
           cancel();
           handleQuery();
@@ -121,12 +120,10 @@ function submitForm() {
   });
 }
 
-/**
- * 重置表单
- */
 function cancel() {
-  state.dialog.visible = false;
+  state.formData.id = undefined;
   dataFormRef.value.resetFields();
+  state.dialog.visible = false;
 }
 
 function handleDelete(row: any) {
@@ -137,7 +134,7 @@ function handleDelete(row: any) {
     type: 'warning',
   })
     .then(() => {
-      deleteRoles(ids).then(() => {
+      deleteCoupons(ids).then(() => {
         ElMessage.success('删除成功');
         handleQuery();
       });
@@ -167,15 +164,14 @@ onMounted(() => {
         >
       </el-form-item>
 
-      <el-form-item prop="name">
+      <el-form-item prop="title">
         <el-input
-          v-model="queryParams.name"
-          placeholder="角色名称"
+          v-model="queryParams.status"
+          placeholder="优惠券标题"
           clearable
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-
       <el-form-item>
         <el-button type="primary" :icon="Search" @click="handleQuery"
           >搜索</el-button
@@ -184,20 +180,38 @@ onMounted(() => {
       </el-form-item>
     </el-form>
 
-    <!-- 数据表格 -->
     <el-table
-      ref="dataTableRef"
       v-loading="loading"
-      :data="roleList"
+      :data="couponList"
       @selection-change="handleSelectionChange"
-      @row-click="handleRowClick"
-      highlight-current-row
       border
     >
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="角色名称" prop="name" />
-      <el-table-column label="角色编码" prop="code" />
-      <el-table-column label="操作" align="center" width="120">
+      <el-table-column type="selection" min-width="5" align="center" />
+      <el-table-column type="index" label="序号" width="80" align="center" />
+      <el-table-column prop="title" min-width="100" label="优惠券标题" />
+      <el-table-column label="优惠券图片" width="100">
+        <template #default="scope">
+          <el-popover placement="right" :width="400" trigger="hover">
+            <img :src="scope.row.picUrl" width="400" height="400" />
+            <template #reference>
+              <img
+                :src="scope.row.picUrl"
+                style="max-height: 60px; max-width: 60px"
+              />
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="beginTime" label="开始时间" width="150" />
+      <el-table-column prop="endTime" label="结束时间" width="150" />
+      <el-table-column prop="status" label="状态" width="100">
+        <template #default="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">开启</el-tag>
+          <el-tag v-else type="info">关闭</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="sort" label="排序" width="80" />
+      <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button
             type="primary"
@@ -227,41 +241,53 @@ onMounted(() => {
     />
 
     <!-- 表单弹窗 -->
-    <el-dialog
-      :title="dialog.title"
-      v-model="dialog.visible"
-      @close="cancel"
-      width="450px"
-    >
+    <el-dialog :title="dialog.title" v-model="dialog.visible" width="700px">
       <el-form
         ref="dataFormRef"
         :model="formData"
         :rules="rules"
         label-width="100px"
       >
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入角色名称" />
+        <!--   <el-form-item label="优惠券标题" prop="title">
+          <el-input v-model="formData.title" />
         </el-form-item>
 
-        <el-form-item label="角色编码" prop="code">
-          <el-input v-model="formData.code" placeholder="请输入角色编码" />
-        </el-form-item>
-
-        <el-form-item label="排序" prop="sort">
-          <el-input-number
-            v-model="formData.sort"
-            controls-position="right"
-            :min="0"
-            style="width: 100px"
+        <el-form-item label="有效期" prop="beginTime">
+          <el-date-picker
+            v-model="formData.beginTime"
+            placeholder="开始时间"
+            value-format="YYYY-MM-DD"
+          />
+          ~
+          <el-date-picker
+            v-model="formData.endTime"
+            placeholder="结束时间"
+            value-format="YYYY-MM-DD"
           />
         </el-form-item>
 
-        <el-form-item label="状态">
+        <el-form-item label="优惠券图片" prop="picUrl">
+          <single-upload v-model="formData.picUrl" />
+        </el-form-item>
+
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="formData.sort" style="width: 200px" />
+        </el-form-item>
+
+        <el-form-item label="状态" prop="status">
           <el-radio-group v-model="formData.status">
-            <el-radio :label="1">正常</el-radio>
-            <el-radio :label="0">停用</el-radio>
+            <el-radio :label="1">开启</el-radio>
+            <el-radio :label="0">关闭</el-radio>
           </el-radio-group>
         </el-form-item>
+
+        <el-form-item label="跳转链接" prop="url">
+          <el-input v-model="formData.url" />
+        </el-form-item>
+
+        <el-form-item label="备注" prop="remark">
+          <el-input type="textarea" v-model="formData.remark" />
+        </el-form-item> -->
       </el-form>
 
       <template #footer>
@@ -273,5 +299,3 @@ onMounted(() => {
     </el-dialog>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

@@ -3,7 +3,7 @@ import {
   PermItem,
   PermPageResult,
   PermQueryParam,
-} from '@/types';
+} from '@/types/api/system/perm';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 

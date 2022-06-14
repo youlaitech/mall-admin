@@ -1,4 +1,8 @@
-import { GoodsDetail, GoodsPageResult, GoodsQueryParam } from '@/types';
+import {
+  GoodsDetail,
+  GoodsPageResult,
+  GoodsQueryParam,
+} from '@/types/api/pms/goods';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
@@ -7,7 +11,7 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listGoodsPages(
+export function listPageGoods(
   queryParams: GoodsQueryParam
 ): AxiosPromise<GoodsPageResult> {
   return request({

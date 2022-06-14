@@ -1,4 +1,4 @@
-import { OrderPageResult, OrderQueryParam } from '@/types';
+import { OrderPageResult, OrderQueryParam } from '@/types/api/oms/order';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 

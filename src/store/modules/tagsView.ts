@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { TagsViewState } from '@/types';
+import { TagsViewState } from '@/types/store/tagsview';
 
 const useTagsViewStore = defineStore({
   id: 'tagsView',
@@ -13,13 +13,13 @@ const useTagsViewStore = defineStore({
       if (view.meta && view.meta.affix) {
         this.visitedViews.unshift(
           Object.assign({}, view, {
-            title: view.meta?.title || 'no-name'
+            title: view.meta?.title || 'no-name',
           })
         );
       } else {
         this.visitedViews.push(
           Object.assign({}, view, {
-            title: view.meta?.title || 'no-name'
+            title: view.meta?.title || 'no-name',
           })
         );
       }

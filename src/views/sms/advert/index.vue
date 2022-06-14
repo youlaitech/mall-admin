@@ -1,4 +1,3 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
   name: 'advert',
@@ -11,13 +10,18 @@ import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
 import {
-  listAdvertPages,
+  listAdvertsPage,
   getAdvertFormDetail,
   updateAdvert,
   addAdvert,
   deleteAdverts,
 } from '@/api/sms/advert';
-import { AdvertFormData, AdvertItem, AdvertQueryParam, Dialog } from '@/types';
+import { Dialog } from '@/types/common';
+import {
+  AdvertFormData,
+  AdvertItem,
+  AdvertQueryParam,
+} from '@/types/api/sms/advert';
 
 const queryFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
 const dataFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
@@ -59,7 +63,7 @@ const {
 
 function handleQuery() {
   state.loading = true;
-  listAdvertPages(state.queryParams).then(({ data }) => {
+  listAdvertsPage(state.queryParams).then(({ data }) => {
     state.advertList = data.list;
     state.total = data.total;
     state.loading = false;

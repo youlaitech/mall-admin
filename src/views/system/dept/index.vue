@@ -1,4 +1,3 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
 <script lang="ts">
 export default {
   name: 'dept',
@@ -11,12 +10,12 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 
 // API依赖
 import {
-  getDeptDetail,
+  getDeptForrmData,
   deleteDept,
   updateDept,
   addDept,
   listSelectDepartments,
-  listTableDepartments,
+  listDepartments,
 } from '@/api/system/dept';
 
 // 组件依赖
@@ -26,9 +25,8 @@ import {
   DeptFormData,
   DeptItem,
   DeptQueryParam,
-  Dialog,
-  Option,
-} from '@/types';
+} from '@/types/api/system/dept';
+import { Dialog, Option } from '@/types/common';
 
 // DOM元素的引用声明定义
 const queryFormRef = ref(ElForm);
@@ -79,7 +77,7 @@ const {
  */
 function handleQuery() {
   state.loading = true;
-  listTableDepartments(state.queryParams).then(({ data }) => {
+  listDepartments(state.queryParams).then(({ data }) => {
     state.deptList = data;
     state.loading = false;
   });
@@ -137,7 +135,7 @@ async function handleUpdate(row: any) {
     title: '修改部门',
     visible: true,
   };
-  getDeptDetail(deptId).then((response: any) => {
+  getDeptForrmData(deptId).then((response: any) => {
     state.formData = response.data;
   });
 }

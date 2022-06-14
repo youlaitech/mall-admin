@@ -16,7 +16,13 @@ import {
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { onMounted, reactive, getCurrentInstance, ref, toRefs } from 'vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import { ClientFormData, ClientItem, ClientQueryParam, Option } from '@/types';
+import {
+  ClientFormData,
+  ClientItem,
+  ClientQueryParam,
+} from '@/types/api/system/client';
+import { Option } from '@/types/common';
+
 const { proxy }: any = getCurrentInstance();
 
 const queryFormRef = ref(ElForm);
@@ -84,7 +90,7 @@ function handleSelectionChange(selection: any) {
 }
 
 function handleAdd() {
-  proxy.$listDictsByCode('grant_type').then((response: any) => {
+  proxy.$getDictItemsByTypeCode('grant_type').then((response: any) => {
     state.authorizedGrantTypesOptions = response.data;
   });
 
@@ -103,7 +109,7 @@ function handleUpdate(row: any) {
   };
   const clientId = row.clientId || ids;
 
-  proxy.$listDictsByCode('grant_type').then((res: any) => {
+  proxy.$getDictItemsByTypeCode('grant_type').then((res: any) => {
     state.authorizedGrantTypesOptions = res.data;
 
     getClientFormDetial(clientId).then(({ data }) => {
@@ -184,10 +190,10 @@ onMounted(() => {
         >
       </el-form-item>
 
-      <el-form-item prop="clientId">
+      <el-form-item>
         <el-input
-          v-model="queryParams.clientId"
-          placeholder="输入客户端ID"
+          v-model="queryParams.keywords"
+          placeholder="客户端ID"
           clearable
           style="width: 240px"
           @keyup.enter="handleQuery"

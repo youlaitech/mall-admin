@@ -1,4 +1,4 @@
-import { MemberPageResult, MemberQueryParam } from '@/types';
+import { MemberPageResult, MemberQueryParam } from '@/types/api/ums/member';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 

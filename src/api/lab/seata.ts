@@ -1,4 +1,4 @@
-import { SeataFormData } from '@/types';
+import { SeataFormData } from '@/types/api/lab/seata';
 import request from '@/utils/request';
 
 /**

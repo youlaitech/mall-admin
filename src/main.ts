@@ -9,7 +9,7 @@ import 'element-plus/theme-chalk/index.css';
 import Pagination from '@/components/Pagination/index.vue';
 import '@/permission';
 
-import 'default-passive-events'
+import 'default-passive-events';
 
 // 引入svg注册脚本
 import 'virtual:svg-icons-register';
@@ -21,7 +21,7 @@ import i18n from '@/lang/index';
 import '@/styles/index.scss';
 
 // 根据字典编码获取字典列表全局方法
-import { listDictsByCode } from '@/api/system/dict';
+import { getDictItemsByTypeCode } from '@/api/system/dict';
 
 const app = createApp(App);
 
@@ -33,7 +33,7 @@ Object.keys(directive).forEach((key) => {
 });
 
 // 全局方法
-app.config.globalProperties.$listDictsByCode = listDictsByCode;
+app.config.globalProperties.$getDictItemsByTypeCode = getDictItemsByTypeCode;
 
 // 注册全局组件
 app
