@@ -375,7 +375,7 @@ onMounted(() => {
     </el-dialog>
 
     <el-dialog
-      :title="'【' + checkedRole.name + '】资源权限'"
+      :title="'【' + checkedRole.name + '】菜单权限分配'"
       v-model="resourceDialogVisible"
       width="1000px"
     >
