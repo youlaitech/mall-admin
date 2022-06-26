@@ -11,24 +11,24 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listCouponsPage(
+export function listPageCoupons(
   queryParams: CouponQueryParam
 ): AxiosPromise<CouponPageResult> {
   return request({
-    url: '/mall-sms/api/v1/coupons/pagelist',
+    url: '/mall-sms/api/v1/coupons',
     method: 'get',
     params: queryParams,
   });
 }
 
 /**
- * 获取优惠券详情
+ * 获取优惠券表单数据
  *
  * @param id
  */
-export function getCouponFormDetail(id: number): AxiosPromise<CouponFormData> {
+export function getCouponFormData(id: number): AxiosPromise<CouponFormData> {
   return request({
-    url: '/mall-sms/api/v1/coupons/' + id,
+    url: '/mall-sms/api/v1/coupons/' + id + '/form_data',
     method: 'get',
   });
 }
