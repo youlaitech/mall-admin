@@ -5,9 +5,9 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { nextTick, onMounted, reactive, ref, toRefs } from 'vue';
+import { onMounted, reactive, ref, toRefs, nextTick } from 'vue';
 import {
-  listPageRoles,
+  listRolePages,
   updateRole,
   getRoleFormDetail,
   addRole,
@@ -57,8 +57,6 @@ const state = reactive({
   resourceDialogVisible: false,
   menuOptions: [] as any[],
   permOptions: [] as any[],
-  checkStrictly: false,
-  permGroupList: [],
   checkedRole: {
     id: '',
     name: '',
@@ -78,13 +76,12 @@ const {
   menuOptions,
   permOptions,
   checkedRole,
-  checkStrictly,
 } = toRefs(state);
 
 function handleQuery() {
   emit('roleClick', {});
   state.loading = true;
-  listPageRoles(state.queryParams).then(({ data }) => {
+  listRolePages(state.queryParams).then(({ data }) => {
     state.roleList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -125,19 +122,22 @@ function handleUpdate(row: any) {
 }
 
 function submitFormData() {
+  loading.value = true;
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
       if (state.formData.id) {
         updateRole(state.formData.id as any, state.formData).then(() => {
-          ElMessage.success('修改成功');
+          ElMessage.success('修改角色成功');
           cancel();
           handleQuery();
+          loading.value = false;
         });
       } else {
         addRole(state.formData).then(() => {
           cancel();
-          ElMessage.success('新增成功');
+          ElMessage.success('新增角色成功');
           handleQuery();
+          loading.value = false;
         });
       }
     }
@@ -145,7 +145,7 @@ function submitFormData() {
 }
 
 /**
- * 弹窗关闭
+ * 取消
  */
 function cancel() {
   state.dialog.visible = false;
@@ -176,6 +176,7 @@ function handleDelete(row: any) {
  */
 function handleResourceAssign(row: RoleItem) {
   resourceDialogVisible.value = true;
+  loading.value = true;
   permOptions.value.map((item) => (item.checked = false));
 
   const roleId: any = row.id;
@@ -183,9 +184,9 @@ function handleResourceAssign(row: RoleItem) {
     id: roleId,
     name: row.name,
   };
+
   //资源下拉数据
   getResource().then((response) => {
-    checkStrictly.value = true; // 父子节点不互相关联
     state.menuOptions = response.data.menus;
     state.permOptions = response.data.perms;
 
@@ -193,24 +194,22 @@ function handleResourceAssign(row: RoleItem) {
     getRoleResourceIds(roleId).then((res) => {
       const checkedMenuIds = res.data.menuIds;
       const checkedPermIds = res.data.permIds;
+      resourceRef.value.setCheckedKeys(checkedMenuIds);
 
-      nextTick(() => {
-        resourceRef.value.setCheckedKeys(checkedMenuIds);
-        permOptions.value.forEach((perm) => {
-          if (checkedPermIds.includes(perm.value)) {
-            perm.checked = true;
-          } else {
-            perm.checked = false;
-          }
-        });
+      permOptions.value.forEach((perm) => {
+        if (checkedPermIds.includes(perm.value)) {
+          perm.checked = true;
+        } else {
+          perm.checked = false;
+        }
       });
-      checkStrictly.value = false; // 父子节点互相关联
+      loading.value = false;
     });
   });
 }
 
 /**
- * 提交资源权限
+ * 分配资源权限提交
  */
 function handleRoleResourceSubmit() {
   const checkedMenuIds: any[] = resourceRef.value
@@ -227,7 +226,7 @@ function handleRoleResourceSubmit() {
   };
 
   updateRoleResource(checkedRole.value.id, roleResourceData).then((res) => {
-    ElMessage.success('修改成功');
+    ElMessage.success('分配权限成功');
     state.resourceDialogVisible = false;
     handleQuery();
   });
@@ -374,12 +373,13 @@ onMounted(() => {
       </template>
     </el-dialog>
 
+    <!--分配权限弹窗-->
     <el-dialog
-      :title="'【' + checkedRole.name + '】菜单权限分配'"
+      :title="'【' + checkedRole.name + '】分配权限'"
       v-model="resourceDialogVisible"
       width="1000px"
     >
-      <el-scrollbar max-height="600px">
+      <el-scrollbar max-height="600px" v-loading="loading">
         <el-tree
           ref="resourceRef"
           node-key="value"

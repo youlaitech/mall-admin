@@ -14,11 +14,11 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listPageRoles(
+export function listRolePages(
   queryParams?: RoleQueryParam
 ): AxiosPromise<RolePageResult> {
   return request({
-    url: '/youlai-admin/api/v1/roles',
+    url: '/youlai-admin/api/v1/roles/pages',
     method: 'get',
     params: queryParams,
   });
@@ -29,11 +29,11 @@ export function listPageRoles(
  *
  * @param queryParams
  */
-export function listSelectRoles(
+export function listRoleOptions(
   queryParams?: RoleQueryParam
 ): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v1/roles/select_list',
+    url: '/youlai-admin/api/v1/roles/options',
     method: 'get',
     params: queryParams,
   });

@@ -12,7 +12,7 @@ import { AxiosPromise } from 'axios';
  */
 export function listRoutes() {
   return request({
-    url: '/youlai-admin/api/v1/menus/route_list',
+    url: '/youlai-admin/api/v1/menus/routes',
     method: 'get',
   });
 }
@@ -35,9 +35,9 @@ export function listMenus(
 /**
  * 获取菜单下拉树形列表
  */
-export function listSelectMenus(): AxiosPromise<Option[]> {
+export function listMenuOptions(): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v1/menus/select_list',
+    url: '/youlai-admin/api/v1/menus/options',
     method: 'get',
   });
 }

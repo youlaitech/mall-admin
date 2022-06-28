@@ -22,11 +22,11 @@ export function getUserInfo(): AxiosPromise<UserInfo> {
  *
  * @param queryParams
  */
-export function listUsersPage(
+export function listUserPages(
   queryParams: UserQueryParam
 ): AxiosPromise<UserPageResult> {
   return request({
-    url: '/youlai-admin/api/v1/users',
+    url: '/youlai-admin/api/v1/users/page',
     method: 'get',
     params: queryParams,
   });

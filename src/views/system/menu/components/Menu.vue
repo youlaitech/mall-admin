@@ -231,7 +231,7 @@ import {
 import {
   listMenus,
   getMenuDetail,
-  listSelectMenus,
+  listMenuOptions,
   addMenu,
   deleteMenus,
   updateMenu,
@@ -313,7 +313,7 @@ function handleQuery() {
  */
 async function loadMenuData() {
   const menuOptions: any[] = [];
-  await listSelectMenus().then(({ data }) => {
+  await listMenuOptions().then(({ data }) => {
     const menuOption = { value: '0', label: '顶级菜单', children: data };
     menuOptions.push(menuOption);
     state.menuOptions = menuOptions;

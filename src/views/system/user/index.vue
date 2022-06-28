@@ -17,7 +17,7 @@ import {
 
 // 导入API
 import {
-  listUsersPage,
+  listUserPages,
   getUserFormData,
   deleteUsers,
   addUser,
@@ -28,7 +28,7 @@ import {
   importUser,
 } from '@/api/system/user';
 import { listSelectDepartments } from '@/api/system/dept';
-import { listSelectRoles } from '@/api/system/role';
+import { listRoleOptions } from '@/api/system/role';
 
 // 组件依赖
 import {
@@ -184,7 +184,7 @@ function handleDeptNodeClick(data: { [key: string]: any }) {
  * 加载角色数据
  */
 async function loadRoleOptions() {
-  listSelectRoles().then((response) => {
+  listRoleOptions().then((response) => {
     state.roleOptions = response.data;
   });
 }
@@ -219,7 +219,7 @@ function handleStatusChange(row: { [key: string]: any }) {
  **/
 function handleQuery() {
   state.loading = true;
-  listUsersPage(state.queryParams).then(({ data }) => {
+  listUserPages(state.queryParams).then(({ data }) => {
     state.userList = data.list;
     state.total = data.total;
     state.loading = false;
