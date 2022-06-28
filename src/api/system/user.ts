@@ -26,7 +26,7 @@ export function listUserPages(
   queryParams: UserQueryParam
 ): AxiosPromise<UserPageResult> {
   return request({
-    url: '/youlai-admin/api/v1/users/page',
+    url: '/youlai-admin/api/v1/users/pages',
     method: 'get',
     params: queryParams,
   });
