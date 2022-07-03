@@ -210,7 +210,7 @@ onMounted(() => {
         </template>
       </el-table-column>
 
-      <el-table-column align="center" prop="gmtCreate" label="创建时间" />
+      <el-table-column align="center" prop="createTime" label="创建时间" />
 
       <el-table-column align="center" label="操作">
         <template #default="scope">

@@ -10,7 +10,7 @@ import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
 import {
-  listAdvertsPage,
+  listAdvertPages,
   getAdvertFormDetail,
   updateAdvert,
   addAdvert,
@@ -63,7 +63,7 @@ const {
 
 function handleQuery() {
   state.loading = true;
-  listAdvertsPage(state.queryParams).then(({ data }) => {
+  listAdvertPages(state.queryParams).then(({ data }) => {
     state.advertList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -166,8 +166,8 @@ onMounted(() => {
 
       <el-form-item prop="title">
         <el-input
-          v-model="queryParams.title"
-          placeholder="广告标题"
+          v-model="queryParams.keywords"
+          placeholder="标题"
           clearable
           @keyup.enter="handleQuery"
         />

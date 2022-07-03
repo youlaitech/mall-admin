@@ -150,7 +150,7 @@ onMounted(() => {
         </template>
       </el-table-column>
 
-      <el-table-column prop="gmtCreate" label="注册时间" />
+      <el-table-column prop="createTime" label="注册时间" />
 
       <el-table-column label="账户余额">
         <template #default="scope">

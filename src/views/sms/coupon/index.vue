@@ -42,7 +42,7 @@ const state = reactive({
     type: 1,
     platform: 0,
     validityPeriodType: 1,
-    useType: 0,
+    applicableType: 0,
     perLimit: 1,
   } as CouponFormData,
   rules: {
@@ -138,7 +138,7 @@ function submitForm() {
 }
 
 const handleTotalCountChange = (val: any) => {
-  formData.value.totalCount = -1;
+  formData.value.issueCount = -1;
 };
 
 const hanclePerLimitChange = (val: any) => {
@@ -278,8 +278,8 @@ onMounted(() => {
           <el-input v-model="formData.name" />
         </el-form-item>
 
-        <el-form-item label="使用类型" prop="useType">
-          <el-radio-group v-model="formData.useType">
+        <el-form-item label="适用类型" prop="applicableType">
+          <el-radio-group v-model="formData.applicableType">
             <el-radio :label="1">全场通用</el-radio>
             <el-radio :label="2">指定分类</el-radio>
             <el-radio :label="3">指定商品</el-radio>
@@ -344,8 +344,8 @@ onMounted(() => {
           />
         </el-form-item>
 
-        <el-form-item label="优惠券总数" prop="totalCount">
-          <el-input v-model="formData.totalCount" />
+        <el-form-item label="发放数量" prop="totalCount">
+          <el-input v-model="formData.issueCount" />
           <el-checkbox
             v-model="totalCountChecked"
             label="无限制"

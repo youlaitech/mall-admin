@@ -638,7 +638,7 @@ onMounted(() => {
             <el-table-column
               label="创建时间"
               align="center"
-              prop="gmtCreate"
+              prop="createTime"
               width="180"
             ></el-table-column>
             <el-table-column label="操作" align="center" width="150">

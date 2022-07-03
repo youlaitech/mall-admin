@@ -43,7 +43,7 @@ export interface CouponFormData {
    */
   code: string;
   /**
-   * 使用平台(0:全部;1:移动端;2:PC;)
+   * 使用平台(0:全平台;1:移动端;2:PC;)
    */
   platform: number;
   /**
@@ -59,9 +59,9 @@ export interface CouponFormData {
    */
   discount: number;
   /**
-   * 优惠券总数
+   * 发放数量
    */
-  totalCount: number;
+  issueCount: number;
   /**
    * 使用门槛(0:无门槛)
    */
@@ -87,9 +87,9 @@ export interface CouponFormData {
    */
   validityEndTime: string;
   /**
-   * 使用类型(1:全场通用;2:指定分类;3:指定商品)
+   * 适用类型(0-全场通用;1-指定商品分类;2-指定商品)
    */
-  useType: number;
+  applicableType: number;
   /**
    * 使用说明
    */
