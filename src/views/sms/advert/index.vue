@@ -37,17 +37,16 @@ const state = reactive({
   queryParams: { pageNum: 1, pageSize: 10 } as AdvertQueryParam,
   advertList: [] as AdvertItem[],
   total: 0,
-  dialog: {} as Dialog,
+  dialog: { title: '', visible: false } as Dialog,
   formData: {
     status: 1,
     sort: 100,
   } as AdvertFormData,
   rules: {
     title: [{ required: true, message: '请输入广告名称', trigger: 'blur' }],
-    beginTime: [{ required: true, message: '请填写开始时间', trigger: 'blur' }],
-    endTime: [{ required: true, message: '请填写结束时间', trigger: 'blur' }],
     picUrl: [{ required: true, message: '请上传广告图片', trigger: 'blur' }],
   },
+  validityPeriod: '' as any,
 });
 
 const {
@@ -59,6 +58,7 @@ const {
   dialog,
   formData,
   rules,
+  validityPeriod,
 } = toRefs(state);
 
 function handleQuery() {
@@ -94,8 +94,9 @@ function handleUpdate(row: any) {
     visible: true,
   };
   const advertId = row.id || state.ids;
-  getAdvertFormDetail(advertId).then((response) => {
-    state.formData = response.data;
+  getAdvertFormDetail(advertId).then(({ data }) => {
+    state.formData = data;
+    validityPeriod.value = [data.beginTime, data.endTime];
   });
 }
 
@@ -104,6 +105,12 @@ function submitForm() {
     if (valid) {
       const avertId = state.formData.id;
       if (avertId) {
+        // 有效期转换
+        if (validityPeriod.value) {
+          formData.value.beginTime = validityPeriod.value[0];
+          formData.value.endTime = validityPeriod.value[1];
+        }
+
         updateAdvert(avertId, state.formData).then(() => {
           ElMessage.success('修改成功');
           cancel();
@@ -252,16 +259,14 @@ onMounted(() => {
           <el-input v-model="formData.title" />
         </el-form-item>
 
-        <el-form-item label="有效期" prop="beginTime">
+        <el-form-item label="有效期">
           <el-date-picker
-            v-model="formData.beginTime"
-            placeholder="开始时间"
-            value-format="YYYY-MM-DD"
-          />
-          ~
-          <el-date-picker
-            v-model="formData.endTime"
-            placeholder="结束时间"
+            v-model="validityPeriod"
+            type="daterange"
+            range-separator="~"
+            start-placeholder="起始时间"
+            end-placeholder="截止时间"
+            format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
           />
         </el-form-item>

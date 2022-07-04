@@ -10,7 +10,7 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import {
-  listPageCoupons,
+  lisCoupontPages,
   getCouponFormData,
   updateCoupon,
   addCoupon,
@@ -42,8 +42,8 @@ const state = reactive({
     type: 1,
     platform: 0,
     validityPeriodType: 1,
-    applicableType: 0,
     perLimit: 1,
+    useType: 0, //使用类型(默认全场通用)
   } as CouponFormData,
   rules: {
     title: [{ required: true, message: '请输入优惠券名称', trigger: 'blur' }],
@@ -51,7 +51,7 @@ const state = reactive({
     endTime: [{ required: true, message: '请填写结束时间', trigger: 'blur' }],
     picUrl: [{ required: true, message: '请上传优惠券图片', trigger: 'blur' }],
   },
-  validTime: '',
+  validityPeriod: '' as any,
   totalCountChecked: false,
   perLimitChecked: false,
 });
@@ -65,7 +65,7 @@ const {
   dialog,
   formData,
   rules,
-  validTime,
+  validityPeriod,
   totalCountChecked,
   perLimitChecked,
 } = toRefs(state);
@@ -75,7 +75,7 @@ const {
  */
 function handleQuery() {
   state.loading = true;
-  listPageCoupons(queryParams.value).then(({ data }) => {
+  lisCoupontPages(queryParams.value).then(({ data }) => {
     couponList.value = data.list;
     total.value = data.total;
     loading.value = false;
@@ -111,24 +111,34 @@ function handleUpdate(row: any) {
   getCouponFormData(id).then(({ data }) => {
     formData.value = data;
     perLimitChecked.value = data.perLimit == -1;
-    totalCountChecked.value = data.totalCount == -1;
+    totalCountChecked.value = data.issueCount == -1;
+    // 有效期转换
+    if (data.validityPeriodType == 2) {
+      validityPeriod.value = [data.validityBeginTime, data.validityEndTime];
+    }
   });
 }
 
 function submitForm() {
-  console.log('validTime', validTime.value[0]);
+  console.log('validityPeriod', validityPeriod.value[0]);
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
-      const couponId = state.formData.id;
+      // 有效期转换
+      if (formData.value.validityPeriodType == 2 && validityPeriod.value) {
+        formData.value.validityBeginTime = validityPeriod.value[0];
+        formData.value.validityEndTime = validityPeriod.value[1];
+      }
+
+      const couponId = formData.value.id;
       if (couponId) {
-        updateCoupon(couponId, state.formData).then(() => {
+        updateCoupon(couponId, formData.value).then(() => {
           ElMessage.success('修改优惠券成功');
           cancel();
           handleQuery();
         });
       } else {
-        addCoupon(state.formData).then(() => {
-          ElMessage.success('新增用户成功');
+        addCoupon(formData.value).then(() => {
+          ElMessage.success('新增优惠券成功');
           cancel();
           handleQuery();
         });
@@ -154,6 +164,9 @@ function cancel() {
   state.dialog.visible = false;
 }
 
+/**
+ * 删除优惠券
+ */
 function handleDelete(row: any) {
   const ids = [row.id || state.ids].join(',');
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
@@ -278,12 +291,26 @@ onMounted(() => {
           <el-input v-model="formData.name" />
         </el-form-item>
 
-        <el-form-item label="适用类型" prop="applicableType">
-          <el-radio-group v-model="formData.applicableType">
-            <el-radio :label="1">全场通用</el-radio>
-            <el-radio :label="2">指定分类</el-radio>
-            <el-radio :label="3">指定商品</el-radio>
+        <el-form-item label="适用类型" prop="useType">
+          <el-radio-group v-model="formData.useType">
+            <el-radio :label="0">全场通用</el-radio>
+            <el-radio :label="1">指定商品分类</el-radio>
+            <el-radio :label="2">指定商品</el-radio>
           </el-radio-group>
+
+          <!--指定商品分类-->
+          <el-tag
+            v-for="item in formData.spuCategoryList"
+            :key="item.categoryId"
+            closable
+          >
+            {{ item.categoryName }}
+          </el-tag>
+
+          <!--指定商品列表-->
+          <el-tag v-for="item in formData.spuList" :key="item.spuId" closable>
+            {{ item.spuName }}
+          </el-tag>
         </el-form-item>
 
         <el-form-item label="优惠券类型" prop="type">
@@ -328,19 +355,15 @@ onMounted(() => {
         >
           <el-input v-model="formData.validityDays" />
         </el-form-item>
-        <el-form-item
-          label="有效期"
-          v-if="formData.validityPeriodType == 2"
-          prop="validDays"
-        >
+        <el-form-item label="有效期" v-if="formData.validityPeriodType == 2">
           <el-date-picker
-            v-model="validTime"
+            v-model="validityPeriod"
             type="daterange"
-            range-separator=" ~"
+            range-separator="~"
             start-placeholder="起始时间"
             end-placeholder="截止时间"
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
           />
         </el-form-item>
 

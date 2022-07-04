@@ -1,4 +1,5 @@
 import { PageQueryParam, PageResult } from '../base';
+import { Option } from '@/types/common';
 
 /**
  * 优惠券查询参数类型
@@ -27,7 +28,7 @@ export interface CouponItem {
 export type CouponPageResult = PageResult<CouponItem[]>;
 
 /**
- * 广告表单类型
+ * 优惠券表单类型
  */
 export interface CouponFormData {
   /**
@@ -87,11 +88,34 @@ export interface CouponFormData {
    */
   validityEndTime: string;
   /**
-   * 适用类型(0-全场通用;1-指定商品分类;2-指定商品)
+   * 使用类型(0:全场通用;1:指定商品分类;2:指定商品)
    */
-  applicableType: number;
+  useType: number;
+
+  /**
+   * 使用类型：指定商品分类
+   */
+  spuCategoryList: CouponSpuCategory[];
+
+  /**
+   * 使用类型：指定商品
+   */
+  spuList: CouponSpu[];
+
   /**
    * 使用说明
    */
   remark: string;
+}
+
+export interface CouponSpuCategory {
+  id: number;
+  categoryId: number;
+  categoryName: string;
+}
+
+export interface CouponSpu {
+  id: number;
+  spuId: number;
+  spuName: string;
 }

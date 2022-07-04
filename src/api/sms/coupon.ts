@@ -11,11 +11,11 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function listPageCoupons(
+export function lisCoupontPages(
   queryParams: CouponQueryParam
 ): AxiosPromise<CouponPageResult> {
   return request({
-    url: '/mall-sms/api/v1/coupons',
+    url: '/mall-sms/api/v1/coupons/pages',
     method: 'get',
     params: queryParams,
   });
