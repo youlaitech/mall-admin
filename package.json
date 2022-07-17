@@ -1,6 +1,6 @@
 {
   "name": "youlai-mall-admin",
-  "version": "3.0.0",
+  "version": "2.0.1",
   "scripts": {
     "dev": "vite serve --mode development",
     "build:prod": "vue-tsc --noEmit && vite build --mode production",
