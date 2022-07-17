@@ -41,8 +41,9 @@ import { ElCascaderPanel, ElMessage } from 'element-plus';
 import { CaretRight } from '@element-plus/icons-vue';
 
 // API 引用
-import { listCascadeCategories } from '@/api/pms/category';
+import { listCategoryOptions } from '@/api/pms/category';
 import { computed } from '@vue/reactivity';
+import { Option } from '@/types/common';
 
 const emit = defineEmits(['next', 'update:modelValue']);
 const props = defineProps({
@@ -60,15 +61,15 @@ const goodsInfo: any = computed({
 });
 
 const state = reactive({
-  categoryOptions: [],
+  categoryOptions: [] as Option[],
   pathLabels: [],
 });
 
 const { categoryOptions, pathLabels } = toRefs(state);
 
 function loadData() {
-  listCascadeCategories().then((response) => {
-    state.categoryOptions = response.data;
+  listCategoryOptions().then(({ data }) => {
+    state.categoryOptions = data;
     if (goodsInfo.value.id) {
       nextTick(() => {
         handleCategoryChange();

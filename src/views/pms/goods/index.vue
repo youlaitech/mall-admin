@@ -19,9 +19,10 @@ import {
   View,
 } from '@element-plus/icons-vue';
 import { listSpuPages, deleteSpu } from '@/api/pms/goods';
-import { listCascadeCategories } from '@/api/pms/category';
+import { listCategoryOptions } from '@/api/pms/category';
 import { GoodsItem, GoodsQueryParam } from '@/types/api/pms/goods';
 import { moneyFormatter } from '@/utils/filter';
+import { Option } from '@/types/common';
 
 const dataTableRef = ref(ElTable);
 const router = useRouter();
@@ -41,7 +42,7 @@ const state = reactive({
     pageSize: 10,
   } as GoodsQueryParam,
   goodsList: [] as GoodsItem[],
-  categoryOptions: [],
+  categoryOptions: [] as Option[],
   goodDetail: undefined,
   dialogVisible: false,
 });
@@ -119,8 +120,8 @@ function handleSelectionChange(selection: any) {
 }
 
 onMounted(() => {
-  listCascadeCategories({}).then((response) => {
-    state.categoryOptions = ref(response.data);
+  listCategoryOptions().then(({ data }) => {
+    categoryOptions.value = data;
   });
   handleQuery();
 });

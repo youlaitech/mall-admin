@@ -11,7 +11,7 @@ import { AxiosPromise } from 'axios';
  *
  * @param queryParams
  */
-export function lisCoupontPages(
+export function lisCouponPages(
   queryParams: CouponQueryParam
 ): AxiosPromise<CouponPageResult> {
   return request({

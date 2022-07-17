@@ -1,4 +1,6 @@
 import request from '@/utils/request';
+import { Option } from '@/types/common';
+import { AxiosPromise } from 'axios';
 
 /**
  * 获取商品分类列表
@@ -18,11 +20,10 @@ export function listCategories(queryParams: object) {
  *
  * @param queryParams
  */
-export function listCascadeCategories(queryParams?: object) {
+export function listCategoryOptions(): AxiosPromise<Option[]> {
   return request({
-    url: '/mall-pms/api/v1/categories/cascade',
+    url: '/mall-pms/api/v1/categories/options',
     method: 'get',
-    params: queryParams,
   });
 }
 
