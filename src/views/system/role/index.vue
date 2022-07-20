@@ -5,7 +5,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, toRefs, nextTick } from 'vue';
+import { onMounted, reactive, ref, toRefs } from 'vue';
 import {
   listRolePages,
   updateRole,
@@ -148,8 +148,10 @@ function submitFormData() {
  * 取消
  */
 function cancel() {
-  state.dialog.visible = false;
+  dialog.value.visible = false;
+  formData.value.id = undefined;
   dataFormRef.value.resetFields();
+  dataFormRef.value.clearValidate();
 }
 
 /**
