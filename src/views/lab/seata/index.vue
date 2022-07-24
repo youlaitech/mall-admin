@@ -1,4 +1,4 @@
-<!-- setup 无法设置组件名称，组件名称keepAlive必须 -->
+<!--  实验室-seata -->
 <script lang="ts">
 export default {
   name: 'seata',

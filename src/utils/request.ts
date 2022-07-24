@@ -55,6 +55,9 @@ service.interceptors.response.use(
       localStorage.clear(); // 清除浏览器全部缓存
       window.location.href = '/'; // 跳转登录页
       ElMessageBox.alert('当前页面已失效，请重新登录', '提示', {});
+    } else if (code == 'B0210') {
+      // 系统限流
+      return error.response.data;
     } else {
       ElMessage({
         message: msg || '系统出错',
