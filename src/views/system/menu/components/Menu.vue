@@ -261,7 +261,7 @@ const state = reactive({
     name: '',
     visible: 1,
     sort: 1,
-    component: 'Layout',
+    component: undefined,
     type: 'MENU',
   } as MenuFormData,
   rules: {
@@ -333,7 +333,11 @@ function handleRowClick(row: any) {
   emit('menuClick', row);
 }
 
-async function handleAdd(row: any) {
+/**
+ * 新增菜单
+ * @param row
+ */
+async function handleAdd(row: MenuFormData) {
   state.formData.id = undefined;
   await loadMenuData();
   state.dialog = {
@@ -342,7 +346,6 @@ async function handleAdd(row: any) {
   };
   if (row.id) {
     // 行点击新增
-
     state.formData.parentId = row.id;
     if (row.id == '0') {
       state.formData.type = 'CATALOG';
@@ -362,12 +365,12 @@ async function handleAdd(row: any) {
 }
 
 /**
- * 修改弹窗
+ * 编辑菜单
  */
-async function handleUpdate(row: any) {
+async function handleUpdate(row: MenuFormData) {
   await loadMenuData();
   state.dialog = {
-    title: '修改菜单',
+    title: '编辑菜单',
     visible: true,
   };
   const id = row.id || state.ids;
@@ -379,10 +382,10 @@ async function handleUpdate(row: any) {
 }
 
 /**
- * 菜单类型change事件
+ * 菜单类型 change
  */
-function handleMenuTypeChange(val: any) {
-  if (val !== cacheData.value.menuType) {
+function handleMenuTypeChange(menuType: string) {
+  if (menuType !== cacheData.value.menuType) {
     formData.value.path = '';
   } else {
     formData.value.path = cacheData.value.menuPath;
@@ -412,6 +415,11 @@ function submitForm() {
   });
 }
 
+/**
+ * 删除菜单
+ *
+ * @param row
+ */
 function handleDelete(row: any) {
   const ids = [row.id || state.ids].join(',');
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {

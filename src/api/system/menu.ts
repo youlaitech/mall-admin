@@ -56,7 +56,7 @@ export function getResource(): AxiosPromise<any> {
  * 获取菜单详情
  * @param id
  */
-export function getMenuDetail(id: number): AxiosPromise<MenuFormData> {
+export function getMenuDetail(id: string): AxiosPromise<MenuFormData> {
   return request({
     url: '/youlai-admin/api/v1/menus/' + id,
     method: 'get',
