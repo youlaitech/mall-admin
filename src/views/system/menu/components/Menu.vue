@@ -337,8 +337,8 @@ function handleRowClick(row: any) {
  * 新增菜单
  * @param row
  */
-async function handleAdd(row: MenuFormData) {
-  state.formData.id = undefined;
+async function handleAdd(row: any) {
+  formData.value.id = undefined;
   await loadMenuData();
   state.dialog = {
     title: '添加菜单',
@@ -373,7 +373,7 @@ async function handleUpdate(row: MenuFormData) {
     title: '编辑菜单',
     visible: true,
   };
-  const id = row.id || state.ids;
+  const id = row.id as string;
   getMenuDetail(id).then(({ data }) => {
     state.formData = data;
     cacheData.value.menuType = data.type;
@@ -384,7 +384,7 @@ async function handleUpdate(row: MenuFormData) {
 /**
  * 菜单类型 change
  */
-function handleMenuTypeChange(menuType: string) {
+function handleMenuTypeChange(menuType: any) {
   if (menuType !== cacheData.value.menuType) {
     formData.value.path = '';
   } else {
