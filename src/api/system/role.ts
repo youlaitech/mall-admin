@@ -46,7 +46,7 @@ export function listRoleOptions(
  */
 export function getRoleResourceIds(roleId: string): AxiosPromise<any> {
   return request({
-    url: '/youlai-admin/api/v1/roles/' + roleId + '/resource_ids',
+    url: '/youlai-admin/api/v1/roles/' + roleId + '/resources',
     method: 'get',
   });
 }
