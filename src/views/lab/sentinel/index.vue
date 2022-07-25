@@ -36,7 +36,7 @@ const {
 
 const loadFlowLimitingData = async () => {
   flowLimitingDataList.value = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < 10; i++) {
     getFlowLimitingData().then((response: any) => {
       flowLimitingDataList.value.push({
         code: response.code,
@@ -48,7 +48,7 @@ const loadFlowLimitingData = async () => {
 
 const loadGatewayRouteFlowLimitingData = async () => {
   gatewayRouteFlowLimitingDataList.value = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < 10; i++) {
     getGatewayRouteFlowLimitingData().then((response: any) => {
       gatewayRouteFlowLimitingDataList.value.push({
         code: response.code,
@@ -60,7 +60,7 @@ const loadGatewayRouteFlowLimitingData = async () => {
 
 const loadGatewayApiFlowLimitingData = async () => {
   gatewayApiFlowLimitingDataList.value = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < 10; i++) {
     getGatewayApiFlowLimitingData().then((response: any) => {
       gatewayApiFlowLimitingDataList.value.push({
         code: response.code,
@@ -71,9 +71,13 @@ const loadGatewayApiFlowLimitingData = async () => {
 };
 
 onMounted(async () => {
-  await loadFlowLimitingData();
-  await loadGatewayRouteFlowLimitingData();
-  await loadGatewayApiFlowLimitingData();
+  loadGatewayRouteFlowLimitingData();
+  setTimeout(() => {
+    loadGatewayApiFlowLimitingData();
+  }, 3000);
+  setTimeout(() => {
+    loadFlowLimitingData();
+  }, 6000);
 });
 </script>
 
