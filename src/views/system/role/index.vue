@@ -5,17 +5,17 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, toRefs } from 'vue';
+import { nextTick, onMounted, reactive, ref, toRefs } from 'vue';
 import {
   listRolePages,
   updateRole,
   getRoleFormDetail,
   addRole,
   deleteRoles,
-  getRoleResourceIds,
+  getRoleResources,
   updateRoleResource,
 } from '@/api/system/role';
-import { getResource } from '@/api/system/menu';
+import { listResources } from '@/api/system/menu';
 
 import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
@@ -24,6 +24,7 @@ import {
   RoleItem,
   RoleQueryParam,
 } from '@/types/api/system/role';
+import { Resource } from '@/types/api/system/menu';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 const emit = defineEmits(['roleClick']);
@@ -55,8 +56,11 @@ const state = reactive({
     code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
   },
   resourceDialogVisible: false,
-  menuOptions: [] as any[],
-  permOptions: [] as any[],
+  resourceOptions: [] as Resource[],
+  btnPerms: {} as any,
+  // 勾选的菜单ID
+  checkedMenuIds: new Set([]),
+  allPermIds: [] as string[],
   checkedRole: {
     id: '',
     name: '',
@@ -73,9 +77,9 @@ const {
   formData,
   rules,
   resourceDialogVisible,
-  menuOptions,
-  permOptions,
   checkedRole,
+  resourceOptions,
+  btnPerms,
 } = toRefs(state);
 
 function handleQuery() {
@@ -87,7 +91,9 @@ function handleQuery() {
     state.loading = false;
   });
 }
-
+/**
+ * 查询重置
+ */
 function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
@@ -173,13 +179,26 @@ function handleDelete(row: any) {
     .catch(() => ElMessage.info('已取消删除'));
 }
 
+const handleResourceCheckChange = (
+  data: Resource,
+  isCheck: boolean,
+  sonHasCheck: boolean
+) => {
+  console.log('data', data);
+  console.log('isCheck', isCheck);
+  if (data.perms) {
+    data.perms.forEach((item) => {
+      btnPerms.value[item.value] = isCheck;
+    });
+  }
+};
+
 /**
- * 分配资源权限
+ * 分配资源(菜单+权限)弹窗
  */
-function handleResourceAssign(row: RoleItem) {
+function openRoleResourceDialog(row: RoleItem) {
   resourceDialogVisible.value = true;
   loading.value = true;
-  permOptions.value.map((item) => (item.checked = false));
 
   const roleId: any = row.id;
   checkedRole.value = {
@@ -187,29 +206,49 @@ function handleResourceAssign(row: RoleItem) {
     name: row.name,
   };
 
-  //资源下拉数据
-  getResource().then((response) => {
-    state.menuOptions = response.data.menus;
-    state.permOptions = response.data.perms;
+  // 获取所有的资源
+  listResources().then((response) => {
+    resourceOptions.value = response.data;
 
-    // 获取角色拥有的资源数据进行勾选
-    getRoleResourceIds(roleId).then((res) => {
-      const checkedMenuIds = res.data.menuIds;
-      const checkedPermIds = res.data.permIds;
+    // 获取角色拥有的资源
+    getRoleResources(roleId).then(({ data }) => {
+      // 勾选的菜单回显
+      const checkedMenuIds = data.menuIds;
       resourceRef.value.setCheckedKeys(checkedMenuIds);
 
-      permOptions.value.forEach((perm) => {
-        if (checkedPermIds.includes(perm.value)) {
-          perm.checked = true;
-        } else {
-          perm.checked = false;
+      nextTick(() => {
+        // 勾选的权限回显
+        const rolePermIds = data.permIds;
+
+        state.allPermIds = filterResourcePermIds(response.data, []);
+        if (state.allPermIds) {
+          state.allPermIds.forEach((permId) => {
+            if (rolePermIds.indexOf(permId) > -1) {
+              btnPerms.value[permId] = true;
+            } else {
+              btnPerms.value[permId] = false;
+            }
+          });
         }
+        loading.value = false;
       });
-      loading.value = false;
     });
   });
 }
 
+const filterResourcePermIds = (resources: Resource[], permIds: string[]) => {
+  resources.forEach((resource) => {
+    if (resource.perms) {
+      resource.perms.forEach((perm) => {
+        permIds.push(perm.value);
+      });
+    }
+    if (resource.children) {
+      filterResourcePermIds(resource.children, permIds);
+    }
+  });
+  return permIds;
+};
 /**
  * 分配资源权限提交
  */
@@ -218,16 +257,21 @@ function handleRoleResourceSubmit() {
     .getCheckedNodes(false, true)
     .map((node: any) => node.value);
 
-  const checkedPermIds = state.permOptions
-    .filter((item) => item.checked)
-    .map((item) => item.value);
+  const checkedPermIds = [] as string[];
+  if (state.allPermIds) {
+    state.allPermIds.forEach((permId) => {
+      if (btnPerms.value[permId]) {
+        checkedPermIds.push(permId);
+      }
+    });
+  }
 
-  const roleResourceData = {
+  const RoleResource = {
     menuIds: checkedMenuIds,
     permIds: checkedPermIds,
   };
 
-  updateRoleResource(checkedRole.value.id, roleResourceData).then((res) => {
+  updateRoleResource(checkedRole.value.id, RoleResource).then((res) => {
     ElMessage.success('分配权限成功');
     state.resourceDialogVisible = false;
     handleQuery();
@@ -297,7 +341,7 @@ onMounted(() => {
             type="primary"
             circle
             plain
-            @click.stop="handleResourceAssign(scope.row)"
+            @click.stop="openRoleResourceDialog(scope.row)"
           >
             <svg-icon icon-class="perm" />
           </el-button>
@@ -375,37 +419,38 @@ onMounted(() => {
       </template>
     </el-dialog>
 
-    <!--分配权限弹窗-->
+    <!--分配资源弹窗-->
     <el-dialog
       :title="'【' + checkedRole.name + '】分配权限'"
       v-model="resourceDialogVisible"
-      width="1000px"
+      width="800px"
     >
       <el-scrollbar max-height="600px" v-loading="loading">
         <el-tree
           ref="resourceRef"
           node-key="value"
           show-checkbox
-          :data="menuOptions"
+          :data="resourceOptions"
           :default-expand-all="true"
+          @check-change="handleResourceCheckChange"
         >
-          <template #default="{ node, data }">
-            <div v-if="data.isPerm == true" class="resource-tree-node">
-              <div class="resource-tree-node__content">
+          <template #default="{ data }">
+            {{ data.label }}
+
+            <div v-if="data.perms" class="resource-tree-node">
+              <el-divider direction="vertical" />
+              <div class="node-content">
                 <el-checkbox
-                  v-for="perm in permOptions.filter(
-                    (perm) => perm.parentId == data.permPid
-                  )"
+                  v-for="perm in data.perms"
                   :key="perm.value"
                   :label="perm.value"
-                  v-model="perm.checked"
                   border
                   size="small"
+                  v-model="btnPerms[perm.value]"
                   >{{ perm.label }}</el-checkbox
                 >
               </div>
             </div>
-            <span v-else>{{ node.label }}</span>
           </template>
         </el-tree>
       </el-scrollbar>
@@ -427,18 +472,16 @@ onMounted(() => {
   width: 100%;
   flex-wrap: wrap;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   font-size: 14px;
-  padding-right: 8px;
-  margin-left: -28px !important;
-
-  &__content {
+  justify-content: flex-end;
+  margin: 0 50px;
+  .node-content {
+    width: 400px;
     display: flex;
     flex-wrap: wrap;
   }
-  .el-checkbox--default {
-    background-color: transparent !important;
+  .el-divider--vertical {
+    height: 2em !important;
   }
 }
 .el-tree-node__content {

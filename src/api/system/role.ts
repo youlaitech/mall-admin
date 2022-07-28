@@ -2,7 +2,7 @@ import {
   RoleFormData,
   RolePageResult,
   RoleQueryParam,
-  RoleResourceData,
+  RoleResource,
 } from '@/types/api/system/role';
 
 import { Option } from '@/types/common';
@@ -44,7 +44,7 @@ export function listRoleOptions(
  *
  * @param queryParams
  */
-export function getRoleResourceIds(roleId: string): AxiosPromise<any> {
+export function getRoleResources(roleId: string): AxiosPromise<RoleResource> {
   return request({
     url: '/youlai-admin/api/v1/roles/' + roleId + '/resources',
     method: 'get',
@@ -58,7 +58,7 @@ export function getRoleResourceIds(roleId: string): AxiosPromise<any> {
  */
 export function updateRoleResource(
   roleId: string,
-  data: RoleResourceData
+  data: RoleResource
 ): AxiosPromise<any> {
   return request({
     url: '/youlai-admin/api/v1/roles/' + roleId + '/resources',
