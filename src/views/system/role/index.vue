@@ -250,7 +250,7 @@ const filterResourcePermIds = (resources: Resource[], permIds: string[]) => {
   return permIds;
 };
 /**
- * 分配资源权限提交
+ * 分配资源提交
  */
 function handleRoleResourceSubmit() {
   const checkedMenuIds: any[] = resourceRef.value
@@ -337,14 +337,16 @@ onMounted(() => {
       <el-table-column label="角色编码" prop="code" />
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
-          <el-button
-            type="primary"
-            circle
-            plain
-            @click.stop="openRoleResourceDialog(scope.row)"
-          >
-            <svg-icon icon-class="perm" />
-          </el-button>
+          <el-tooltip content="分配资源" effect="light">
+            <el-button
+              type="success"
+              circle
+              plain
+              @click.stop="openRoleResourceDialog(scope.row)"
+            >
+              <svg-icon icon-class="perm" />
+            </el-button>
+          </el-tooltip>
 
           <el-button
             type="primary"
@@ -421,7 +423,7 @@ onMounted(() => {
 
     <!--分配资源弹窗-->
     <el-dialog
-      :title="'【' + checkedRole.name + '】分配权限'"
+      :title="'角色【' + checkedRole.name + '】资源分配'"
       v-model="resourceDialogVisible"
       width="800px"
     >

@@ -44,6 +44,16 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="菜单类型" align="center" width="100">
+        <template #default="scope">
+          <el-tag v-if="scope.row.type === 'MENU'" type="success">菜单</el-tag>
+          <el-tag v-if="scope.row.type === 'CATALOG'" type="warning"
+            >目录</el-tag
+          >
+          <el-tag v-if="scope.row.type === 'EXTLINK'" type="info">外链</el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column label="状态" align="center" width="100">
         <template #default="scope">
           <el-tag v-if="scope.row.visible === 1" type="success">显示</el-tag>

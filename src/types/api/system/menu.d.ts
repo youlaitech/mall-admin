@@ -10,8 +10,9 @@ export interface MenuQueryParam {
  */
 
 export interface MenuItem {
-  id: number;
+  id?: number;
   parentId: number;
+  type?: string | 'CATEGORY' | 'MENU' | 'EXTLINK';
   createTime: string;
   updateTime: string;
   name: string;
