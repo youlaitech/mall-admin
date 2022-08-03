@@ -28,7 +28,6 @@ import {
 } from '@/types/api/system/dept';
 import { Dialog, Option } from '@/types/common';
 
-// DOM元素的引用声明定义
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
 
@@ -77,7 +76,7 @@ const {
  */
 function handleQuery() {
   state.loading = true;
-  listDepartments(state.queryParams).then(({ data }) => {
+  listDepartments(queryParams.value).then(({ data }) => {
     state.deptList = data;
     state.loading = false;
   });
@@ -220,8 +219,8 @@ onMounted(() => {
 
       <el-form-item prop="name">
         <el-input
-          v-model="queryParams.name"
-          placeholder="请输入部门名称"
+          v-model="queryParams.keywords"
+          placeholder="部门名称"
           @keyup.enter="handleQuery"
         />
       </el-form-item>
