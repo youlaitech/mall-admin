@@ -22,7 +22,7 @@ import {
   deleteUsers,
   addUser,
   updateUser,
-  updateUserPart,
+  updateUserStatus,
   downloadTemplate,
   exportUser,
   importUser,
@@ -173,7 +173,7 @@ function filterDeptNode(value: string, data: any) {
 }
 
 /**
- * 部门树节点点击事件
+ * 部门树节点click
  */
 function handleDeptNodeClick(data: { [key: string]: any }) {
   state.queryParams.deptId = data.value;
@@ -181,7 +181,7 @@ function handleDeptNodeClick(data: { [key: string]: any }) {
 }
 
 /**
- * 加载角色数据
+ * 加载角色下拉列表
  */
 async function loadRoleOptions() {
   listRoleOptions().then((response) => {
@@ -204,7 +204,7 @@ function handleStatusChange(row: { [key: string]: any }) {
     }
   )
     .then(() => {
-      return updateUserPart(row.id, { status: row.status });
+      return updateUserStatus(row.id, row.status);
     })
     .then(() => {
       ElMessage.success(text + '成功');
@@ -260,7 +260,7 @@ function resetPassword(row: { [key: string]: any }) {
         ElMessage.warning('请输入新密码');
         return false;
       }
-      updateUserPart(row.id, {
+      updateUserStatus(row.id, {
         password: value,
       }).then(() => {
         ElMessage.success('修改成功，新密码是：' + value);

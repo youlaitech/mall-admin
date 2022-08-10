@@ -77,11 +77,11 @@ export function updateUser(id: number, data: UserFormData) {
  * @param id
  * @param data
  */
-export function updateUserPart(id: number, data: any) {
+export function updateUserStatus(id: number, status: number) {
   return request({
     url: '/youlai-admin/api/v1/users/' + id,
     method: 'patch',
-    data: data,
+    params: { status: status },
   });
 }
 
