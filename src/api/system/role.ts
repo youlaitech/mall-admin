@@ -93,7 +93,7 @@ export function addRole(data: RoleFormData) {
 }
 
 /**
- * 更新角色
+ * 编辑角色
  *
  * @param id
  * @param data

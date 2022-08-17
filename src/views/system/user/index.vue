@@ -23,6 +23,7 @@ import {
   addUser,
   updateUser,
   updateUserStatus,
+  updateUserPassword,
   downloadTemplate,
   exportUser,
   importUser,
@@ -125,7 +126,7 @@ const state = reactive({
   },
 
   importDialog: {
-    title: '用户导出',
+    title: '用户搭配',
     visible: false,
   } as Dialog,
   importFormData: {} as UserImportFormData,
@@ -260,10 +261,8 @@ function resetPassword(row: { [key: string]: any }) {
         ElMessage.warning('请输入新密码');
         return false;
       }
-      updateUserStatus(row.id, {
-        password: value,
-      }).then(() => {
-        ElMessage.success('修改成功，新密码是：' + value);
+      updateUserPassword(row.id, value).then(() => {
+        ElMessage.success('密码重置成功，新密码是：' + value);
       });
     })
     .catch(() => {});
@@ -768,6 +767,7 @@ onMounted(() => {
       </template>
     </el-dialog>
 
+    <!--用户导入弹窗-->
     <el-dialog
       :title="importDialog.title"
       v-model="importDialog.visible"
@@ -783,7 +783,7 @@ onMounted(() => {
       >
         <el-form-item label="部门" prop="deptId">
           <el-tree-select
-            v-model="formData.deptId"
+            v-model="importFormData.deptId"
             placeholder="请选择部门"
             :data="deptOptions"
             filterable

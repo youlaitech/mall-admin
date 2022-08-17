@@ -72,16 +72,30 @@ export function updateUser(id: number, data: UserFormData) {
 }
 
 /**
- * 选择性修改用户
+ * 修改用户状态
  *
  * @param id
- * @param data
+ * @param status
  */
 export function updateUserStatus(id: number, status: number) {
   return request({
-    url: '/youlai-admin/api/v1/users/' + id,
+    url: '/youlai-admin/api/v1/users/' + id + '/status',
     method: 'patch',
     params: { status: status },
+  });
+}
+
+/**
+ * 修改用户密码
+ *
+ * @param id
+ * @param password
+ */
+export function updateUserPassword(id: number, password: string) {
+  return request({
+    url: '/youlai-admin/api/v1/users/' + id + '/password',
+    method: 'patch',
+    params: { password: password },
   });
 }
 
