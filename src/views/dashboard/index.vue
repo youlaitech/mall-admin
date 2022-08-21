@@ -208,7 +208,6 @@ import Team from './components/Team/index.vue';
 
     .icon-message {
       color: #36a3f7;
-
       .svg-icon {
         width: 4em !important;
         height: 4em !important;
