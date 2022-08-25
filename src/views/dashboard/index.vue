@@ -254,6 +254,7 @@ import Team from './components/Team/index.vue';
 
       .card-panel-num {
         font-size: 20px;
+        text-align: right;
       }
     }
   }
