@@ -25,9 +25,9 @@ export function listDepartments(
 /**
  * 部门下拉列表
  */
-export function listSelectDepartments(): AxiosPromise<Option[]> {
+export function listDeptOptions(): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v1/depts/select_list',
+    url: '/youlai-admin/api/v1/depts/options',
     method: 'get',
   });
 }
@@ -37,9 +37,9 @@ export function listSelectDepartments(): AxiosPromise<Option[]> {
  *
  * @param id
  */
-export function getDeptForrmData(id: string): AxiosPromise<DeptFormData> {
+export function getDeptDetail(id: string): AxiosPromise<DeptFormData> {
   return request({
-    url: '/youlai-admin/api/v1/depts/' + id + '/form_data',
+    url: '/youlai-admin/api/v1/depts/' + id,
     method: 'get',
   });
 }

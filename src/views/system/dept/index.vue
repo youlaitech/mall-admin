@@ -10,11 +10,11 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 
 // API依赖
 import {
-  getDeptForrmData,
+  getDeptDetail,
   deleteDept,
   updateDept,
   addDept,
-  listSelectDepartments,
+  listDeptOptions,
   listDepartments,
 } from '@/api/system/dept';
 
@@ -100,7 +100,7 @@ function handleSelectionChange(selection: any) {
  */
 async function loadDeptData() {
   const deptOptions: any[] = [];
-  listSelectDepartments().then((response) => {
+  listDeptOptions().then((response) => {
     const rootDeptOption = {
       value: '0',
       label: '顶级部门',
@@ -134,7 +134,7 @@ async function handleUpdate(row: any) {
     title: '修改部门',
     visible: true,
   };
-  getDeptForrmData(deptId).then((response: any) => {
+  getDeptDetail(deptId).then((response: any) => {
     state.formData = response.data;
   });
 }
