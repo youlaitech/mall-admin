@@ -318,6 +318,7 @@ onMounted(() => {
             :data="deptOptions"
             filterable
             check-strictly
+            :render-after-expand="false"
           />
         </el-form-item>
         <el-form-item label="部门名称" prop="name">
