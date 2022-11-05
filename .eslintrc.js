@@ -8,6 +8,8 @@ module.exports = {
     defineProps: 'readonly',
     defineEmits: 'readonly',
     defineExpose: 'readonly',
+    DialogType: "readonly",
+    OptionType: "readonly",
   },
   parser: 'vue-eslint-parser',
   extends: [
