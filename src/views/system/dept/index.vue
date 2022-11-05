@@ -18,7 +18,7 @@ import {
 
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import { DeptForm, DeptQuery } from '@/api/system/dept/types';
+import { Dept, DeptForm, DeptQuery } from '@/api/system/dept/types';
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -28,7 +28,7 @@ const state = reactive({
   // 选中ID数组
   ids: [] as number[],
   // 表格树数据
-  dataList: [] as DeptType[],
+  dataList: [] as Dept[],
   deptOptions: [] as OptionType[],
   dialog: { visible: false } as DialogType,
   queryParams: {} as DeptQuery,

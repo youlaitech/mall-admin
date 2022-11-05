@@ -1,15 +1,13 @@
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
-import { DeptForm, DeptQuery, DeptType } from './types';
+import { DeptForm, DeptQuery, Dept } from './types';
 
 /**
  * 部门树形表格
  *
  * @param queryParams
  */
-export function listDepartments(
-  queryParams?: DeptQuery
-): AxiosPromise<DeptType[]> {
+export function listDepartments(queryParams?: DeptQuery): AxiosPromise<Dept[]> {
   return request({
     url: '/youlai-system/api/v1/dept',
     method: 'get',

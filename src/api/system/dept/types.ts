@@ -9,7 +9,7 @@ export interface DeptQuery {
 /**
  * 部门类型
  */
-export interface DeptType {
+export interface Dept {
   id: string;
   name: string;
   parentId: string;
@@ -19,7 +19,7 @@ export interface DeptType {
   leader?: string;
   mobile?: string;
   email?: string;
-  children: DeptType[];
+  children: Dept[];
 }
 
 /**

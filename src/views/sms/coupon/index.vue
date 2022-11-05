@@ -19,7 +19,7 @@ import {
 
 import { listCategoryOptions } from '@/api/pms/category';
 import { listSpuPages } from '@/api/pms/goods';
-import { CouponForm, CouponQuery } from '@/api/sms/coupon/types';
+import { Coupon, CouponForm, CouponQuery } from '@/api/sms/coupon/types';
 import { Goods, GoodsQuery } from '@/api/pms/goods/types';
 
 const queryFormRef = ref(ElForm);

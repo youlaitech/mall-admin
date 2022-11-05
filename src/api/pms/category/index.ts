@@ -1,5 +1,4 @@
 import request from '@/utils/request';
-import { Option } from '@/types/common';
 import { AxiosPromise } from 'axios';
 
 /**

@@ -7,11 +7,10 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm } from 'element-plus';
-import { Order, OrderQuery } from '@/types/api/oms/order';
-import { Dialog } from '@/types/common';
 
-import { listOrderPages, getOrderDetail } from '@/api/oms/order/order/order';
+import { listOrderPages, getOrderDetail } from '@/api/oms/order';
 import { Search, Refresh } from '@element-plus/icons-vue';
+import { Order, OrderQuery } from '@/api/oms/order/types';
 
 const queryFormRef = ref(ElForm);
 

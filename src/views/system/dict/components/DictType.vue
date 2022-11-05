@@ -139,7 +139,7 @@ import {
 } from '@/api/system/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import { Dict, DictTypeForm } from '@/api/system/dict/types';
+import { Dict, DictQuery, DictTypeForm } from '@/api/system/dict/types';
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
