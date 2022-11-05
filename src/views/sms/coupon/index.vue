@@ -11,7 +11,7 @@ import { ElForm, ElMessage, ElMessageBox, ElCascaderPanel } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import {
   lisCouponPages,
-  getCouponFormData,
+  getCouponForm,
   updateCoupon,
   addCoupon,
   deleteCoupons,
@@ -19,13 +19,8 @@ import {
 
 import { listCategoryOptions } from '@/api/pms/category';
 import { listSpuPages } from '@/api/pms/goods';
-import { Dialog, Option } from '@/types/common';
-import {
-  CouponItem,
-  CouponQueryParam,
-  CouponFormData,
-} from '@/types/api/sms/coupon';
-import { GoodsItem, GoodsQueryParam } from '@/types/api/pms/goods';
+import { CouponForm, CouponQuery } from '@/api/sms/coupon/types';
+import { Goods, GoodsQuery } from '@/api/pms/goods/types';
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -36,41 +31,41 @@ const state = reactive({
   ids: [],
   single: true,
   multiple: true,
-  queryParams: { pageNum: 1, pageSize: 10 } as CouponQueryParam,
-  couponList: [] as CouponItem[],
+  queryParams: { pageNum: 1, pageSize: 10 } as CouponQuery,
+  couponList: [] as Coupon[],
   total: 0,
   dialog: {
     visible: false,
-  } as Dialog,
+  } as DialogType,
   //指定商品分类选择Dialog
   spuCategoryChooseDialog: {
     visible: false,
-  } as Dialog,
+  } as DialogType,
   // 指定商品选择ialog
   spuChooseDialog: {
     visible: false,
-  } as Dialog,
+  } as DialogType,
   formData: {
     type: 1,
     platform: 0,
     validityPeriodType: 1,
     perLimit: 1,
     applicationScope: 0,
-  } as CouponFormData,
+  } as CouponForm,
   rules: {
     type: [{ required: true, message: '请输入优惠券名称', trigger: 'blur' }],
     name: [{ required: true, message: '请选择优惠券类型', trigger: 'blur' }],
   },
   validityPeriod: '' as any,
   perLimitChecked: false,
-  spuCategoryOptions: [] as Option[],
+  spuCategoryOptions: [] as OptionType[],
   spuCategoryProps: {
     multiple: true,
     emitPath: false,
   },
-  spuList: [] as GoodsItem[],
+  spuList: [] as Goods[],
   spuTotal: 0,
-  spuQueryParams: { pageNum: 1, pageSize: 10 } as GoodsQueryParam,
+  spuQueryParams: { pageNum: 1, pageSize: 10 } as GoodsQuery,
   checkedSpuIds: [],
 });
 
@@ -89,7 +84,6 @@ const {
   spuCategoryProps,
   spuList,
   spuTotal,
-  checkedSpuIds,
 } = toRefs(state);
 
 /**
@@ -127,7 +121,7 @@ async function loadSpuCategoryOptions() {
 }
 
 async function loadSpuList() {
-  const queryParams = { pageNum: 1, pageSize: 10 } as GoodsQueryParam;
+  const queryParams = { pageNum: 1, pageSize: 10 } as GoodsQuery;
   listSpuPages(queryParams).then(({ data }) => {
     spuList.value = data.list;
   });
@@ -153,7 +147,7 @@ async function handleUpdate(row: any) {
   await loadSpuCategoryOptions();
   await loadSpuList();
 
-  getCouponFormData(id).then(({ data }) => {
+  getCouponForm(id).then(({ data }) => {
     formData.value = data;
     perLimitChecked.value = data.perLimit == -1;
     // 有效期转换

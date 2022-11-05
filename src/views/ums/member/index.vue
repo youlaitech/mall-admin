@@ -9,8 +9,8 @@ import { reactive, onMounted, toRefs } from 'vue';
 import { ElTable } from 'element-plus';
 import { Search, Refresh } from '@element-plus/icons-vue';
 
-import { listMemebersPage } from '@/api/ums/member';
-import { MemberQueryParam, MemberItem } from '@/types/api/ums/member';
+import { listMemeberPages } from '@/api/ums/member';
+import { Member, MemberQuery } from '@/api/ums/member/types';
 
 const state = reactive({
   // 遮罩层
@@ -25,15 +25,15 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-  } as MemberQueryParam,
-  memberList: [] as MemberItem[],
+  } as MemberQuery,
+  memberList: [] as Member[],
 });
 
 const { loading, queryParams, memberList, total } = toRefs(state);
 
 function handleQuery() {
   state.loading = true;
-  listMemebersPage(state.queryParams).then(({ data }) => {
+  listMemeberPages(state.queryParams).then(({ data }) => {
     state.memberList = data.list;
     state.total = data.total;
     state.loading = false;

@@ -61,7 +61,7 @@ const goodsInfo: any = computed({
 });
 
 const state = reactive({
-  categoryOptions: [] as Option[],
+  categoryOptions: [] as OptionType[],
   pathLabels: [],
 });
 

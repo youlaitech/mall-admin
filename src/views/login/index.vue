@@ -64,7 +64,7 @@
           <svg-icon icon-class="valid_code" />
         </span>
         <el-input
-          v-model="loginForm.code"
+          v-model="loginForm.verifyCode"
           auto-complete="off"
           :placeholder="$t('login.code')"
           style="width: 65%"
@@ -73,7 +73,7 @@
 
         <div class="captcha">
           <img
-            :src="captchaBase64"
+            :src="verifyCodeImgUrl"
             @click="handleCaptchaGenerate"
             height="38px"
           />
@@ -117,9 +117,9 @@ import SvgIcon from '@/components/SvgIcon/index.vue';
 import useStore from '@/store';
 
 // API依赖
-import { getCaptcha } from '@/api/login';
+import { getCaptcha } from '@/api/auth';
 import { useRoute } from 'vue-router';
-import { LoginFormData } from '@/types/api/system/login';
+import { LoginForm } from '@/api/auth/types';
 
 const { user } = useStore();
 const route = useRoute();
@@ -132,9 +132,7 @@ const state = reactive({
   loginForm: {
     username: 'admin',
     password: '123456',
-    code: '',
-    uuid: '',
-  } as LoginFormData,
+  } as LoginForm,
   loginRules: {
     username: [{ required: true, trigger: 'blur' }],
     password: [
@@ -143,7 +141,7 @@ const state = reactive({
   },
   loading: false,
   passwordType: 'password',
-  captchaBase64: '',
+  verifyCodeImgUrl: '',
   // 大写提示禁用
   capslockTooltipDisabled: true,
   otherQuery: {},
@@ -164,7 +162,7 @@ const {
   loginRules,
   loading,
   passwordType,
-  captchaBase64,
+  verifyCodeImgUrl,
   capslockTooltipDisabled,
   showCopyright,
 } = toRefs(state);
@@ -209,9 +207,9 @@ function handleLogin() {
 // 获取验证码
 function handleCaptchaGenerate() {
   getCaptcha().then(({ data }) => {
-    const { img, uuid } = data;
-    state.captchaBase64 = img;
-    state.loginForm.uuid = uuid;
+    const { verifyCodeImg, verifyCodeKey } = data;
+    verifyCodeImgUrl.value = verifyCodeImg;
+    loginForm.value.verifyCodeKey = verifyCodeKey;
   });
 }
 
@@ -251,9 +249,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 $bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;

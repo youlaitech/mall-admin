@@ -9,18 +9,15 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm, ElTable, ElMessage, ElMessageBox } from 'element-plus';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import {
-  BrandFormData,
-  BrandItem,
-  BrandQueryParam,
-} from '@/types/api/pms/brand';
-import { Dialog } from '@/types/common';
-import {
   listBrandPages,
   getBrandFormDetail,
   updateBrand,
   addBrand,
   deleteBrands,
 } from '@/api/pms/brand';
+
+import { BrandQuery, Brand, BrandForm } from '@/api/pms/brand/types';
+
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
 
 const queryFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
@@ -37,11 +34,11 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-  } as BrandQueryParam,
-  brandList: [] as BrandItem[],
+  } as BrandQuery,
+  brandList: [] as Brand[],
   total: 0,
-  dialog: {} as Dialog,
-  formData: { sort: 1 } as BrandFormData,
+  dialog: {} as DialogType,
+  formData: { sort: 1 } as BrandForm,
   rules: {
     name: [
       {

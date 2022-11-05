@@ -11,17 +11,12 @@ import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
 import {
   listAdvertPages,
-  getAdvertFormDetail,
+  getAdvertForm,
   updateAdvert,
   addAdvert,
   deleteAdverts,
 } from '@/api/sms/advert';
-import { Dialog } from '@/types/common';
-import {
-  AdvertFormData,
-  AdvertItem,
-  AdvertQueryParam,
-} from '@/types/api/sms/advert';
+import { AdvertQuery, Advert, AdvertForm } from '@/api/sms/advert/types';
 
 const queryFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
 const dataFormRef = ref(ElForm); // 属性名必须和元素的ref属性值一致
@@ -34,14 +29,14 @@ const state = reactive({
   single: true,
   // 非多个禁用
   multiple: true,
-  queryParams: { pageNum: 1, pageSize: 10 } as AdvertQueryParam,
-  advertList: [] as AdvertItem[],
+  queryParams: { pageNum: 1, pageSize: 10 } as AdvertQuery,
+  advertList: [] as Advert[],
   total: 0,
-  dialog: { title: '', visible: false } as Dialog,
+  dialog: { title: '', visible: false } as DialogType,
   formData: {
     status: 1,
     sort: 100,
-  } as AdvertFormData,
+  } as AdvertForm,
   rules: {
     title: [{ required: true, message: '请输入广告名称', trigger: 'blur' }],
     picUrl: [{ required: true, message: '请上传广告图片', trigger: 'blur' }],
@@ -94,7 +89,7 @@ function handleUpdate(row: any) {
     visible: true,
   };
   const advertId = row.id || state.ids;
-  getAdvertFormDetail(advertId).then(({ data }) => {
+  getAdvertForm(advertId).then(({ data }) => {
     state.formData = data;
     validityPeriod.value = [data.beginTime, data.endTime];
   });

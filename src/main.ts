@@ -8,6 +8,8 @@ import ElementPlus from 'element-plus';
 import 'element-plus/theme-chalk/index.css';
 import Pagination from '@/components/Pagination/index.vue';
 import '@/permission';
+// 根据字典编码获取字典列表全局方法
+import { listDictItemsByTypeCode } from '@/api/system/dict';
 
 import 'default-passive-events';
 
@@ -20,9 +22,6 @@ import i18n from '@/lang/index';
 // 自定义样式
 import '@/styles/index.scss';
 
-// 根据字典编码获取字典列表全局方法
-import { getDictItemsByTypeCode } from '@/api/system/dict';
-
 const app = createApp(App);
 
 // 自定义指令
@@ -33,7 +32,7 @@ Object.keys(directive).forEach((key) => {
 });
 
 // 全局方法
-app.config.globalProperties.$getDictItemsByTypeCode = getDictItemsByTypeCode;
+app.config.globalProperties.$listDictItemsByTypeCode = listDictItemsByTypeCode;
 
 // 注册全局组件
 app

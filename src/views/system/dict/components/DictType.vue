@@ -47,9 +47,9 @@ export default {
       border
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="字典名称" prop="name" width="120" />
+      <el-table-column label="字典名称" prop="name" />
       <el-table-column label="字典编码" prop="code" />
-      <el-table-column label="状态" align="center" width="80">
+      <el-table-column label="状态" align="center" width="100">
         <template #default="scope">
           <el-tag v-if="scope.row.status === 1" type="success">启用</el-tag>
           <el-tag v-else type="info">禁用</el-tag>
@@ -131,21 +131,15 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import {
-  listPageDictTypes,
-  getDictFormData,
+  listDictTypePages,
+  getDictTypeForm,
   addDictType,
   updateDictType,
   deleteDictTypes,
 } from '@/api/system/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-
-import { Dialog } from '@/types/common';
-import {
-  Dict,
-  DictFormTypeData,
-  DictQueryParam,
-} from '@/types/api/system/dict';
+import { Dict, DictTypeForm } from '@/api/system/dict/types';
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
@@ -163,13 +157,13 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-  } as DictQueryParam,
+  } as DictQuery,
   dictList: [] as Dict[],
   total: 0,
-  dialog: { visible: false } as Dialog,
+  dialog: { visible: false } as DialogType,
   formData: {
     status: 1,
-  } as DictFormTypeData,
+  } as DictTypeForm,
   rules: {
     name: [{ required: true, message: '请输入字典名称', trigger: 'blur' }],
     code: [{ required: true, message: '请输入字典编码', trigger: 'blur' }],
@@ -182,7 +176,7 @@ const { total, dialog, loading, dictList, formData, rules, queryParams } =
 function handleQuery() {
   emit('dictClick', null);
   state.loading = true;
-  listPageDictTypes(state.queryParams).then(({ data }) => {
+  listDictTypePages(state.queryParams).then(({ data }) => {
     state.dictList = data.list;
     state.total = data.total;
     state.loading = false;
@@ -213,7 +207,7 @@ function handleUpdate(row: any) {
     visible: true,
   };
   const id = row.id || state.ids;
-  getDictFormData(id).then(({ data }) => {
+  getDictTypeForm(id).then(({ data }) => {
     state.formData = data;
   });
 }

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
-import { LoginFormData } from '@/types/api/system/login';
-import { UserState } from '@/types/store/user';
+import { UserState } from './types';
 
 import { localStorage } from '@/utils/storage';
-import { login, logout } from '@/api/login';
+import { loginApi, logoutApi } from '@/api/auth';
 import { getUserInfo } from '@/api/system/user';
 import { resetRouter } from '@/router';
+import { LoginForm } from '@/api/auth/types';
 
 const useUserStore = defineStore({
   id: 'user',
@@ -23,15 +23,15 @@ const useUserStore = defineStore({
     /**
      * 登录
      */
-    login(loginData: LoginFormData) {
-      const { username, password, code, uuid } = loginData;
+    login(data: LoginForm) {
+      const { username, password, verifyCode, verifyCodeKey } = data;
       return new Promise((resolve, reject) => {
-        login({
+        loginApi({
           username: username.trim(),
           password: password,
           grant_type: 'captcha',
-          code: code,
-          uuid: uuid,
+          verifyCode: verifyCode,
+          verifyCodeKey: verifyCodeKey,
         })
           .then((response) => {
             const { access_token, token_type } = response.data;
@@ -76,7 +76,7 @@ const useUserStore = defineStore({
      */
     logout() {
       return new Promise((resolve, reject) => {
-        logout()
+        logoutApi()
           .then(() => {
             localStorage.remove('token');
             this.RESET_STATE();

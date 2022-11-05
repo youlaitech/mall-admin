@@ -20,9 +20,8 @@ import {
 } from '@element-plus/icons-vue';
 import { listSpuPages, deleteSpu } from '@/api/pms/goods';
 import { listCategoryOptions } from '@/api/pms/category';
-import { GoodsItem, GoodsQueryParam } from '@/types/api/pms/goods';
 import { moneyFormatter } from '@/utils/filter';
-import { Option } from '@/types/common';
+import { Goods, GoodsQuery } from '@/api/pms/goods/types';
 
 const dataTableRef = ref(ElTable);
 const router = useRouter();
@@ -40,9 +39,9 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-  } as GoodsQueryParam,
-  goodsList: [] as GoodsItem[],
-  categoryOptions: [] as Option[],
+  } as GoodsQuery,
+  goodsList: [] as Goods[],
+  categoryOptions: [] as OptionType[],
   goodDetail: undefined,
   dialogVisible: false,
 });

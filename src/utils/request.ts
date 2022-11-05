@@ -24,7 +24,7 @@ service.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
+  (error: any) => {
     return Promise.reject(error);
   }
 );
@@ -48,23 +48,17 @@ service.interceptors.response.use(
       return Promise.reject(new Error(msg || 'Error'));
     }
   },
-  (error) => {
-    const { code, msg } = error.response.data;
-    if (code === 'A0230') {
+  (error: any) => {
+    if (error.response.data) {
+      const { code } = error.response.data;
       // token 过期
-      localStorage.clear(); // 清除浏览器全部缓存
-      window.location.href = '/'; // 跳转登录页
-      ElMessageBox.alert('当前页面已失效，请重新登录', '提示', {});
-    } else if (code == 'B0210') {
-      // 系统限流
-      return error.response.data;
-    } else {
-      ElMessage({
-        message: msg || '系统出错',
-        type: 'error',
-      });
+      if (code === 'A0230') {
+        localStorage.clear(); // 清除浏览器全部缓存
+        window.location.href = '/'; // 跳转登录页
+        ElMessageBox.alert('当前页面已失效，请重新登录', '提示');
+      }
     }
-    return Promise.reject(new Error(msg || 'Error'));
+    return Promise.reject(error.message);
   }
 );
 

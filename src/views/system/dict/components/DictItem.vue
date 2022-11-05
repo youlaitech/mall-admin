@@ -7,21 +7,16 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-import {
-  DictItem,
-  DictItemFormData,
-  DictItemQueryParam,
-} from '@/types/api/system/dict';
 
-import { Dialog } from '@/types/common';
 import {
-  listPageDictItems,
+  listDictItemPages,
   getDictItemData,
-  addDictItem,
+  saveDictItem,
   updateDictItem,
   deleteDictItems,
 } from '@/api/system/dict';
 import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
+import { DictItem, DictItemForm } from '@/api/system/dict/types';
 
 const props = defineProps({
   typeCode: {
@@ -59,15 +54,15 @@ const state = reactive({
   // 非多个禁用
   multiple: true,
   total: 0,
-  queryParams: { pageNum: 1, pageSize: 10 } as DictItemQueryParam,
+  queryParams: { pageNum: 1, pageSize: 10 } as DictItemQuery,
   dictItemList: [] as DictItem[],
-  dialog: { visible: false } as Dialog,
+  dialog: { visible: false } as DialogType,
   formData: {
     typeCode: props.typeCode,
     typeName: props.typeName,
     status: 1,
     sort: 1,
-  } as DictItemFormData,
+  } as DictItemForm,
   rules: {
     name: [{ required: true, message: '请输入字典项名称', trigger: 'blur' }],
     value: [{ required: true, message: '请输入字典项值', trigger: 'blur' }],
@@ -90,7 +85,7 @@ const {
 function handleQuery() {
   if (state.queryParams.typeCode) {
     state.loading = true;
-    listPageDictItems(state.queryParams).then(({ data }) => {
+    listDictItemPages(state.queryParams).then(({ data }) => {
       state.dictItemList = data.list;
       state.total = data.total;
       state.loading = false;
@@ -146,7 +141,7 @@ function submitForm() {
           handleQuery();
         });
       } else {
-        addDictItem(state.formData).then(() => {
+        saveDictItem(state.formData).then(() => {
           ElMessage.success('新增成功');
           cancel();
           handleQuery();

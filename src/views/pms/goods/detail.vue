@@ -53,7 +53,7 @@ import GoodsStock from './components/GoodsStock.vue';
 
 import { getSpuDetail } from '@/api/pms/goods';
 import { useRoute } from 'vue-router';
-import { GoodsDetail } from '@/types/api/pms/goods';
+import { GoodsDetail } from '@/api/pms/goods/types';
 
 const route = useRoute();
 

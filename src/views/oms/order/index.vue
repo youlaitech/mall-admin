@@ -7,10 +7,10 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import { ElForm } from 'element-plus';
-import { Order, OrderQueryParam } from '@/types/api/oms/order';
+import { Order, OrderQuery } from '@/types/api/oms/order';
 import { Dialog } from '@/types/common';
 
-import { listOrderPages, getOrderDetail } from '@/api/oms/order';
+import { listOrderPages, getOrderDetail } from '@/api/oms/order/order/order';
 import { Search, Refresh } from '@element-plus/icons-vue';
 
 const queryFormRef = ref(ElForm);
@@ -50,13 +50,13 @@ const state = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-  } as OrderQueryParam,
+  } as OrderQuery,
   orderList: [] as Order[],
   total: 0,
   dialog: {
     title: '订单详情',
     visible: false,
-  } as Dialog,
+  } as DialogType,
   dialogVisible: false,
   orderDetail: {
     order: {
