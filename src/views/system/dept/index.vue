@@ -265,28 +265,24 @@ onMounted(() => {
           <template #default="scope">
             <el-button
               type="primary"
-              :icon="Edit"
-              circle
-              plain
+               link
               @click.stop="handleUpdate(scope.row)"
-            >
+            >新增
             </el-button>
             <el-button
               type="success"
-              :icon="Plus"
-              circle
-              plain
+              link
               @click.stop="handleAdd(scope.row)"
             >
+            修改
             </el-button>
 
             <el-button
               type="danger"
-              :icon="Delete"
-              circle
-              plain
+              link
               @click.stop="handleDelete(scope.row)"
             >
+            删除
             </el-button>
           </template>
         </el-table-column>

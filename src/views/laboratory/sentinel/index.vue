@@ -99,7 +99,7 @@ onMounted(async () => {
                 </span>
                 <template #dropdown>
                   <div>
-                    { "resource": "ReactiveCompositeDiscoveryClient_youlai-lab",
+                    { "resource": "ReactiveCompositeDiscoveryClient_laboratory",
                     "resourceMode": 0, "count": 3, "grade": 1 }
                   </div>
                 </template>

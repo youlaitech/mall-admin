@@ -569,7 +569,7 @@ onMounted(() => {
             <el-table-column type="selection" width="50" align="center" />
             <el-table-column
               key="id"
-              label="用户编号"
+              label="编号"
               align="center"
               prop="id"
               width="100"
@@ -580,11 +580,11 @@ onMounted(() => {
               align="center"
               prop="username"
             />
-            <el-table-column label="用户昵称" align="center" prop="nickname" />
+            <el-table-column label="用户昵称" width="120" align="center" prop="nickname" />
 
-            <el-table-column label="性别" align="center" prop="genderLabel" />
+            <el-table-column label="性别" width="100" align="center" prop="genderLabel" />
 
-            <el-table-column label="部门" align="center" prop="deptName" />
+            <el-table-column label="部门" width="120" align="center" prop="deptName" />
             <el-table-column
               label="手机号码"
               align="center"
@@ -608,7 +608,7 @@ onMounted(() => {
               prop="createTime"
               width="180"
             ></el-table-column>
-            <el-table-column label="操作" align="center" width="250">
+            <el-table-column label="操作" align="left" width="200">
               <template #default="scope">
                 <el-button type="success" link @click="resetPassword(scope.row)"
                   >重置密码</el-button
