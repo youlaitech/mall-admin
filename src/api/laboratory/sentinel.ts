@@ -7,7 +7,7 @@ import { AxiosPromise } from 'axios';
  */
 export function getFlowLimitingData(): AxiosPromise<string> {
   return request({
-    url: '/youlai-lab/api/v1/sentinel/flow_limiting/data',
+    url: '/laboratory/api/v1/sentinel/flow_limiting/data',
     method: 'get',
   });
 }
@@ -18,7 +18,7 @@ export function getFlowLimitingData(): AxiosPromise<string> {
  */
 export function getGatewayRouteFlowLimitingData(): AxiosPromise<string> {
   return request({
-    url: '/youlai-lab/api/v1/sentinel/gateway_route_flow_limiting/data',
+    url: '/laboratory/api/v1/sentinel/gateway_route_flow_limiting/data',
     method: 'get',
   });
 }
@@ -29,7 +29,7 @@ export function getGatewayRouteFlowLimitingData(): AxiosPromise<string> {
  */
 export function getGatewayApiFlowLimitingData(): AxiosPromise<string> {
   return request({
-    url: '/youlai-lab/api/v1/sentinel/gateway_api_flow_limiting/data',
+    url: '/laboratory/api/v1/sentinel/gateway_api_flow_limiting/data',
     method: 'get',
   });
 }
