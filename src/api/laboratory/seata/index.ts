@@ -7,7 +7,7 @@ import { SeataForm } from './types';
  */
 export function payOrder(data: SeataForm) {
   return request({
-    url: '/youlai-lab/api/v1/seata/order/_pay',
+    url: '/laboratory/api/v1/seata/order/_pay',
     method: 'post',
     data: data,
   });
@@ -19,7 +19,7 @@ export function payOrder(data: SeataForm) {
  */
 export function getSeataData() {
   return request({
-    url: '/youlai-lab/api/v1/seata/data',
+    url: '/laboratory/api/v1/seata/data',
     method: 'get',
   });
 }
@@ -30,7 +30,7 @@ export function getSeataData() {
  */
 export function resetSeataData() {
   return request({
-    url: '/youlai-lab/api/v1/seata/data/_reset',
+    url: '/laboratory/api/v1/seata/data/_reset',
     method: 'put',
   });
 }
