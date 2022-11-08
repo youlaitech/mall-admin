@@ -2,7 +2,7 @@ import {
   GoodsDetail,
   GoodsPageResult,
   GoodsQuery,
-} from '@/types/api/pms/goods';
+} from './types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 

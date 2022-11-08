@@ -190,9 +190,9 @@ onMounted(() => {
       @selection-change="handleSelectionChange"
       border
     >
-      <el-table-column type="selection" min-width="5%" />
-      <el-table-column prop="name" label="品牌名称" min-width="10" />
-      <el-table-column prop="logoUrl" label="LOGO" min-width="10">
+      <el-table-column type="selection" width="40" />
+      <el-table-column prop="name" label="品牌名称"/>
+      <el-table-column prop="logoUrl" label="LOGO" min-width="150">
         <template #default="scope">
           <el-popover placement="right" :width="400" trigger="hover">
             <img :src="scope.row.logoUrl" width="400" height="400" />
@@ -206,9 +206,9 @@ onMounted(() => {
         </template>
       </el-table-column>
 
-      <el-table-column prop="sort" label="排序" min-width="10" />
+      <el-table-column prop="sort" label="排序" min-width="80" />
 
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="200">
         <template #default="scope">
           <el-button
             @click="handleUpdate(scope.row)"

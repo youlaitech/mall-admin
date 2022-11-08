@@ -5,7 +5,7 @@ import {
   updateCategory,
   deleteCategories,
 } from '@/api/pms/category';
-import { Plus, Edit, Delete, Picture } from '@element-plus/icons-vue';
+import {  Picture } from '@element-plus/icons-vue';
 import SingleUpload from '@/components/Upload/SingleUpload.vue';
 import { onMounted, reactive, ref, toRefs, unref } from 'vue';
 import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus';
@@ -116,7 +116,7 @@ function submitForm() {
       if (state.formData.id) {
         updateCategory(state.formData.id, state.formData).then(() => {
           ElMessage.success('修改成功');
-          cancel();
+          closeDialog();
           handleQuery();
         });
       } else {
@@ -127,7 +127,7 @@ function submitForm() {
 
         addCategory(state.formData).then(() => {
           ElMessage.success('新增成功');
-          cancel();
+          closeDialog();
           handleQuery();
         });
       }
@@ -149,7 +149,7 @@ function handleDelete(row: any) {
   });
 }
 
-function cancel() {
+function closeDialog() {
   state.dialog.visible = false;
   dataFormRef.value.resetFields();
   state.dialog.visible = false;
@@ -164,6 +164,7 @@ onMounted(() => {
 <template>
   <div class="component-container">
     <el-tree
+    class="category"
       v-loading="loading"
       ref="categoryTreeRef"
       :data="categoryOptions"
@@ -175,17 +176,12 @@ onMounted(() => {
       @node-click="handleNodeClick"
     >
       <template #default="scope">
-        <div class="custom-tree-node">
-          <span>
+        <div class="category_node">
+          <div>
             <el-image
               v-show="scope.data.level == 3"
               :src="scope.data.iconUrl"
-              style="
-                width: 20px;
-                height: 20px;
-                vertical-align: middle;
-                margin-top: -5px;
-              "
+              class="category_node_img"
             >
               <template #error>
                 <div class="image-slot">
@@ -194,36 +190,31 @@ onMounted(() => {
               </template>
             </el-image>
             {{ scope.data.name }}
-          </span>
-          <span>
+          </div>
+          <div>
             <el-button
               v-show="scope.data.level != 3"
               type="success"
-              :icon="Plus"
-              circle
-              plain
+            link
               @click.stop="handleAdd(scope.data)"
-            />
+            >新增</el-button>
             <el-button
               v-show="scope.data.id !== 0"
               type="warning"
-              :icon="Edit"
-              circle
-              plain
+            link
               @click.stop="handleUpdate(scope.data)"
-            />
+            >编辑
+          </el-button>
             <el-button
               v-show="
                 scope.data.id &&
                 (!scope.data.children || scope.data.children.length <= 0)
               "
               type="danger"
-              :icon="Delete"
-              circle
-              plain
+          link
               @click.stop="handleDelete(scope.data)"
-            />
-          </span>
+            >删除</el-button>
+          </div>
         </div>
       </template>
     </el-tree>
@@ -261,29 +252,26 @@ onMounted(() => {
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
+          <el-button @click="closeDialog">取 消</el-button>
         </div>
       </template>
     </el-dialog>
   </div>
 </template>
 
-<style>
-.component-container {
-  height: 100%;
-}
+<style lang="scss">
 
-.custom-tree-node {
-  flex: 1;
+.category {
+ &_node{
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 14px;
-  padding-right: 8px;
-  line-height: 40px0;
+  &_img{
+    width: 20px;  height: 20px; vertical-align: middle;  margin-top: -5px;
+
+  }
+ }
 }
 
-.el-tree-node__content {
-  height: 40px;
-}
 </style>

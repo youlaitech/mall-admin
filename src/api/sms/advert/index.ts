@@ -2,7 +2,7 @@ import {
   AdvertForm,
   AdvertPageResult,
   AdvertQuery,
-} from '@/types/api/sms/advert';
+} from './types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 

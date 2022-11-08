@@ -37,7 +37,7 @@ export interface UserType {
 /**
  * 用户分页项类型声明
  */
-export type UserPageResult = PageResult<User[]>;
+export type UserPageResult = PageResult<UserType[]>;
 
 /**
  * 用户表单类型声明

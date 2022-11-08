@@ -2,7 +2,7 @@ import {
   CouponQuery,
   CouponPageResult,
   CouponForm,
-} from '@/types/api/sms/coupon';
+} from './types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 

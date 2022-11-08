@@ -2,8 +2,8 @@ import {
   BrandForm,
   Brand,
   BrandPageResult,
-  BrandQuery,
-} from '@/types/api/pms/brand';
+  BrandQuery
+} from './types';
 import request from '@/utils/request';
 import { AxiosPromise } from 'axios';
 
