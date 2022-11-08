@@ -75,7 +75,7 @@ function moveToTarget(currentTag: TagView) {
     for (const k in tagListDom) {
       if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
         if (
-          (tagListDom[k] as any).dataset.path ===
+            (tagListDom[k] as any).dataset.path ===
           visitedViews.value[currentIndex - 1].path
         ) {
           prevTag = tagListDom[k];
