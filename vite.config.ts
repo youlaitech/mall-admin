@@ -15,8 +15,8 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         // 指定需要缓存的图标文件夹
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
         // 指定symbolId格式
-        symbolId: 'icon-[dir]-[name]'
-      })
+        symbolId: 'icon-[dir]-[name]',
+      }),
     ],
     // 本地反向代理解决浏览器跨域限制
     server: {
@@ -25,18 +25,21 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       open: true, // 运行自动打开浏览器
       proxy: {
         [env.VITE_APP_BASE_API]: {
+          // 线上API地址
+          // target: 'https://api.youlai.tech',
+          // 本地API地址
           target: 'http://localhost:9999',
           changeOrigin: true,
-          rewrite: path =>
-            path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
-        }
-      }
+          rewrite: (path) =>
+            path.replace(new RegExp('^' + env.VITE_APP_BASE_API), ''),
+        },
+      },
     },
     resolve: {
       // Vite路径别名配置
       alias: {
-        '@': path.resolve('./src') // @代替src
-      }
-    }
+        '@': path.resolve('./src'), // @代替src
+      },
+    },
   };
 };
