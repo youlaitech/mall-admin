@@ -263,26 +263,19 @@ onMounted(() => {
 
         <el-table-column label="操作" align="center" width="150">
           <template #default="scope">
-            <el-button
-              type="primary"
-               link
-              @click.stop="handleUpdate(scope.row)"
-            >新增
+            <el-button type="primary" link @click.stop="handleAdd(scope.row)"
+              >新增
             </el-button>
             <el-button
               type="success"
               link
-              @click.stop="handleAdd(scope.row)"
+              @click.stop="handleUpdate(scope.row)"
             >
-            修改
+              编辑
             </el-button>
 
-            <el-button
-              type="danger"
-              link
-              @click.stop="handleDelete(scope.row)"
-            >
-            删除
+            <el-button type="danger" link @click.stop="handleDelete(scope.row)">
+              删除
             </el-button>
           </template>
         </el-table-column>

@@ -109,7 +109,7 @@ const state = reactive({
   },
 
   importDialog: {
-    title: '用户搭配',
+    title: '用户导入',
     visible: false,
   } as DialogType,
   importFormData: {} as UserImportData,
@@ -580,11 +580,26 @@ onMounted(() => {
               align="center"
               prop="username"
             />
-            <el-table-column label="用户昵称" width="120" align="center" prop="nickname" />
+            <el-table-column
+              label="用户昵称"
+              width="120"
+              align="center"
+              prop="nickname"
+            />
 
-            <el-table-column label="性别" width="100" align="center" prop="genderLabel" />
+            <el-table-column
+              label="性别"
+              width="100"
+              align="center"
+              prop="genderLabel"
+            />
 
-            <el-table-column label="部门" width="120" align="center" prop="deptName" />
+            <el-table-column
+              label="部门"
+              width="120"
+              align="center"
+              prop="deptName"
+            />
             <el-table-column
               label="手机号码"
               align="center"
@@ -618,7 +633,7 @@ onMounted(() => {
                   link
                   @click="handleUpdate(scope.row)"
                   v-hasPerm="['sys:user:edit']"
-                  >修改</el-button
+                  >编辑</el-button
                 >
                 <el-button
                   type="danger"
