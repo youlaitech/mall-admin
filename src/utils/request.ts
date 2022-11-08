@@ -49,7 +49,6 @@ service.interceptors.response.use(
     }
   },
   (error: any) => {
-    console.log('进入异常了', error);
     if (error.response.data) {
       const { code, msg } = error.response.data;
       // token 过期,重新登录
