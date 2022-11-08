@@ -51,11 +51,15 @@ service.interceptors.response.use(
   (error: any) => {
     if (error.response.data) {
       const { code } = error.response.data;
-      // token 过期
+      // token 过期,重新登录
       if (code === 'A0230') {
-        localStorage.clear(); // 清除浏览器全部缓存
-        window.location.href = '/'; // 跳转登录页
-        ElMessageBox.alert('当前页面已失效，请重新登录', '提示');
+        ElMessageBox.confirm('当前页面已失效，请重新登录', 'Warning', {
+          confirmButtonText: 'OK',
+          type: 'warning',
+        }).then(() => {
+          localStorage.clear();
+          window.location.href = '/';
+        });
       }
     }
     return Promise.reject(error.message);
