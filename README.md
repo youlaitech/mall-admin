@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/Vue-3.2.25-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-2.9.7-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.1.8-blue.svg"/>
+    <img src="https://img.shields.io/badge/Vue-3.2.40-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/Vite-3.2.0-green.svg"/>
+    <img src="https://img.shields.io/badge/Element Plus-2.2.17-blue.svg"/>
     <a src="https://github.com/hxrui" target="_blank">
         <img src="https://img.shields.io/github/stars/youlaitech/youlai-mall.svg?style=social&label=Stars"/>
     </a>
@@ -20,7 +20,7 @@
 
 ## 项目介绍
 
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；使用前端主流技术栈 Vue3 + Vite2 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的另一项开源力作。
+  [mall-admin](https://gitee.com/youlaiorg/mall-admin) 是基于 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 升级的 Vue3 版本有来商城管理前端工程；使用前端主流技术栈 Vue3 + Vite3 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等。
 
 ## 项目优势
 
@@ -38,7 +38,7 @@
 | ------------ | -------------------------------------- | ------------------------------------ |
 | Vue3         | 渐进式 JavaScript 框架                 | https://v3.cn.vuejs.org/             |
 | TypeScript   | JavaScript 的一个超集                  | https://www.tslang.cn/               |
-| Vite2        | 前端开发与构建工具                     | https://cn.vitejs.dev/               |
+| Vite        | 前端开发与构建工具                     | https://cn.vitejs.dev/               |
 | Element Plus | 基于 Vue 3，面向设计师和开发者的组件库 | https://element-plus.gitee.io/zh-CN/ |
 | Pinia        | 新一代状态管理工具                     | https://pinia.vuejs.org/             |
 | Vue Router   | Vue.js 的官方路由                      | https://router.vuejs.org/zh/         |
@@ -59,7 +59,7 @@
 | 开源组织           | [有来开源组织](https://gitee.com/youlaiorg)                          | [有来开源组织](https://github.com/youlaitech)                          | [有来开源组织](https://gitcode.net/youlai)                  |
 | 技术团队           | [有来技术团队](https://gitee.com/youlaitech)                         | [有来技术团队](https://github.com/youlaitech)                          | -                                                           |
 | 后端               | [youlai-mall](https://gitee.com/youlaiorg/youlai-mall)               | [youlai-mall](https://github.com/youlaitech/youlai-mall)               | [youlai-mall](https://gitcode.net/youlai/youlai-mall)       |
-| 管理前端           | [mall-admin-web](https://gitee.com/youlaiorg/mall-admin-web)         | [mall-admin-web](https://github.com/youlaitech/mall-admin-web)         | [mall-admin-web](https://gitcode.net/youlai/mall-admin-web) |
+| 管理前端           | [mall-admin](https://gitee.com/youlaiorg/mall-admin)         | [mall-admin](https://github.com/youlaitech/mall-admin)         | [mall-admin](https://gitcode.net/youlai/mall-admin) |
 | 小程序/H5/移动端   | [mall-app](https://gitee.com/youlaiorg/mall-app)                     | [mall-app](https://github.com/youlaitech/mall-app)                     | [mall-app](https://gitcode.net/youlai/mall-app)             |
 | vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | -                                                           |
 
@@ -69,7 +69,7 @@
 
 - 安装 Node
 
-  版本：v14 或 v16
+  版本：≥v14.0.0
 
 - 开发工具
 
@@ -77,28 +77,18 @@
 
 - 必装插件
 
-  VSCode 插件市场搜索并安装 Volar, 且一定要禁用 Vetur，不然代码会出现组件使用了但编译器还报组件未使用的警告信息，另外尤大也在 Vue3 生态话题说过 Volar 将会替代 Vetur 作为 Vue 的官方插件。
+  - Vue Language Features (Volar) 
+  - TypeScript Vue Plugin (Volar)
+
 
 ### 项目启动
 
-> 如果前端开发人员或者本地没有启动后台服务的情况，需要修改 vite.config.ts 的代理地址 http://localhost:9999 为线上接口地址 http://www.youlai.tech:9999
+> 如果前端开发人员或者本地没有启动 [后端接口](https://gitee.com/youlaitech/youlai-mall)的情况，需要修改 vite.config.ts 的代理地址 http://localhost:9999 为线上接口地址 https://api.youlai.tech
 
 1. npm install
 2. npm run dev
 3. 浏览器访问 http://localhost:9527
 
-🚨 如果安装依赖或启动报错，可尝试将依赖包 `/docs/node_modules.zip` 解压到项目根目录。
-
-🚨 如果因为网络问题导致 npm install 安装依赖很慢可更换为淘宝镜像源
-
-```bash
-# 设置镜像源地址为淘宝
-npm config set registry https://registry.npm.taobao.org
-# 确认更换是否成功
-npm config get registry
-# 继续安装
-npm install
-```
 
 ### 项目部署
 
