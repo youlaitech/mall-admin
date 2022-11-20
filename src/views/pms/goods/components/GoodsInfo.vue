@@ -22,11 +22,11 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="原价" prop="originPrice">
+        <el-form-item label="零售价" prop="originPrice">
           <el-input style="width: 400px" v-model="goodsInfo.originPrice" />
         </el-form-item>
 
-        <el-form-item label="现价" prop="price">
+        <el-form-item label="促销价" prop="price">
           <el-input style="width: 400px" v-model="goodsInfo.price" />
         </el-form-item>
 
@@ -93,8 +93,8 @@ const state = reactive({
   brandOptions: [] as Array<any>,
   rules: {
     name: [{ required: true, message: '请填写商品名称', trigger: 'blur' }],
-    originPrice: [{ required: true, message: '请填写原价', trigger: 'blur' }],
-    price: [{ required: true, message: '请填写现价', trigger: 'blur' }],
+    originPrice: [{ required: true, message: '请填写零售价', trigger: 'blur' }],
+    price: [{ required: true, message: '请填写促销价', trigger: 'blur' }],
     brandId: [{ required: true, message: '请选择商品品牌', trigger: 'blur' }],
     picUrl: [{ required: true, message: '请上传商品主图', trigger: 'blur' }],
   },
