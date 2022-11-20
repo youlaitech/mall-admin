@@ -124,11 +124,6 @@ function handleRemove(removeFile: UploadFile) {
     }
 
     deleteFileApi(fileName).then(() => {
-      // 删除成功回调
-      const fileIndex = fileList.value.findIndex(
-        (file) => file.uid == removeFile.uid
-      );
-      fileList.value.splice(fileIndex, 1);
       emit(
         'update:modelValue',
         fileList.value.map((file) => file.url)
