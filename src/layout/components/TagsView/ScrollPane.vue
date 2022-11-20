@@ -32,7 +32,7 @@ const { tagsView } = useStore();
 
 const visitedViews = computed(() => tagsView.visitedViews);
 
-const scrollWrapper = computed(() => proxy?.$refs.scrollContainer.$refs.wrap$);
+const scrollWrapper = computed(() => proxy?.$refs.scrollContainer.$refs.wrapRef);
 
 onMounted(() => {
   scrollWrapper.value.addEventListener('scroll', emitScroll, true);
