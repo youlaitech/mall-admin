@@ -23,12 +23,12 @@ export function uploadFileApi(file: File): AxiosPromise<FileInfo> {
 /**
  * 删除文件
  *
- * @param fileName 文件名
+ * @param filePath 文件名
  */
-export function deleteFileApi(fileName?: string) {
+export function deleteFileApi(filePath?: string) {
   return request({
     url: '/youlai-system/api/v1/files',
     method: 'delete',
-    params: { fileName: fileName },
+    params: { filePath: filePath },
   });
 }
