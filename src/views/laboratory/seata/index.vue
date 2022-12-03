@@ -10,13 +10,15 @@ import { reactive, onMounted, toRefs } from 'vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import {
   Money,
-  Refresh,
   RefreshLeft,
-  Right,
   CircleCheckFilled,
   CircleCloseFilled,
 } from '@element-plus/icons-vue';
-import { payOrder, getSeataData, resetSeataData } from '@/api/laboratory/seata';
+import {
+  purchaseGoods,
+  getSeataData,
+  resetSeataData,
+} from '@/api/laboratory/seata';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { SeataForm } from '@/api/laboratory/seata/types';
 
@@ -48,7 +50,10 @@ const state = reactive({
 
   submitData: {
     openTx: true, // 是否开启事务
-    orderEx: true, // 订单修改异常
+    openEx: true, // 订单修改异常
+    memberId: 1,
+    skuId: 1,
+    amount: 599900,
   } as SeataForm,
 });
 
@@ -63,9 +68,7 @@ function handleOrderPay() {
     (seataData.value.stockInfo.stockNum &&
       seataData.value.stockInfo.stockNum != 999) ||
     (seataData.value.accountInfo.balance &&
-      seataData.value.accountInfo.balance != 1000000000) ||
-    (seataData.value.orderInfo.status &&
-      seataData.value.orderInfo.status != 101)
+      seataData.value.accountInfo.balance != 10000000)
   ) {
     ElMessageBox.confirm(
       '检查到当前数据已被污染，请先重置数据后尝试提交?',
@@ -84,8 +87,10 @@ function handleOrderPay() {
     // 订单支付模拟提交
 
     loading.value = true;
-    payOrder(submitData.value)
-      .then(() => {
+    let orderSn = '';
+    purchaseGoods(submitData.value)
+      .then((response) => {
+        orderSn = response.data;
         ElMessage.success('订单支付成功');
       })
       .finally(() => {
@@ -95,6 +100,7 @@ function handleOrderPay() {
           balance: seataData.value.accountInfo.balance,
         };
         loadData();
+        loading.value = false;
       });
   }
 }
@@ -104,18 +110,13 @@ function handleOrderPay() {
  */
 function loadData() {
   loading.value = true;
-  getSeataData().then((response: any) => {
-    seataData.value = response.data;
-    loading.value = false;
-  });
-}
-
-/**
- * 刷新数据
- */
-function handleDataRefresh() {
-  loading.value = true;
-  loadData();
+  getSeataData()
+    .then((response: any) => {
+      seataData.value = response.data;
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 }
 
 /**
@@ -123,16 +124,20 @@ function handleDataRefresh() {
  */
 function handleDataReset() {
   loading.value = true;
-  resetSeataData().then(() => {
-    ElMessage.success('数据还原成功');
-    loading.value = false;
-    cacheSeataData.value = {
-      status: undefined,
-      stockNum: undefined,
-      balance: undefined,
-    };
-    loadData();
-  });
+  resetSeataData()
+    .then(() => {
+      ElMessage.success('数据还原成功');
+
+      cacheSeataData.value = {
+        status: undefined,
+        stockNum: undefined,
+        balance: undefined,
+      };
+      loadData();
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 }
 
 onMounted(() => {
@@ -145,8 +150,8 @@ onMounted(() => {
   <div class="app-container">
     <el-alert type="info">
       <p style="font-size: 16px">
-        <b>模拟订单支付流程：</b>
-        扣减商品库存 → 扣减会员余额 → 修改订单状态
+        <b>购买商品流程：</b>
+        扣减商品库存 → 创建订单 → 扣减会员余额
       </p>
       <p style="font-size: 14px">
         <b> 分布式事务生效判断：</b>
@@ -167,30 +172,27 @@ onMounted(() => {
       </p>
     </el-alert>
 
-    <el-card class="box-card" shadow="always" style="margin-top: 20px">
+    <el-card :shadow="false" style="margin-top: 20px">
       <el-form :inline="true">
         <el-row>
           <el-col :span="20">
             <el-form-item>
-              <el-switch
-                v-model="submitData.openTx"
-                active-value=""
-                active-text="开启事务"
-                inactive-text="关闭事务"
-              />
-            </el-form-item>
-
-            <el-form-item>
-              <el-button type="primary" :icon="Money" @click="handleOrderPay"
+              <el-button
+                type="primary"
+                :icon="Money"
+                size="small"
+                @click="handleOrderPay"
                 >订单支付</el-button
               >
-              <el-button :icon="Refresh" @click="handleDataRefresh"
-                >刷新数据</el-button
+            </el-form-item>
+            <el-form-item>
+              <el-checkbox v-model="submitData.openTx" :label="true">
+                开启事务</el-checkbox
               >
             </el-form-item>
           </el-col>
           <el-col :span="4" style="text-align: right">
-            <el-button :icon="RefreshLeft" @click="handleDataReset"
+            <el-button :icon="RefreshLeft" size="small" @click="handleDataReset"
               >重置数据</el-button
             >
           </el-col>
@@ -199,7 +201,7 @@ onMounted(() => {
     </el-card>
 
     <el-row :gutter="10" style="margin-top: 20px" v-loading="loading">
-      <el-col :span="8" :xs="24" class="card-panel__col">
+      <el-col :span="8" :xs="24" class="box">
         <el-card class="box-card" shadow="always">
           <template #header>
             <svg-icon icon-class="goods" />
@@ -216,12 +218,12 @@ onMounted(() => {
               <el-form-item label="商品名称:">
                 {{ seataData.stockInfo.name }}
               </el-form-item>
-              <el-form-item label="库存数量:" style="display: flex">
+              <el-form-item
+                label="库存数量:"
+                style="display: flex; margin-top: 30px"
+              >
                 <div v-if="cacheSeataData.stockNum != null">
-                  {{ cacheSeataData.stockNum }} 部
-                  <el-icon>
-                    <right />
-                  </el-icon>
+                  {{ cacheSeataData.stockNum }} 部 →
                 </div>
 
                 {{ seataData.stockInfo.stockNum }} 部
@@ -235,7 +237,7 @@ onMounted(() => {
                     :underline="false"
                     :icon="CircleCheckFilled"
                   >
-                    修改成功
+                    成功
                   </el-link>
                   <el-link
                     v-else-if="
@@ -245,7 +247,7 @@ onMounted(() => {
                     :underline="false"
                     :icon="CircleCloseFilled"
                   >
-                    修改失败
+                    失败
                   </el-link>
                 </div>
               </el-form-item>
@@ -254,11 +256,26 @@ onMounted(() => {
         </el-card>
       </el-col>
 
-      <el-col :span="8" :xs="24" class="card-panel__col">
+      <el-col :span="8" :xs="24" class="box">
         <el-card class="box-card" shadow="always">
           <template #header>
-            <svg-icon icon-class="user" />
-            会员信息
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <svg-icon icon-class="user" />
+                会员信息
+              </div>
+              <div>
+                <el-checkbox v-model="submitData.openEx" :label="true">
+                  搞点异常</el-checkbox
+                >
+              </div>
+            </div>
           </template>
 
           <div style="display: flex">
@@ -271,16 +288,14 @@ onMounted(() => {
               <el-form-item label="会员昵称:">
                 {{ seataData.accountInfo.nickName }}
               </el-form-item>
-              <el-form-item label="会员余额:">
+
+              <el-form-item label="会员余额:" style="margin-top: 35px">
                 <div v-if="cacheSeataData.balance != null">
-                  {{ (cacheSeataData.balance as any) / 100 }} 元
-                  <el-icon>
-                    <right />
-                  </el-icon>
+                  {{ (cacheSeataData.balance as any) / 100 }} 元 →
                 </div>
                 {{ (seataData.accountInfo.balance as any) / 100 }} 元
 
-                <div v-if="cacheSeataData.balance" style="margin-left: 50px">
+                <div v-if="cacheSeataData.balance" style="margin-left: 20px">
                   <el-link
                     v-if="
                       cacheSeataData.balance != seataData.accountInfo.balance
@@ -289,7 +304,7 @@ onMounted(() => {
                     :underline="false"
                     :icon="CircleCheckFilled"
                   >
-                    修改成功
+                    成功
                   </el-link>
                   <el-link
                     v-else-if="
@@ -299,7 +314,7 @@ onMounted(() => {
                     :underline="false"
                     :icon="CircleCloseFilled"
                   >
-                    修改失败
+                    失败
                   </el-link>
                 </div>
               </el-form-item>
@@ -308,45 +323,35 @@ onMounted(() => {
         </el-card>
       </el-col>
 
-      <el-col :span="8" :xs="24" class="card-panel__col">
+      <el-col :span="8" :xs="24" class="box">
         <el-card class="box-card" shadow="always">
           <template #header>
             <svg-icon icon-class="order" />
             订单信息
-            <el-checkbox
-              v-model="submitData.orderEx"
-              :label="true"
-              style="float: right; color: #f56c6c"
-            >
-              搞点异常</el-checkbox
-            >
           </template>
+
           <el-form-item label="订单编号:">
             {{ seataData.orderInfo.orderSn }}
           </el-form-item>
 
-          <el-form-item label="订单状态:">
-            <div v-if="cacheSeataData.status == 101">
-              <el-tag type="info"> 待支付 </el-tag>
-              <el-icon>
-                <right />
-              </el-icon>
+          <el-form-item label="订单状态:" style="margin-top: 35px">
+            <div v-if="cacheSeataData.status != null">
+              <el-tag type="info"> 待付款 </el-tag>
+              →
             </div>
-            <el-tag v-if="seataData.orderInfo.status == 101" type="info"
-              >待支付</el-tag
-            >
-            <el-tag v-else-if="seataData.orderInfo.status == 201" type="success"
+            <el-tag v-if="seataData.orderInfo.status == 2" type="success"
               >已支付</el-tag
             >
+            <el-tag v-else type="info"> 待付款 </el-tag>
 
-            <div v-if="cacheSeataData.balance" style="margin-left: 50px">
+            <div v-if="cacheSeataData.status" style="margin-left: 50px">
               <el-link
                 v-if="cacheSeataData.status != seataData.orderInfo.status"
                 type="success"
                 :underline="false"
                 :icon="CircleCheckFilled"
               >
-                修改成功
+                成功
               </el-link>
               <el-link
                 v-else
@@ -354,7 +359,7 @@ onMounted(() => {
                 :underline="false"
                 :icon="CircleCloseFilled"
               >
-                修改失败
+                失败
               </el-link>
             </div>
           </el-form-item>
@@ -365,12 +370,22 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.card-panel__col {
+.box {
   margin-bottom: 12px;
 
   .el-link {
     font-size: 16px;
     margin-right: 8px;
   }
+}
+.el-form-item--default {
+  margin-bottom: 0px !important;
+}
+
+.el-result {
+  --el-result-padding: 3px !important;
+  --el-result-title-margin-top: 0px !important;
+  --el-result-subtitle-margin-top: 0px !important;
+  --el-result-extra-margin-top: 0px !important;
 }
 </style>

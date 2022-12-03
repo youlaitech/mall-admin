@@ -65,7 +65,7 @@ export function updateRoleMenus(
  *
  * @param id
  */
-export function getRoleFormDetail(id: number): AxiosPromise<RoleForm> {
+export function getRoleForm(id: number): AxiosPromise<RoleForm> {
   return request({
     url: '/youlai-system/api/v1/roles/' + id,
     method: 'get',

@@ -28,7 +28,7 @@ export type RolePageResult = PageResult<Role[]>;
  * 角色表单类型
  */
 export interface RoleForm {
-  id?: string;
+  id?: number;
   name: string;
   code: string;
   sort: number;
