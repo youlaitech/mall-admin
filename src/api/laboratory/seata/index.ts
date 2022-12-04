@@ -1,13 +1,12 @@
 import request from '@/utils/request';
-import { AxiosPromise } from 'axios';
 import { SeataForm } from './types';
 
 /**
  * 购买商品
  */
-export function purchaseGoods(data: SeataForm): AxiosPromise<string> {
+export function payOrder(data: SeataForm) {
   return request({
-    url: '/laboratory/api/v1/seata/_purchase',
+    url: '/laboratory/api/v1/seata/_pay',
     method: 'post',
     data: data,
   });

@@ -14,11 +14,7 @@ import {
   CircleCheckFilled,
   CircleCloseFilled,
 } from '@element-plus/icons-vue';
-import {
-  purchaseGoods,
-  getSeataData,
-  resetSeataData,
-} from '@/api/laboratory/seata';
+import { payOrder, getSeataData, resetSeataData } from '@/api/laboratory/seata';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { SeataForm } from '@/api/laboratory/seata/types';
 
@@ -87,10 +83,8 @@ function handleOrderPay() {
     // 订单支付模拟提交
 
     loading.value = true;
-    let orderSn = '';
-    purchaseGoods(submitData.value)
+    payOrder(submitData.value)
       .then((response) => {
-        orderSn = response.data;
         ElMessage.success('订单支付成功');
       })
       .finally(() => {
@@ -150,8 +144,8 @@ onMounted(() => {
   <div class="app-container">
     <el-alert type="info">
       <p style="font-size: 16px">
-        <b>购买商品流程：</b>
-        扣减商品库存 → 创建订单 → 扣减会员余额
+        <b>订单支付流程：</b>
+        扣减库存 → 扣减余额 → 修改订单状态【已支付】
       </p>
       <p style="font-size: 14px">
         <b> 分布式事务生效判断：</b>
@@ -173,39 +167,48 @@ onMounted(() => {
     </el-alert>
 
     <el-card :shadow="false" style="margin-top: 20px">
-      <el-form :inline="true">
-        <el-row>
-          <el-col :span="20">
-            <el-form-item>
-              <el-button
-                type="primary"
-                :icon="Money"
-                size="small"
-                @click="handleOrderPay"
-                >订单支付</el-button
-              >
-            </el-form-item>
-            <el-form-item>
-              <el-checkbox v-model="submitData.openTx" :label="true">
-                开启事务</el-checkbox
-              >
-            </el-form-item>
-          </el-col>
-          <el-col :span="4" style="text-align: right">
-            <el-button :icon="RefreshLeft" size="small" @click="handleDataReset"
-              >重置数据</el-button
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-content: center;
+        "
+      >
+        <div style="display: flex; align-content: flex-start">
+          <el-form-item>
+            <el-button
+              type="primary"
+              :icon="Money"
+              size="small"
+              @click="handleOrderPay"
+              >订单支付</el-button
             >
-          </el-col>
-        </el-row>
-      </el-form>
+          </el-form-item>
+          <el-form-item style="margin-left: 20px">
+            <el-checkbox v-model="submitData.openTx"> 开启事务</el-checkbox>
+          </el-form-item>
+        </div>
+
+        <el-button :icon="RefreshLeft" size="small" @click="handleDataReset"
+          >重置数据</el-button
+        >
+      </div>
     </el-card>
 
     <el-row :gutter="10" style="margin-top: 20px" v-loading="loading">
       <el-col :span="8" :xs="24" class="box">
-        <el-card class="box-card" shadow="always">
+        <el-card class="box-card" :shadow="false">
           <template #header>
-            <svg-icon icon-class="goods" />
-            商品信息
+            <div style="display: flex; justify-content: space-between">
+              <div><svg-icon icon-class="goods" /> 商品信息</div>
+              <el-link
+                type="primary"
+                style="margin-left: 10px"
+                href="https://gitee.com/youlaitech/youlai-mall/tree/master/mall-pms"
+                target="_blank"
+                >mall-pms</el-link
+              >
+            </div>
           </template>
 
           <div style="display: flex">
@@ -257,7 +260,7 @@ onMounted(() => {
       </el-col>
 
       <el-col :span="8" :xs="24" class="box">
-        <el-card class="box-card" shadow="always">
+        <el-card class="box-card" :shadow="false">
           <template #header>
             <div
               style="
@@ -271,8 +274,12 @@ onMounted(() => {
                 会员信息
               </div>
               <div>
-                <el-checkbox v-model="submitData.openEx" :label="true">
-                  搞点异常</el-checkbox
+                <el-link
+                  type="primary"
+                  style="margin-left: 10px"
+                  href="https://gitee.com/youlaitech/youlai-mall/tree/master/mall-ums"
+                  target="_blank"
+                  >mall-ums</el-link
                 >
               </div>
             </div>
@@ -324,10 +331,32 @@ onMounted(() => {
       </el-col>
 
       <el-col :span="8" :xs="24" class="box">
-        <el-card class="box-card" shadow="always">
+        <el-card class="box-card" :shadow="false">
           <template #header>
-            <svg-icon icon-class="order" />
-            订单信息
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <div><svg-icon icon-class="order" /> 订单信息</div>
+              <div>
+                <el-checkbox
+                  v-model="submitData.openEx"
+                  style="margin-left: 10px"
+                >
+                  搞点异常</el-checkbox
+                >
+              </div>
+              <el-link
+                type="primary"
+                style="margin-left: 10px"
+                href="https://gitee.com/youlaitech/youlai-mall/tree/master/mall-oms"
+                target="_blank"
+                >mall-oms</el-link
+              >
+            </div>
           </template>
 
           <el-form-item label="订单编号:">
@@ -366,6 +395,29 @@ onMounted(() => {
         </el-card>
       </el-col>
     </el-row>
+
+    <el-card v-if="cacheSeataData.status" :shadow="false">
+      <el-form-item label="事务生效推断：">
+        <el-tag v-if="submitData.openTx == false" type="info">
+          未开启事务
+        </el-tag>
+        <el-tag
+          v-else-if="
+            (submitData.openEx &&
+              cacheSeataData.status != seataData.orderInfo.status &&
+              cacheSeataData.balance != seataData.accountInfo.balance &&
+              cacheSeataData.stockNum != seataData.stockInfo.stockNum) ||
+            (cacheSeataData.status == seataData.orderInfo.status &&
+              cacheSeataData.balance == seataData.accountInfo.balance &&
+              cacheSeataData.stockNum == seataData.stockInfo.stockNum)
+          "
+          type="success"
+          >事务生效</el-tag
+        >
+        <el-tag v-else-if="submitData.openEx" type="info">事务未生效</el-tag>
+        <el-tag v-else type="warning"> 无异常发生 </el-tag>
+      </el-form-item>
+    </el-card>
   </div>
 </template>
 
