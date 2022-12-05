@@ -158,10 +158,10 @@ onMounted(() => {
         <b> 博客教程：</b>
         <el-link
           type="primary"
-          href="https://www.cnblogs.com/haoxianrui/"
+          href="https://www.cnblogs.com/haoxianrui/p/16951368.html"
           target="_blank"
         >
-          https://www.cnblogs.com/haoxianrui</el-link
+          https://www.cnblogs.com/haoxianrui/p/16951368.html</el-link
         >
       </p>
     </el-alert>
