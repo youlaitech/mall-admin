@@ -91,6 +91,7 @@ function handleAdd(row: any) {
     title: '新增商品分类',
     visible: true,
   };
+  state.formData.id = undefined;
   if (row.id != null) {
     // 行点击新增
     state.parent = {
