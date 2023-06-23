@@ -20,7 +20,7 @@
 
 ## 项目介绍
 
-  [mall-admin](https://gitee.com/youlaiorg/mall-admin) 是基于 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 升级的 Vue3 版本有来商城管理前端工程；使用前端主流技术栈 Vue3 + Vite3 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等。
+[mall-admin](https://gitee.com/youlaiorg/mall-admin) 是基于 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 升级的 Vue3 版本有来商城管理前端工程；使用前端主流技术栈 Vue3 + Vite3 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等。
 
 ## 项目优势
 
@@ -38,7 +38,7 @@
 | ------------ | -------------------------------------- | ------------------------------------ |
 | Vue3         | 渐进式 JavaScript 框架                 | https://v3.cn.vuejs.org/             |
 | TypeScript   | JavaScript 的一个超集                  | https://www.tslang.cn/               |
-| Vite        | 前端开发与构建工具                     | https://cn.vitejs.dev/               |
+| Vite         | 前端开发与构建工具                     | https://cn.vitejs.dev/               |
 | Element Plus | 基于 Vue 3，面向设计师和开发者的组件库 | https://element-plus.gitee.io/zh-CN/ |
 | Pinia        | 新一代状态管理工具                     | https://pinia.vuejs.org/             |
 | Vue Router   | Vue.js 的官方路由                      | https://router.vuejs.org/zh/         |
@@ -54,14 +54,14 @@
 
 ## 项目地址
 
-|                    | Gitee                                                                | Github                                                                 | GitCode                                                     |
-| ------------------ | -------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- |
-| 开源组织           | [有来开源组织](https://gitee.com/youlaiorg)                          | [有来开源组织](https://github.com/youlaitech)                          | [有来开源组织](https://gitcode.net/youlai)                  |
-| 技术团队           | [有来技术团队](https://gitee.com/youlaitech)                         | [有来技术团队](https://github.com/youlaitech)                          | -                                                           |
-| 后端               | [youlai-mall](https://gitee.com/youlaiorg/youlai-mall)               | [youlai-mall](https://github.com/youlaitech/youlai-mall)               | [youlai-mall](https://gitcode.net/youlai/youlai-mall)       |
-| 管理前端           | [mall-admin](https://gitee.com/youlaiorg/mall-admin)         | [mall-admin](https://github.com/youlaitech/mall-admin)         | [mall-admin](https://gitcode.net/youlai/mall-admin) |
-| 小程序/H5/移动端   | [mall-app](https://gitee.com/youlaiorg/mall-app)                     | [mall-app](https://github.com/youlaitech/mall-app)                     | [mall-app](https://gitcode.net/youlai/mall-app)             |
-| vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | -                                                           |
+|                    | Gitee                                                                | Github                                                                 | GitCode                                               |
+| ------------------ | -------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------- |
+| 开源组织           | [有来开源组织](https://gitee.com/youlaiorg)                          | [有来开源组织](https://github.com/youlaitech)                          | [有来开源组织](https://gitcode.net/youlai)            |
+| 技术团队           | [有来技术团队](https://gitee.com/youlaitech)                         | [有来技术团队](https://github.com/youlaitech)                          | -                                                     |
+| 后端               | [youlai-mall](https://gitee.com/youlaiorg/youlai-mall)               | [youlai-mall](https://github.com/youlaitech/youlai-mall)               | [youlai-mall](https://gitcode.net/youlai/youlai-mall) |
+| 管理前端           | [mall-admin](https://gitee.com/youlaiorg/mall-admin)                 | [mall-admin](https://github.com/youlaitech/mall-admin)                 | [mall-admin](https://gitcode.net/youlai/mall-admin)   |
+| 小程序/H5/移动端   | [mall-app](https://gitee.com/youlaiorg/mall-app)                     | [mall-app](https://github.com/youlaitech/mall-app)                     | [mall-app](https://gitcode.net/youlai/mall-app)       |
+| vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | -                                                     |
 
 ## 启动部署
 
@@ -77,9 +77,8 @@
 
 - 必装插件
 
-  - Vue Language Features (Volar) 
+  - Vue Language Features (Volar)
   - TypeScript Vue Plugin (Volar)
-
 
 ### 项目启动
 
@@ -88,7 +87,6 @@
 1. npm install
 2. npm run dev
 3. 浏览器访问 http://localhost:9527
-
 
 ### 项目部署
 
@@ -122,9 +120,14 @@
 
   ```
 
-## 联系信息
+### 交流群 🚀
 
-> 欢迎添加开发者微信，备注「有来」进群
+> 关注「有来技术」公众号，获取交流群二维码。
+>
+> 如果交流群的二维码过期，加我微信，备注「前端」、「后端」或「全栈」即可。
+>
+> 为了避免营销广告人群混入，此举无奈，望理解！
 
-| ![郝先瑞](https://www.youlai.tech/files/blog/rui.jpg) | ![张川](https://www.youlai.tech/files/blog/chuan.jpg) |
-| ----------------------------------------------------- | ----------------------------------------------------- |
+| 公众号                                                                         | 交流群                                                                                              |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| <img src="https://s2.loli.net/2023/05/28/JaG4L8ZHmkIgRQC.png" height="180px"/> | <img src="https://foruda.gitee.com/images/1687383898672561311/85a6d753_716974.png" height="180px"/> |
