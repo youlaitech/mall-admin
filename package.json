@@ -1,6 +1,6 @@
 {
   "name": "mall-admin",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "scripts": {
     "dev": "vite serve --mode development",
     "build:prod": "vue-tsc --noEmit && vite build --mode production",
