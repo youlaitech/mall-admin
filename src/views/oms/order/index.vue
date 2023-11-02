@@ -114,6 +114,7 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <!-- 搜索表单 -->
+   <div class="search">
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item prop="orderSn">
         <el-input v-model="queryParams.orderSn" placeholder="订单号" />
@@ -152,6 +153,7 @@ onMounted(() => {
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+   </div>
 
     <el-table ref="dataTable" v-loading="loading" :data="orderList" border>
       <el-table-column type="expand" width="100" label="订单商品">

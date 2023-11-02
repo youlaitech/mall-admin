@@ -152,36 +152,38 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <!-- 搜索表单 -->
-    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-      <el-form-item>
-        <el-button type="success" :icon="Plus" @click="handleAdd"
-          >新增</el-button
-        >
-        <el-button
-          type="danger"
-          :icon="Delete"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        >
-      </el-form-item>
+   <div class="search">
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+        <el-form-item>
+          <el-button type="success" :icon="Plus" @click="handleAdd"
+            >新增</el-button
+          >
+          <el-button
+            type="danger"
+            :icon="Delete"
+            :disabled="multiple"
+            @click="handleDelete"
+            >删除</el-button
+          >
+        </el-form-item>
 
-      <el-form-item prop="title">
-        <el-input
-          v-model="queryParams.keywords"
-          placeholder="标题"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleQuery"
-          >搜索</el-button
-        >
-        <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        <el-form-item prop="title">
+          <el-input
+            v-model="queryParams.keywords"
+            placeholder="标题"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" :icon="Search" @click="handleQuery"
+            >搜索</el-button
+          >
+          <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
 
+    </div>
     <el-table
       v-loading="loading"
       :data="advertList"

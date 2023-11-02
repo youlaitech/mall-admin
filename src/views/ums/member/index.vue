@@ -62,7 +62,9 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+
+    <div class="search">
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item>
         <el-input
           v-model="queryParams.nickName"
@@ -78,6 +80,7 @@ onMounted(() => {
         <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+    </div>
     <el-table
       v-loading="loading"
       :data="memberList"

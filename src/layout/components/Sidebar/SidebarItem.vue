@@ -22,8 +22,7 @@
         </el-menu-item>
       </app-link>
     </template>
-    <el-sub-menu v-else :index="resolvePath(item.path)" popper-append-to-body>
-      <!-- popper-append-to-body -->
+    <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
         <svg-icon
           v-if="item.meta && item.meta.icon"
