@@ -16,7 +16,7 @@ export function loginApi(data: LoginData): AxiosPromise<LoginResult> {
   formData.append("verifyCode", data.verifyCode || "");
   formData.append("grant_type", "captcha");
   return request({
-    url: "/youlai-auth/oauth/token",
+    url: "/youlai-auth/oauth2/token",
     method: "post",
     data: formData,
     headers: {
