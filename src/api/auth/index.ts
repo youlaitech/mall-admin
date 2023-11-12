@@ -31,7 +31,7 @@ export function loginApi(data: LoginData): AxiosPromise<LoginResult> {
  */
 export function logoutApi() {
   return request({
-    url: "/youlai-system/api/v1/users/logout",
+    url: "/youlai-auth/oauth/logout",
     method: "delete",
   });
 }
