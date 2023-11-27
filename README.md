@@ -82,7 +82,7 @@
 
 ### 项目启动
 
-> 默认线上接口地址，如需替换接口地址，替换 .env.development 的代理目标地址 VITE_APP_TARGET_URL 的值 https://api.youlai.tech 为本地的 http://localhost:9999 或您的接口地址。
+> 默认后端接口地址 http://localhost:9999 ，如需替换接口地址，替换 .env.development 的代理目标地址 VITE_APP_TARGET_URL 的值为您的接口地址。
 
 1. pnpm install
 2. pnpm run dev
