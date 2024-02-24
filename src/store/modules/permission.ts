@@ -1,5 +1,4 @@
 import { RouteRecordRaw } from "vue-router";
-import { defineStore } from "pinia";
 import { constantRoutes } from "@/router";
 import { store } from "@/store";
 import { listRoutes } from "@/api/system/menu";
@@ -21,8 +20,8 @@ const hasPermission = (roles: string[], route: RouteRecordRaw) => {
       return true;
     }
     return roles.some((role) => {
-      if (route.meta?.roles !== undefined) {
-        return (route.meta.roles as string[]).includes(role);
+      if (route.meta?.roles) {
+        return route.meta.roles.includes(role);
       }
     });
   }
@@ -98,19 +97,23 @@ export const usePermissionStore = defineStore("permission", () => {
         });
     });
   }
-
   /**
-   * 混合模式左侧菜单
+   * 获取与激活的顶部菜单项相关的混合模式左侧菜单集合
    */
-  const mixLeftMenu = ref<RouteRecordRaw[]>([]);
-  function getMixLeftMenu(activeTop: string) {
-    routes.value.forEach((item) => {
-      if (item.path === activeTop) {
-        mixLeftMenu.value = item.children || [];
-      }
-    });
+  const mixLeftMenus = ref<RouteRecordRaw[]>([]);
+  function setMixLeftMenus(topMenuPath: string) {
+    const matchedItem = routes.value.find((item) => item.path === topMenuPath);
+    if (matchedItem && matchedItem.children) {
+      mixLeftMenus.value = matchedItem.children;
+    }
   }
-  return { routes, setRoutes, generateRoutes, getMixLeftMenu, mixLeftMenu };
+  return {
+    routes,
+    setRoutes,
+    generateRoutes,
+    mixLeftMenus,
+    setMixLeftMenus,
+  };
 });
 
 // 非setup

@@ -1,108 +1,102 @@
 <template>
   <div class="login-container">
     <!-- 顶部 -->
-    <div class="absolute top-0 flex items-center justify-end px-25 h-20 w-full">
+    <div class="absolute-lt flex-x-end p-3 w-full">
       <el-switch
         v-model="isDark"
         inline-prompt
-        :active-icon="IconEpMoon"
-        :inactive-icon="IconEpSunny"
+        :active-icon="Moon"
+        :inactive-icon="Sunny"
         active-color="var(--el-fill-color-dark)"
         inactive-color="var(--el-color-primary)"
         @change="handleThemeChange"
       />
-      <lang-select class="ml-4 cursor-pointer" />
+      <lang-select class="ml-2 cursor-pointer" />
     </div>
     <!-- 登录表单 -->
-    <el-card
-      class="z-1 !border-none w-100 !bg-transparent !rounded-4% <sm:w-83"
-    >
+    <el-card class="!border-none !bg-transparent !rounded-4% w-100 <sm:w-85">
       <div class="text-center relative">
         <h2>{{ defaultSettings.title }}</h2>
-        <el-tag class="ml-2 absolute top-0 right-0">{{
-          defaultSettings.version
-        }}</el-tag>
+        <el-tag class="ml-2 absolute-rt">{{ defaultSettings.version }}</el-tag>
       </div>
+
       <el-form
         ref="loginFormRef"
         :model="loginData"
         :rules="loginRules"
         class="login-form"
       >
+        <!-- 用户名 -->
         <el-form-item prop="username">
-          <div class="p-2">
-            <svg-icon icon-class="user" />
+          <div class="flex-y-center w-full">
+            <svg-icon icon-class="user" class="mx-2" />
+            <el-input
+              ref="username"
+              v-model="loginData.username"
+              :placeholder="$t('login.username')"
+              name="username"
+              size="large"
+              class="h-[48px]"
+            />
           </div>
-          <el-input
-            ref="username"
-            v-model="loginData.username"
-            class="flex-1"
-            size="large"
-            :placeholder="$t('login.username')"
-            name="username"
-          />
         </el-form-item>
 
+        <!-- 密码 -->
         <el-tooltip
           :disabled="isCapslock === false"
           content="Caps lock is On"
           placement="right"
         >
           <el-form-item prop="password">
-            <span class="p-2">
-              <svg-icon icon-class="password" />
-            </span>
-            <el-input
-              v-model="loginData.password"
-              class="flex-1"
-              :placeholder="$t('login.password')"
-              :type="passwordVisible === false ? 'password' : 'input'"
-              size="large"
-              name="password"
-              @keyup="checkCapslock"
-              @keyup.enter="handleLogin"
-            />
-            <span class="mr-2" @click="passwordVisible = !passwordVisible">
-              <svg-icon
-                :icon-class="passwordVisible === false ? 'eye' : 'eye-open'"
-                class="cursor-pointer"
+            <div class="flex-y-center w-full">
+              <el-icon class="mx-2"><Lock /></el-icon>
+              <el-input
+                v-model="loginData.password"
+                :placeholder="$t('login.password')"
+                :type="passwordVisible === false ? 'password' : 'input'"
+                name="password"
+                @keyup="checkCapslock"
+                @keyup.enter="handleLogin"
+                size="large"
+                class="flex-1 h-[48px]"
               />
-            </span>
+              <span
+                class="mr-2 cursor-pointer"
+                @click="passwordVisible = !passwordVisible"
+              >
+                <el-icon v-if="passwordVisible === false"><View /></el-icon>
+                <el-icon v-else><Hide /></el-icon>
+              </span>
+            </div>
           </el-form-item>
         </el-tooltip>
 
         <!-- 验证码 -->
-        <el-form-item prop="verifyCode">
-          <span class="p-2">
-            <svg-icon icon-class="verify-code" />
-          </span>
+        <el-form-item prop="captchaCode">
+          <div class="flex-y-center w-full">
+            <svg-icon icon-class="captcha" class="mx-2" />
+            <el-input
+              v-model="loginData.captchaCode"
+              auto-complete="off"
+              size="large"
+              class="flex-1"
+              :placeholder="$t('login.captchaCode')"
+              @keyup.enter="handleLogin"
+            />
 
-          <el-input
-            v-model="loginData.verifyCode"
-            auto-complete="off"
-            :placeholder="$t('login.verifyCode')"
-            class="w-[60%]"
-            @keyup.enter="handleLogin"
-          />
-
-          <div class="captcha">
             <el-image
-              :src="captchaBase64"
-              class="w-[120px] h-[48px] cursor-pointer"
               @click="getCaptcha"
-            >
-              <template #error>
-                <div class="image-slot">
-                  <i-ep-picture />
-                </div>
-              </template>
-            </el-image>
+              :src="captchaBase64"
+              class="rounded-tr-md rounded-br-md cursor-pointer h-[48px]"
+            />
           </div>
         </el-form-item>
 
+        <!-- 登录按钮 -->
         <el-button
           :loading="loading"
           type="primary"
+          size="large"
           class="w-full"
           @click.prevent="handleLogin"
           >{{ $t("login.login") }}
@@ -117,42 +111,32 @@
     </el-card>
 
     <!-- ICP备案 -->
-    <div
-      class="absolute bottom-1 text-[10px] text-center"
-      v-show="useAppStore().device == 'desktop'"
-    >
+    <div class="absolute bottom-1 text-[10px] text-center" v-show="icpVisible">
       <p>
-        Copyright © 2021 - 2023 youlai.tech All Rights Reserved. 有来技术
+        Copyright © 2019 - 2024 youlai.tech All Rights Reserved. 有来技术
         版权所有
       </p>
-      <p>皖ICP备20006496号-3</p>
+      <p>皖ICP备20006496号-1</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useSettingsStore, useUserStore, useAppStore } from "@/store";
+import { Sunny, Moon } from "@element-plus/icons-vue";
 import router from "@/router";
-import LangSelect from "@/components/LangSelect/index.vue";
-import SvgIcon from "@/components/SvgIcon/index.vue";
-import IconEpSunny from "~icons/ep/sunny";
-import IconEpMoon from "~icons/ep/moon";
-import { useSettingsStore } from "@/store/modules/settings";
-import defaultSettings from "@/settings";
-
-// 状态管理依赖
-import { useUserStore } from "@/store/modules/user";
-import { useAppStore } from "@/store/modules/app";
-
-// API依赖
 import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
 import { getCaptchaApi } from "@/api/auth";
 import { LoginData } from "@/api/auth/types";
 
+const route = useRoute();
+const userStore = useUserStore();
+const settingsStore = useSettingsStore();
+
+import defaultSettings from "@/settings";
 /**
  * 明亮/暗黑主题切换
  */
-const settingsStore = useSettingsStore();
 const isDark = ref<boolean>(settingsStore.theme === "dark");
 const handleThemeChange = (isDark: any) => {
   useToggle(isDark);
@@ -166,13 +150,21 @@ const handleThemeChange = (isDark: any) => {
  * 根据屏幕宽度切换设备模式
  */
 const appStore = useAppStore();
-const WIDTH = 992; // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
-const { width } = useWindowSize();
+const { width, height } = useWindowSize();
+const icpVisible = ref(true);
+
 watchEffect(() => {
-  if (width.value < WIDTH) {
+  // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
+  if (width.value < 992) {
     appStore.toggleDevice("mobile");
   } else {
     appStore.toggleDevice("desktop");
+  }
+
+  if (height.value < 600) {
+    icpVisible.value = false;
+  } else {
+    icpVisible.value = true;
   }
 });
 
@@ -182,13 +174,12 @@ const passwordVisible = ref(false); // 密码是否可见
 const captchaBase64 = ref(); // 验证码图片Base64字符串
 const loginFormRef = ref(ElForm); // 登录表单ref
 
-const loginData = reactive<LoginData>({
+const loginData = ref<LoginData>({
   username: "admin",
   password: "123456",
 });
 
 const { t } = useI18n();
-
 const loginRules = computed(() => {
   const prefix = appStore.language === "en" ? "Please enter " : "请输入";
   return {
@@ -203,30 +194,25 @@ const loginRules = computed(() => {
       {
         required: true,
         trigger: "blur",
-        validator: passwordValidator,
+        validator: (rule: any, value: any, callback: any) => {
+          if (value.length < 6) {
+            callback(new Error("The password can not be less than 6 digits"));
+          } else {
+            callback();
+          }
+        },
         message: `${prefix}${t("login.password")}`,
       },
     ],
-    verifyCode: [
+    captchaCode: [
       {
         required: true,
         trigger: "blur",
-        message: `${prefix}${t("login.verifyCode")}`,
+        message: `${prefix}${t("login.captchaCode")}`,
       },
     ],
   };
 });
-
-/**
- * 密码校验器
- */
-function passwordValidator(rule: any, value: any, callback: any) {
-  if (value.length < 6) {
-    callback(new Error("The password can not be less than 6 digits"));
-  } else {
-    callback();
-  }
-}
 
 /**
  * 检查输入大小写状态
@@ -241,23 +227,20 @@ function checkCapslock(e: any) {
  */
 function getCaptcha() {
   getCaptchaApi().then(({ data }) => {
-    const { captchaImgBase64, verifyCodeKey } = data;
-    loginData.verifyCodeKey = verifyCodeKey;
-    captchaBase64.value = captchaImgBase64;
+    loginData.value.captchaId = data.captchaId;
+    captchaBase64.value = data.captchaBase64;
   });
 }
 
 /**
  * 登录
  */
-const route = useRoute();
-const userStore = useUserStore();
 function handleLogin() {
   loginFormRef.value.validate((valid: boolean) => {
     if (valid) {
       loading.value = true;
       userStore
-        .login(loginData)
+        .login(loginData.value)
         .then(() => {
           const query: LocationQuery = route.query;
 
@@ -291,7 +274,6 @@ onMounted(() => {
 
   // 主题初始化
   const theme = useSettingsStore().theme;
-  console.log("登录页面主题", theme);
   useSettingsStore().changeSetting({ key: "theme", value: theme });
   if (theme == "dark") {
     document.documentElement.classList.add("dark");
@@ -302,39 +284,18 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.dark .login-container {
+html.dark .login-container {
   background: url("@/assets/images/login-bg-dark.jpg") no-repeat center right;
 }
 
 .login-container {
-  @apply w-full h-full flex-center;
-
   overflow-y: auto;
   background: url("@/assets/images/login-bg.jpg") no-repeat center right;
 
+  @apply wh-full flex-center;
+
   .login-form {
     padding: 30px 10px;
-
-    .captcha {
-      position: absolute;
-      top: 0;
-      right: 0;
-
-      .image-slot {
-        display: flex;
-        align-items: center;
-        justify-content: right;
-        width: 100%;
-        height: 100%;
-        font-size: 18px;
-        color: var(--el-text-color-secondary);
-        background: var(--el-fill-color-light);
-
-        svg {
-          margin-right: 10px;
-        }
-      }
-    }
   }
 }
 
@@ -356,7 +317,8 @@ onMounted(() => {
     }
 
     input:-webkit-autofill {
-      transition: background-color 5000s ease-in-out 0s; /* 通过延时渲染背景色变相去除背景颜色 */
+      /* 通过延时渲染背景色变相去除背景颜色 */
+      transition: background-color 1000s ease-in-out 0s;
     }
   }
 }

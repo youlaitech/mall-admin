@@ -12,9 +12,9 @@ export function loginApi(data: LoginData): AxiosPromise<LoginResult> {
   const formData = new FormData();
   formData.append("username", data.username);
   formData.append("password", data.password);
-  formData.append("verifyCodeKey", data.verifyCodeKey || "");
-  formData.append("verifyCode", data.verifyCode || "");
-  formData.append("grant_type", "captcha");
+  formData.append("captchaId", data.captchaId as string);
+  formData.append("captchaCode", data.captchaCode as string);
+  formData.append("grant_type", "password");
   return request({
     url: "/youlai-auth/oauth2/token",
     method: "post",
@@ -27,21 +27,21 @@ export function loginApi(data: LoginData): AxiosPromise<LoginResult> {
 }
 
 /**
- * 注销API
- */
-export function logoutApi() {
-  return request({
-    url: "/youlai-system/api/v1/users/logout",
-    method: "delete",
-  });
-}
-
-/**
  * 获取验证码
  */
 export function getCaptchaApi(): AxiosPromise<CaptchaResult> {
   return request({
-    url: "/captcha",
+    url: "/youlai-auth/api/v1/auth/captcha",
     method: "get",
+  });
+}
+
+/**
+ * 注销API
+ */
+export function logoutApi() {
+  return request({
+    url: "/youlai-auth/api/v1/auth/logout",
+    method: "delete",
   });
 }

@@ -1,7 +1,4 @@
-@import "./transition";
-@import "./sidebar";
-@import "./reset";
-@import "./dark";
+@use "./reset";
 
 .app-container {
   padding: 10px;

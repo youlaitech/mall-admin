@@ -1,5 +1,4 @@
 import vue from "@vitejs/plugin-vue";
-
 import { UserConfig, ConfigEnv, loadEnv, defineConfig } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
@@ -10,14 +9,15 @@ import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
+import mockDevServerPlugin from "vite-plugin-mock-dev-server";
 
 import vueJsx from "@vitejs/plugin-vue-jsx";
 
 import UnoCSS from "unocss/vite";
-import path from "path";
+import { resolve } from "path";
 
-const pathSrc = path.resolve(__dirname, "src");
-// 参考Vite官方： https://cn.vitejs.dev/config
+const pathSrc = resolve(__dirname, "src");
+//  https://cn.vitejs.dev/config
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
   return {
@@ -47,26 +47,23 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       open: true,
       proxy: {
         /**
-         * 反向代理解决跨域配置
-         * http://localhost:3000/dev-api/users (F12可见请求路径) => http://localhost:8989/users (实际请求后端 API 路径)
-         *
          * env.VITE_APP_BASE_API: /dev-api
-         * env.VITE_APP_TARGET_URL: http://localhost:8989
-         * env.VITE_APP_TARGET_BASE_API: ""
          */
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          target: env.VITE_APP_TARGET_URL,
+          // 线上接口地址
+          // target: "https://api.youlai.tech",
+          // 开发接口地址
+          target: "http://localhost:9999",
           rewrite: (path) =>
-            path.replace(
-              new RegExp("^" + env.VITE_APP_BASE_API),
-              env.VITE_APP_TARGET_BASE_API
-            ),
+            path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
       },
     },
     plugins: [
       vue(),
+      // MOCK 服务，开启 MOCK 放开注释即可
+      // mockDevServerPlugin(),
       vueJsx(),
       UnoCSS({
         hmrTopLevelAwait: false,
@@ -74,7 +71,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       // 自动导入参考： https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
-        imports: ["vue", "@vueuse/core"],
+        imports: ["vue", "@vueuse/core", "pinia", "vue-router", "vue-i18n"],
         // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
         resolvers: [ElementPlusResolver(), IconsResolver({})],
         eslintrc: {
@@ -85,7 +82,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         vueTemplate: true,
         // 配置文件生成位置(false:关闭自动生成)
         dts: false,
-        // dts: "src/types/auto-imports.d.ts",
+        // dts: "src/typings/auto-imports.d.ts",
       }),
 
       Components({
@@ -96,10 +93,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           IconsResolver({ enabledCollections: ["ep"] }),
         ],
         // 指定自定义组件位置(默认:src/components)
-        dirs: ["src/**/components"],
+        dirs: ["src/components", "src/**/components"],
         // 配置文件位置 (false:关闭自动生成)
         dts: false,
-        // dts: "src/types/components.d.ts",
+        // dts: "src/typings/components.d.ts",
       }),
 
       Icons({
@@ -107,7 +104,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       }),
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
-        iconDirs: [path.resolve(pathSrc, "assets/icons")],
+        iconDirs: [resolve(pathSrc, "assets/icons")],
         // 指定symbolId格式
         symbolId: "icon-[dir]-[name]",
       }),
@@ -119,6 +116,14 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "vue-router",
         "pinia",
         "axios",
+        "@vueuse/core",
+        "sortablejs",
+        "path-to-regexp",
+        "echarts",
+        "@wangeditor/editor",
+        "@wangeditor/editor-for-vue",
+        "vue-i18n",
+        "path-browserify",
         "element-plus/es/components/form/style/css",
         "element-plus/es/components/form-item/style/css",
         "element-plus/es/components/button/style/css",
@@ -166,18 +171,11 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/notification/style/css",
         "element-plus/es/components/image/style/css",
         "element-plus/es/components/statistic/style/css",
-        "element-plus/es/components/cascader/style/css",
-        "element-plus/es/components/steps/style/css",
-        "element-plus/es/components/step/style/css",
-        "element-plus/es/components/cascader-panel/style/css",
-        "element-plus/es/components/statistic/style/css",
-        "@vueuse/core",
-        "sortablejs",
-        "path-to-regexp",
-        "echarts",
-        "@wangeditor/editor",
-        "@wangeditor/editor-for-vue",
-        "vue-i18n",
+        "element-plus/es/components/watermark/style/css",
+        "element-plus/es/components/config-provider/style/css",
+        "element-plus/es/components/text/style/css",
+        "element-plus/es/components/drawer/style/css",
+        "element-plus/es/components/color-picker/style/css",
       ],
     },
     // 构建配置
@@ -192,6 +190,33 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         },
         format: {
           comments: false, // 删除注释
+        },
+      },
+      rollupOptions: {
+        output: {
+          // manualChunks: {
+          //   "vue-i18n": ["vue-i18n"],
+          // },
+          // 用于从入口点创建的块的打包输出格式[name]表示文件名,[hash]表示该文件内容hash值
+          entryFileNames: "js/[name].[hash].js",
+          // 用于命名代码拆分时创建的共享块的输出命名
+          chunkFileNames: "js/[name].[hash].js",
+          // 用于输出静态资源的命名，[ext]表示文件扩展名
+          assetFileNames: (assetInfo: any) => {
+            const info = assetInfo.name.split(".");
+            let extType = info[info.length - 1];
+            // console.log('文件信息', assetInfo.name)
+            if (
+              /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/i.test(assetInfo.name)
+            ) {
+              extType = "media";
+            } else if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(assetInfo.name)) {
+              extType = "img";
+            } else if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name)) {
+              extType = "fonts";
+            }
+            return `${extType}/[name].[hash].[ext]`;
+          },
         },
       },
     },

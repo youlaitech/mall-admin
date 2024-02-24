@@ -10,16 +10,18 @@ export interface LoginData {
    * 密码
    */
   password: string;
-
+  /**
+   * 授权类型
+   */
   grant_type?: string;
   /**
    * 验证码Code
    */
-  verifyCode?: string;
+  captchaCode?: string;
   /**
-   * 验证码Code服务端缓存key(UUID)
+   * 验证码唯一标识(UUID)
    */
-  verifyCodeKey?: string;
+  captchaId?: string;
 }
 
 /**
@@ -51,9 +53,9 @@ export interface CaptchaResult {
   /**
    * 验证码缓存key
    */
-  verifyCodeKey: string;
+  captchaId: string;
   /**
    * 验证码图片Base64字符串
    */
-  captchaImgBase64: string;
+  captchaBase64: string;
 }
