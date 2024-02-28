@@ -176,6 +176,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/text/style/css",
         "element-plus/es/components/drawer/style/css",
         "element-plus/es/components/color-picker/style/css",
+        "element-plus/es/components/cascader/style/css",
+        "element-plus/es/components/steps/style/css",
+        "element-plus/es/components/cascader-panel/style/css",
       ],
     },
     // 构建配置

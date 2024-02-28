@@ -41,7 +41,7 @@ export function getCaptchaApi(): AxiosPromise<CaptchaResult> {
  */
 export function logoutApi() {
   return request({
-    url: "/youlai-auth/api/v1/auth/logout",
+    url: "/youlai-system/api/v1/users/logout",
     method: "delete",
   });
 }
