@@ -1,65 +1,3 @@
-<script setup lang="ts">
-defineOptions({
-  name: "Dashboard",
-  inheritAttrs: false,
-});
-
-import { useUserStore } from "@/store/modules/user";
-import { useTransition, TransitionPresets } from "@vueuse/core";
-
-const userStore = useUserStore();
-const date: Date = new Date();
-
-const greetings = computed(() => {
-  const hours = date.getHours();
-  if (hours >= 6 && hours < 8) {
-    return "晨起披衣出草堂，轩窗已自喜微凉🌅！";
-  } else if (hours >= 8 && hours < 12) {
-    return "上午好，" + useUserStore().user.nickname + "！";
-  } else if (hours >= 12 && hours < 18) {
-    return "下午好，" + useUserStore().user.nickname + "！";
-  } else if (hours >= 18 && hours < 24) {
-    return "晚上好，" + useUserStore().user.nickname + "！";
-  } else if (hours >= 0 && hours < 6) {
-    return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
-  }
-});
-
-const duration = 5000;
-
-// 销售额
-const amount = ref(0);
-const amountOutput = useTransition(amount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-amount.value = 2000;
-
-// 访客数
-const visitCount = ref(0);
-const visitCountOutput = useTransition(visitCount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-visitCount.value = 2000;
-
-// IP数
-const dauCount = ref(0);
-const dauCountOutput = useTransition(dauCount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-dauCount.value = 2000;
-
-// 订单量
-const orderCount = ref(0);
-const orderCountOutput = useTransition(orderCount, {
-  duration: duration,
-  transition: TransitionPresets.easeOutExpo,
-});
-orderCount.value = 2000;
-</script>
-
 <template>
   <div class="dashboard-container">
     <!-- github角标 -->
@@ -87,7 +25,7 @@ orderCount.value = 2000;
             <el-statistic :value="99">
               <template #title>
                 <div class="flex items-center">
-                  <svg-icon icon-class="message" :size="20" />
+                  <svg-icon icon-class="message" size="20px" />
                   <span class="text-[16px] ml-1">消息</span>
                 </div>
               </template>
@@ -96,7 +34,7 @@ orderCount.value = 2000;
             <el-statistic :value="50">
               <template #title>
                 <div class="flex items-center">
-                  <svg-icon icon-class="todolist" :size="20" />
+                  <svg-icon icon-class="todolist" size="20px" />
                   <span class="text-[16px] ml-1">待办</span>
                 </div>
               </template>
@@ -106,7 +44,7 @@ orderCount.value = 2000;
             <el-statistic :value="10">
               <template #title>
                 <div class="flex items-center">
-                  <svg-icon icon-class="project" :size="20" />
+                  <svg-icon icon-class="project" size="20px" />
                   <span class="text-[16px] ml-1">项目</span>
                 </div>
               </template>
@@ -209,7 +147,7 @@ orderCount.value = 2000;
             <div class="text-lg text-right">
               {{ Math.round(orderCountOutput) }}
             </div>
-            <svg-icon icon-class="cart" size="2em" />
+            <svg-icon icon-class="order" size="2em" />
           </div>
 
           <div
@@ -253,6 +191,68 @@ orderCount.value = 2000;
     </el-row>
   </div>
 </template>
+
+<script setup lang="ts">
+defineOptions({
+  name: "Dashboard",
+  inheritAttrs: false,
+});
+
+import { useUserStore } from "@/store/modules/user";
+import { useTransition, TransitionPresets } from "@vueuse/core";
+
+const userStore = useUserStore();
+const date: Date = new Date();
+
+const greetings = computed(() => {
+  const hours = date.getHours();
+  if (hours >= 6 && hours < 8) {
+    return "晨起披衣出草堂，轩窗已自喜微凉🌅！";
+  } else if (hours >= 8 && hours < 12) {
+    return "上午好，" + useUserStore().user.nickname + "！";
+  } else if (hours >= 12 && hours < 18) {
+    return "下午好，" + useUserStore().user.nickname + "！";
+  } else if (hours >= 18 && hours < 24) {
+    return "晚上好，" + useUserStore().user.nickname + "！";
+  } else if (hours >= 0 && hours < 6) {
+    return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
+  }
+});
+
+const duration = 5000;
+
+// 销售额
+const amount = ref(0);
+const amountOutput = useTransition(amount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo,
+});
+amount.value = 2000;
+
+// 访客数
+const visitCount = ref(0);
+const visitCountOutput = useTransition(visitCount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo,
+});
+visitCount.value = 2000;
+
+// IP数
+const dauCount = ref(0);
+const dauCountOutput = useTransition(dauCount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo,
+});
+dauCount.value = 2000;
+
+// 订单量
+const orderCount = ref(0);
+const orderCountOutput = useTransition(orderCount, {
+  duration: duration,
+  transition: TransitionPresets.easeOutExpo,
+});
+orderCount.value = 2000;
+</script>
 
 <style lang="scss" scoped>
 .dashboard-container {
