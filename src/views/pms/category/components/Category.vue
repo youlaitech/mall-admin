@@ -117,7 +117,6 @@ function submitForm() {
         });
       } else {
         const parentCategory = state.parent as any;
-        console.log("parent", parentCategory);
         state.formData.parentId = parentCategory.id;
         state.formData.level = parentCategory.level + 1;
 

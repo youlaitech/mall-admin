@@ -66,7 +66,7 @@
                   <el-tag
                     size="small"
                     closable
-                    :type="(colors[scope.$index % colors.length] as any)"
+                    :type="colors[scope.$index % colors.length] as any"
                     @close="handleSpecValueRemove(scope.$index, item.id)"
                   >
                     {{ item.value }}
@@ -120,7 +120,7 @@
         <el-form ref="skuFormRef" :model="skuForm" size="small" :inline="true">
           <el-table
             :data="skuForm.skuList"
-            :span-method="(objectSpanMethod as any)"
+            :span-method="objectSpanMethod as any"
             highlight-current-row
             size="small"
             border
@@ -571,7 +571,6 @@ function submitForm() {
             return item;
           });
           submitsData.skuList = skuList;
-          console.log("提交数据", submitsData);
           const goodsId = goodsInfo.value.id;
           if (goodsId) {
             // 编辑商品提交

@@ -165,7 +165,6 @@ function submitForm() {
   dataFormRef.value.validate((valid: any) => {
     if (valid) {
       const applicationScope = formData.value.applicationScope;
-      console.log("applicationScope", applicationScope);
       if (applicationScope == 1) {
         // 指定商品分类
         formData.value.spuCategoryIds =

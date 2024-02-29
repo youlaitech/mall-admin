@@ -13,7 +13,6 @@ service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const accessToken = localStorage.getItem("token");
 
-    console.log("accessToken", accessToken);
     if (accessToken) {
       config.headers.Authorization = accessToken;
     }

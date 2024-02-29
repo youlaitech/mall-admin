@@ -301,7 +301,6 @@ function downloadTemplate() {
 /** Excel文件 Change */
 function handleFileChange(file: any) {
   importData.file = file.raw;
-  console.log(importData.file);
 }
 
 /** Excel文件 Exceed  */
