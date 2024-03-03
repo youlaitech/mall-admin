@@ -1,34 +1,30 @@
 <template>
   <div class="flex">
-    <div v-if="device !== 'mobile'" class="flex-center">
+    <template v-if="device !== 'mobile'">
       <!--全屏 -->
-      <div class="navbar-item" @click="toggle">
+      <div class="setting-item" @click="toggle">
         <svg-icon
-          :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
-          size="12px"
+          :icon-class="isFullscreen ? 'fullscreen-exit' : 'fullscreen'"
         />
       </div>
+
       <!-- 布局大小 -->
       <el-tooltip content="布局大小" effect="dark" placement="bottom">
-        <size-select class="navbar-item" size="12px" />
+        <size-select class="setting-item" />
       </el-tooltip>
 
-      <lang-select class="navbar-item" size="12px" />
-    </div>
+      <!-- 语言选择 -->
+      <lang-select class="setting-item" />
+    </template>
 
     <!-- 用户头像 -->
-    <el-dropdown trigger="click">
-      <div class="flex-center ml-1">
+    <el-dropdown class="setting-item" trigger="click">
+      <div class="flex-center h100% p10px">
         <img
           :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
-          width="40px"
-          height="40px"
-          class="rounded-md cursor-pointer"
+          class="rounded-full mr-10px w24px w24px"
         />
-
-        <el-icon class="cursor-pointer">
-          <CaretBottom />
-        </el-icon>
+        <span>{{ userStore.user.username }}</span>
       </div>
       <template #dropdown>
         <el-dropdown-menu>
@@ -47,14 +43,28 @@
         </el-dropdown-menu>
       </template>
     </el-dropdown>
+
+    <!-- 设置 -->
+    <template v-if="defaultSettings.showSettings">
+      <div class="setting-item" @click="settingStore.settingsVisible = true">
+        <svg-icon icon-class="setting" />
+      </div>
+    </template>
   </div>
 </template>
 <script setup lang="ts">
-import { useAppStore, useTagsViewStore, useUserStore } from "@/store";
+import {
+  useAppStore,
+  useTagsViewStore,
+  useUserStore,
+  useSettingsStore,
+} from "@/store";
+import defaultSettings from "@/settings";
 
 const appStore = useAppStore();
 const tagsViewStore = useTagsViewStore();
 const userStore = useUserStore();
+const settingStore = useSettingsStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -86,9 +96,9 @@ function logout() {
 }
 </script>
 <style lang="scss" scoped>
-.navbar-item {
+.setting-item {
   display: inline-block;
-  width: 30px;
+  min-width: 40px;
   height: $navbar-height;
   line-height: $navbar-height;
   color: var(--el-text-color);
@@ -98,23 +108,17 @@ function logout() {
   &:hover {
     background: rgb(0 0 0 / 10%);
   }
-
-  .svg-icon,
-  svg,
-  .el-icon {
-    vertical-align: -0.15em;
-  }
 }
 
 .layout-top,
 .layout-mix {
-  .navbar-item,
+  .setting-item,
   .el-icon {
     color: var(--el-color-white);
   }
 }
 
-.dark .navbar-item:hover {
+.dark .setting-item:hover {
   background: rgb(255 255 255 / 20%);
 }
 </style>

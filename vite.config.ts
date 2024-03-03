@@ -1,17 +1,15 @@
 import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import { UserConfig, ConfigEnv, loadEnv, defineConfig } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-
 import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import mockDevServerPlugin from "vite-plugin-mock-dev-server";
-
-import vueJsx from "@vitejs/plugin-vue-jsx";
 
 import UnoCSS from "unocss/vite";
 import { resolve } from "path";
@@ -51,10 +49,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
          */
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          // 线上接口地址
-          // target: "https://api.youlai.tech",
-          // 开发接口地址
-          target: "http://localhost:9999",
+          // 接口地址
+          target: env.VITE_APP_API_URL,
           rewrite: (path) =>
             path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
@@ -62,9 +58,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
-      // MOCK 服务，开启 MOCK 放开注释即可
-      // mockDevServerPlugin(),
+      // jsx、tsx语法支持
       vueJsx(),
+      // MOCK 服务
+      env.VITE_MOCK_DEV_SERVER === "true" ? mockDevServerPlugin() : null,
       UnoCSS({
         hmrTopLevelAwait: false,
       }),
@@ -124,6 +121,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "@wangeditor/editor-for-vue",
         "vue-i18n",
         "path-browserify",
+        "nprogress",
         "element-plus/es/components/form/style/css",
         "element-plus/es/components/form-item/style/css",
         "element-plus/es/components/button/style/css",
@@ -179,6 +177,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         "element-plus/es/components/cascader/style/css",
         "element-plus/es/components/steps/style/css",
         "element-plus/es/components/cascader-panel/style/css",
+        "element-plus/es/components/step/style/css",
       ],
     },
     // 构建配置

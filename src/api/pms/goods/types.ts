@@ -38,8 +38,8 @@ export interface Sku {
   spuId?: any;
   specIds: string;
   price: string;
-  stockNum: number;
-  lockedStockNum?: any;
+  stock: number;
+  lockedstock?: any;
   picUrl?: any;
 }
 

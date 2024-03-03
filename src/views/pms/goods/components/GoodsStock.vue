@@ -158,10 +158,10 @@
             <el-table-column label="库存" align="center">
               <template #default="scope">
                 <el-form-item
-                  :prop="'skuList[' + scope.$index + '].stockNum'"
-                  :rules="rules.sku.stockNum"
+                  :prop="'skuList[' + scope.$index + '].stock'"
+                  :rules="rules.sku.stock"
                 >
-                  <el-input v-model="scope.row.stockNum" />
+                  <el-input v-model="scope.row.stock" />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -222,9 +222,7 @@ const state = reactive({
     sku: {
       skuSn: [{ required: true, message: "请输入商品编号", trigger: "blur" }],
       price: [{ required: true, message: "请输入商品价格", trigger: "blur" }],
-      stockNum: [
-        { required: true, message: "请输入商品库存", trigger: "blur" },
-      ],
+      stock: [{ required: true, message: "请输入商品库存", trigger: "blur" }],
     },
   },
   colors: ["", "success", "warning", "danger"],
@@ -383,7 +381,7 @@ function generateSkuList() {
       item.id = sku.id;
       item.skuSn = sku.skuSn;
       item.price = sku.price / 100;
-      item.stockNum = sku.stockNum;
+      item.stock = sku.stock;
     }
     const specValueArr = item.specValues
       .substring(0, item.specValues.length - 1)

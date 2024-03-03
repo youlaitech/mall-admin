@@ -181,7 +181,7 @@ onMounted(() => {
                   moneyFormatter(scope.row.price)
                 }}</template>
               </el-table-column>
-              <el-table-column align="center" label="库存" prop="stockNum" />
+              <el-table-column align="center" label="库存" prop="stock" />
             </el-table>
           </template>
         </el-table-column>

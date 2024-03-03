@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click" @command="handleLanguageChange">
     <div>
-      <svg-icon icon-class="language" :size="size" />
+      <svg-icon icon-class="language" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
@@ -22,13 +22,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { useAppStore } from "@/store/modules/app";
-
-defineProps({
-  size: {
-    type: String,
-    required: false,
-  },
-});
 
 const appStore = useAppStore();
 const { locale } = useI18n();
