@@ -23,7 +23,7 @@ export const useUserStore = defineStore("user", () => {
       loginApi(loginData)
         .then(({ data }) => {
           const { token_type, access_token } = data;
-          localStorage.setItem("token", token_type + " " + access_token); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
+          localStorage.setItem("accessToken", token_type + " " + access_token); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
           resolve();
         })
         .catch((error) => {
@@ -59,7 +59,7 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       logoutApi()
         .then(() => {
-          localStorage.setItem("token", "");
+          localStorage.setItem("accessToken", "");
           location.reload(); // 清空路由
           resolve();
         })
@@ -72,7 +72,7 @@ export const useUserStore = defineStore("user", () => {
   // remove token
   function resetToken() {
     return new Promise<void>((resolve) => {
-      localStorage.setItem("token", "");
+      localStorage.setItem("accessToken", "");
       resetRouter();
       resolve();
     });
