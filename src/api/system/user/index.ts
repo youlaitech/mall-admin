@@ -127,7 +127,7 @@ export function downloadTemplateApi() {
  */
 export function exportUser(queryParams: UserQuery) {
   return request({
-    url: "/youlai-system/api/v1/users/_export",
+    url: "/youlai-system/api/v1/users/export",
     method: "get",
     params: queryParams,
     responseType: "arraybuffer",
@@ -143,7 +143,7 @@ export function importUser(deptId: number, file: File) {
   const formData = new FormData();
   formData.append("file", file);
   return request({
-    url: "/youlai-system/api/v1/users/_import",
+    url: "/youlai-system/api/v1/users/import",
     method: "post",
     params: { deptId: deptId },
     data: formData,
