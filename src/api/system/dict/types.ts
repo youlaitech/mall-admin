@@ -72,7 +72,8 @@ export interface DictQuery extends PageQuery {
   /**
    * 字典项名称
    */
-  name?: string;
+  // name?: string;
+  keywords?: string;
   /**
    * 字典类型编码
    */
