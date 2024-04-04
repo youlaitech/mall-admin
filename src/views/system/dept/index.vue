@@ -196,6 +196,7 @@ onMounted(() => {
             v-model="queryParams.status"
             placeholder="部门状态"
             clearable
+            style="width: 200px"
           >
             <el-option :value="1" label="正常" />
             <el-option :value="0" label="禁用" />
