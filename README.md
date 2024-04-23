@@ -18,7 +18,7 @@
 <a target="_blank" href="http://admin.youlai.tech">在线预览</a> |  <a target="_blank" href="https://juejin.cn/post/7228990409909108793">官方文档</a> 
 </p>
 
-## 项目介绍
+## 项目介绍ddddddddddddd
 
 [mall-admin](https://gitee.com/youlaiorg/mall-admin) 是基于 [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 升级的 Vue3 版本有来商城管理前端工程；使用前端主流技术栈 Vue3 + Vite4 + TypeScript5 + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等。
 
