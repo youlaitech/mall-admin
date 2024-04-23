@@ -114,15 +114,19 @@ function changeUserStatus(row: { [key: string]: any }) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
-    updateUserStatus(row.id, row.status)
-      .then(() => {
-        ElMessage.success(text + "成功");
-      })
-      .catch(() => {
-        row.status = row.status === 1 ? 0 : 1;
-      });
-  });
+  })
+    .then(() => {
+      updateUserStatus(row.id, row.status)
+        .then(() => {
+          ElMessage.success(text + "成功");
+        })
+        .catch(() => {
+          row.status = row.status === 1 ? 0 : 1;
+        });
+    })
+    .catch(() => {
+      row.status = row.status === 1 ? 0 : 1;
+    });
 }
 
 /**重置密码 */
